@@ -278,12 +278,12 @@ export function VerenaHomepage() {
       {/* Hero */}
       <section className="flex flex-col items-center gap-12 px-4 py-20 text-center sm:py-24">
         <div className="flex max-w-[860px] flex-col items-center gap-5">
-          <h1 style={bricolage} className="text-[40px] font-bold leading-[80px] sm:text-[56px] md:text-[64px]">
+          <h1 style={bricolage} className="text-[40px] font-bold leading-[70.4px] sm:text-[56px] md:text-[64px]">
             Your website looks ready.
             <br />
             But what might be missing?
           </h1>
-          <p className="max-w-[760px] text-[18px] leading-[27px]">
+          <p className="max-w-[860px] text-[18px] leading-[27px]">
             Privacy, accessibility, and other website requirements aren't always obvious. Verena
             uses AI to spot potential issues, show supporting evidence, and help you understand
             what to review next.
