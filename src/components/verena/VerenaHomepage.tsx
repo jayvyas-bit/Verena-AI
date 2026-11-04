@@ -67,9 +67,6 @@ const COMPANY_LOGOS: Array<{ src: string; alt: string; width: number }> = [
 
 const MARQUEE_LOGOS = [...COMPANY_LOGOS, ...COMPANY_LOGOS];
 
-const LOGO_SPOTLIGHT_MASK =
-  "linear-gradient(to right, transparent 0%, transparent calc(10% - 130px), black calc(10% - 40px), black calc(10% + 40px), transparent calc(10% + 130px), transparent calc(90% - 130px), black calc(90% - 40px), black calc(90% + 40px), transparent calc(90% + 130px), transparent 100%)";
-
 const LOGO_EDGE_FADE_MASK =
   "linear-gradient(to right, transparent 0%, black 64px, black calc(100% - 64px), transparent 100%)";
 
@@ -2215,24 +2212,6 @@ export function VerenaHomepage() {
                 }}
               />
             ))}
-          </div>
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0"
-            style={{ maskImage: LOGO_SPOTLIGHT_MASK, WebkitMaskImage: LOGO_SPOTLIGHT_MASK }}
-          >
-            <div className="logo-marquee-track flex w-max items-center gap-12">
-              {MARQUEE_LOGOS.map((logo, i) => (
-                <img
-                  key={`color-${i}`}
-                  src={logo.src}
-                  alt=""
-                  loading="lazy"
-                  className="h-10 shrink-0"
-                  style={{ width: `${logo.width}px` }}
-                />
-              ))}
-            </div>
           </div>
         </div>
         <div
