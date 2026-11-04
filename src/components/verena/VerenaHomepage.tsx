@@ -1486,12 +1486,22 @@ const FLOW_OUTPUTS = [
 
 const FLOW_NODE_YS = [40, 140, 240, 340, 440];
 
+const FLOW_EASE_OUT = "0.16 1 0.3 1";
+const FLOW_DOT_DUR = 0.85;
+const FLOW_DOT_STAGGER = 0.1;
+const FLOW_CENTER_BEGIN = 0.9;
+const FLOW_CENTER_DUR = 0.65;
+const FLOW_OUTPUT_START = 1.3;
+
 function ComplianceFlowDiagram({ active }: { active: boolean }) {
   const uid = useId();
   const boxGradId = `${uid}-box`;
   const sweepGradId = `${uid}-sweep`;
   const clipId = `${uid}-clip`;
   const glowId = `${uid}-glow`;
+  const prefersReducedMotion =
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const animateEnabled = active && !prefersReducedMotion;
 
   return (
     <div aria-hidden="true" className="mx-auto hidden w-full max-w-[1100px] md:block">
@@ -1526,49 +1536,29 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
                 stroke="rgba(255,255,255,0.14)"
                 strokeWidth="1.5"
               />
-              {active && (
-                <>
-                  <circle className="flow-motion" r="4" fill="#8aa0ff" filter={`url(#${glowId})`}>
-                    <animateMotion
-                      dur="3.2s"
-                      begin={`${i * 0.3}s`}
-                      repeatCount="indefinite"
-                      calcMode="spline"
-                      keyTimes="0;1"
-                      keySplines="0.22 1 0.36 1"
-                    >
-                      <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
-                    </animateMotion>
-                    <animate
-                      attributeName="opacity"
-                      values="0;1;1;0"
-                      keyTimes="0;0.12;0.85;1"
-                      dur="3.2s"
-                      begin={`${i * 0.3}s`}
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  <circle className="flow-motion" r="3" fill="#8aa0ff" filter={`url(#${glowId})`}>
-                    <animateMotion
-                      dur="3.2s"
-                      begin={`${i * 0.3 + 1.6}s`}
-                      repeatCount="indefinite"
-                      calcMode="spline"
-                      keyTimes="0;1"
-                      keySplines="0.22 1 0.36 1"
-                    >
-                      <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
-                    </animateMotion>
-                    <animate
-                      attributeName="opacity"
-                      values="0;0.55;0.55;0"
-                      keyTimes="0;0.12;0.85;1"
-                      dur="3.2s"
-                      begin={`${i * 0.3 + 1.6}s`}
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                </>
+              {animateEnabled && (
+                <circle className="flow-motion" r="4.5" fill="#8aa0ff" filter={`url(#${glowId})`}>
+                  <animateMotion
+                    dur={`${FLOW_DOT_DUR}s`}
+                    begin={`${i * FLOW_DOT_STAGGER}s`}
+                    repeatCount="1"
+                    fill="freeze"
+                    calcMode="spline"
+                    keyTimes="0;1"
+                    keySplines={FLOW_EASE_OUT}
+                  >
+                    <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
+                  </animateMotion>
+                  <animate
+                    attributeName="opacity"
+                    values="0;1;1;0"
+                    keyTimes="0;0.15;0.8;1"
+                    dur={`${FLOW_DOT_DUR}s`}
+                    begin={`${i * FLOW_DOT_STAGGER}s`}
+                    repeatCount="1"
+                    fill="freeze"
+                  />
+                </circle>
               )}
               <circle cx="100" cy={y} r="8" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.5" />
               <circle cx="100" cy={y} r="3" fill="rgba(255,255,255,0.7)" />
@@ -1598,49 +1588,29 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
                 stroke="rgba(255,255,255,0.14)"
                 strokeWidth="1.5"
               />
-              {active && (
-                <>
-                  <circle className="flow-motion" r="4" fill="#8aa0ff" filter={`url(#${glowId})`}>
-                    <animateMotion
-                      dur="3.2s"
-                      begin={`${1.2 + i * 0.3}s`}
-                      repeatCount="indefinite"
-                      calcMode="spline"
-                      keyTimes="0;1"
-                      keySplines="0.22 1 0.36 1"
-                    >
-                      <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
-                    </animateMotion>
-                    <animate
-                      attributeName="opacity"
-                      values="0;1;1;0"
-                      keyTimes="0;0.12;0.85;1"
-                      dur="3.2s"
-                      begin={`${1.2 + i * 0.3}s`}
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  <circle className="flow-motion" r="3" fill="#8aa0ff" filter={`url(#${glowId})`}>
-                    <animateMotion
-                      dur="3.2s"
-                      begin={`${1.2 + i * 0.3 + 1.6}s`}
-                      repeatCount="indefinite"
-                      calcMode="spline"
-                      keyTimes="0;1"
-                      keySplines="0.22 1 0.36 1"
-                    >
-                      <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
-                    </animateMotion>
-                    <animate
-                      attributeName="opacity"
-                      values="0;0.55;0.55;0"
-                      keyTimes="0;0.12;0.85;1"
-                      dur="3.2s"
-                      begin={`${1.2 + i * 0.3 + 1.6}s`}
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                </>
+              {animateEnabled && (
+                <circle className="flow-motion" r="4.5" fill="#8aa0ff" filter={`url(#${glowId})`}>
+                  <animateMotion
+                    dur={`${FLOW_DOT_DUR}s`}
+                    begin={`${FLOW_OUTPUT_START + i * FLOW_DOT_STAGGER}s`}
+                    repeatCount="1"
+                    fill="freeze"
+                    calcMode="spline"
+                    keyTimes="0;1"
+                    keySplines={FLOW_EASE_OUT}
+                  >
+                    <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
+                  </animateMotion>
+                  <animate
+                    attributeName="opacity"
+                    values="0;1;1;0"
+                    keyTimes="0;0.15;0.8;1"
+                    dur={`${FLOW_DOT_DUR}s`}
+                    begin={`${FLOW_OUTPUT_START + i * FLOW_DOT_STAGGER}s`}
+                    repeatCount="1"
+                    fill="freeze"
+                  />
+                </circle>
               )}
               <rect
                 x={1100 - 7}
@@ -1680,16 +1650,27 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
         <g style={{ filter: "drop-shadow(0 0 32px rgba(38,83,243,0.45))" }}>
           <g clipPath={`url(#${clipId})`}>
             <rect x="545" y="110" width="255" height="260" fill={`url(#${boxGradId})`} />
-            {active && (
+            {animateEnabled && (
               <rect className="flow-motion" y="110" height="260" width="70" fill={`url(#${sweepGradId})`}>
                 <animate
                   attributeName="x"
-                  values="490;800;490"
-                  keyTimes="0;0.5;1"
+                  values="490;800"
+                  keyTimes="0;1"
                   calcMode="spline"
-                  keySplines="0.45 0 0.55 1;0.45 0 0.55 1"
-                  dur="4.5s"
-                  repeatCount="indefinite"
+                  keySplines={FLOW_EASE_OUT}
+                  dur={`${FLOW_CENTER_DUR}s`}
+                  begin={`${FLOW_CENTER_BEGIN}s`}
+                  repeatCount="1"
+                  fill="freeze"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0;1;1;0"
+                  keyTimes="0;0.15;0.75;1"
+                  dur={`${FLOW_CENTER_DUR}s`}
+                  begin={`${FLOW_CENTER_BEGIN}s`}
+                  repeatCount="1"
+                  fill="freeze"
                 />
               </rect>
             )}
