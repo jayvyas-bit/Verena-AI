@@ -1336,7 +1336,7 @@ export function VerenaHomepage() {
       <section
         ref={startedRef}
         style={{ backgroundColor: CREAM }}
-        className="flex flex-col items-center gap-16 px-6 py-20 sm:px-24 sm:py-28"
+        className="flex flex-col items-center gap-16 px-6 py-20 sm:px-12 sm:py-28"
       >
         <div
           className={`area-reveal flex max-w-[935px] flex-col items-center gap-2 text-center ${startedVisible ? "is-shown" : ""}`}
@@ -1381,7 +1381,7 @@ export function VerenaHomepage() {
       {/* More than a website scan */}
       <section
         ref={scanRef}
-        className="flex flex-col items-center gap-16 bg-white px-6 py-20 sm:px-24 sm:py-28"
+        className="flex flex-col items-center gap-16 bg-white px-6 py-20 sm:px-12 sm:py-28"
       >
         <div
           className={`area-reveal flex max-w-[595px] flex-col items-center gap-2 text-center ${scanVisible ? "is-shown" : ""}`}
@@ -1485,7 +1485,7 @@ export function VerenaHomepage() {
       <section
         ref={areasSectionRef}
         style={{ backgroundColor: CREAM }}
-        className="flex flex-col items-center gap-16 px-6 py-20 sm:px-24 sm:py-28"
+        className="flex flex-col items-center gap-16 px-6 py-20 sm:px-12 sm:py-28"
       >
         <div
           className={`area-reveal flex max-w-[696px] flex-col items-center gap-2 text-center ${areasVisible ? "is-shown" : ""}`}
@@ -1654,7 +1654,7 @@ export function VerenaHomepage() {
       <section
         ref={pricingRef}
         style={{ backgroundColor: CREAM }}
-        className="flex flex-col items-center gap-16 px-6 py-20 sm:px-24 sm:py-28"
+        className="flex flex-col items-center gap-16 px-6 py-20 sm:px-12 sm:py-28"
       >
         <div
           className={`area-reveal flex max-w-[636px] flex-col items-center gap-2 text-center ${pricingVisible ? "is-shown" : ""}`}
@@ -1896,7 +1896,7 @@ export function VerenaHomepage() {
 
       {/* Footer */}
       <footer
-        className="relative overflow-hidden px-6 pt-20 sm:px-10 sm:pt-28"
+        className="relative overflow-hidden px-6 pt-20 sm:px-12 sm:pt-28"
         style={{ backgroundColor: INK, color: "rgba(250, 249, 246, 0.7)" }}
       >
         <div className="mx-auto max-w-[1280px]">
