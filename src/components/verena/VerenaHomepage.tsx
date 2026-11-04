@@ -1973,7 +1973,7 @@ export function VerenaHomepage() {
       )}
 
       {/* Nav */}
-      <div className="sticky top-0 z-30 bg-white">
+      <div className="sticky top-0 z-30 border-b border-[rgba(33,12,55,0.08)] bg-white/70 backdrop-blur-md backdrop-saturate-150">
         <header className="section-pad-x mx-auto flex h-20 max-w-[1536px] items-center justify-between gap-6">
           <img src={verenaLogo} alt="Verena" className="h-[2rem] w-auto object-contain" />
 
@@ -2024,7 +2024,7 @@ export function VerenaHomepage() {
         {mobileMenuOpen && (
           <nav
             id="verena-homepage-mobile-nav"
-            className="flex flex-col gap-1 border-t px-6 py-4 text-sm font-medium md:hidden"
+            className="flex flex-col gap-1 border-t bg-white/90 px-6 py-4 text-sm font-medium backdrop-blur-md md:hidden"
             style={{ borderColor: "rgba(33,12,55,0.1)" }}
           >
             {["Product", "Pricing", "Resources", "Contact us"].map((label) => (
