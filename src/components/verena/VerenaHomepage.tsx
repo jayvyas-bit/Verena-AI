@@ -74,25 +74,22 @@ const ANALYZE_CARDS = [
   {
     title: "Add your website",
     body: "Enter your domain and connect the pages you want Verena to review.",
-    icon: "website" as const,
   },
   {
     title: "Run an analysis",
     body: "Verena scans your website across all six areas and gathers supporting evidence.",
-    icon: "scan" as const,
   },
   {
     title: "Explore your findings",
     body: "Review each issue at your own pace, with evidence and next steps included.",
-    icon: "findings" as const,
   },
 ];
 
 const TOOL_TABS = [
-  { id: "reports", icon: "file" as const, label: "Reports & Evidence" },
-  { id: "drafts", icon: "edit" as const, label: "AI-Drafted Document Changes" },
-  { id: "code", icon: "code" as const, label: "Developer-Ready Code Suggestions" },
-  { id: "monitor", icon: "refresh" as const, label: "Monitoring & Rechecks" },
+  { id: "reports", icon: "file" as const, label: "Reports & Evidence", shortLabel: "Reports" },
+  { id: "drafts", icon: "edit" as const, label: "AI-Drafted Document Changes", shortLabel: "Drafts" },
+  { id: "code", icon: "code" as const, label: "Developer-Ready Code Suggestions", shortLabel: "Code fixes" },
+  { id: "monitor", icon: "refresh" as const, label: "Monitoring & Rechecks", shortLabel: "Monitoring" },
 ];
 
 const TOOL_TAB_AUTOPLAY_MS = 6000;
@@ -205,30 +202,38 @@ const PRICING_PLANS = [
 
 const FAQ_ITEMS = [
   {
+    category: "How it works",
     q: "What exactly does Verena check?",
     a: "Verena reviews your website across six areas: accessibility, privacy policy, cookies & trackers, terms of service, commercial email, and marketing claims. Each finding comes with supporting evidence, not just a flag.",
   },
   {
-    q: "Is this a replacement for legal advice?",
-    a: "No. Verena surfaces potential issues and evidence so you know what to look into. For anything that needs a professional sign-off, +Human connects you with someone who can review it.",
-  },
-  {
+    category: "How it works",
     q: "How long does an analysis take?",
     a: "Most websites finish in a few minutes. Larger sites with more pages may take longer, and you'll see progress as each area completes.",
   },
   {
+    category: "Trust & data",
+    q: "Is this a replacement for legal advice?",
+    a: "No. Verena surfaces potential issues and evidence so you know what to look into. For anything that needs a professional sign-off, +Human connects you with someone who can review it.",
+  },
+  {
+    category: "Trust & data",
     q: "What happens to my data?",
     a: "We only analyze what's publicly visible on your website. Nothing is sold or shared, and you can delete your account and its data at any time.",
   },
   {
+    category: "Trust & data",
     q: "What's included in +Human?",
     a: "Optional access to a professional who reviews specific findings with you, for questions an automated analysis can't fully answer on its own.",
   },
   {
+    category: "Billing",
     q: "Can I cancel anytime?",
     a: "Yes. Pro is month to month with no lock-in, and you keep access through the end of the billing period you've already paid for.",
   },
 ];
+
+const FAQ_CATEGORIES = Array.from(new Set(FAQ_ITEMS.map((item) => item.category)));
 
 const STRUCTURED_DATA = {
   "@context": "https://schema.org",
@@ -500,44 +505,6 @@ function AreaIcon({
   }
 }
 
-function StepIcon({ name, size = 22 }: { name: "website" | "scan" | "findings"; size?: number }) {
-  const common = {
-    width: size,
-    height: size,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.7,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    "aria-hidden": true as const,
-  };
-  switch (name) {
-    case "website":
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M3 12h18" />
-          <path d="M12 3c2.5 2.5 2.5 15.5 0 18M12 3c-2.5 2.5-2.5 15.5 0 18" />
-        </svg>
-      );
-    case "scan":
-      return (
-        <svg {...common}>
-          <path d="M4 8V5a1 1 0 0 1 1-1h3M20 8V5a1 1 0 0 0-1-1h-3M4 16v3a1 1 0 0 0 1 1h3M20 16v3a1 1 0 0 1-1 1h-3" />
-          <path d="M5 12h14" />
-        </svg>
-      );
-    case "findings":
-      return (
-        <svg {...common}>
-          <circle cx="11" cy="11" r="7" />
-          <path d="M21 21l-4.5-4.5M9 11l1.4 1.4L14 9" />
-        </svg>
-      );
-  }
-}
-
 function CheckIcon() {
   return (
     <svg
@@ -751,10 +718,10 @@ function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"] }) {
   if (tool === "reports") {
     return (
       <div className="flex h-full flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <p style={bricolage} className="text-[15px] font-semibold">acme.com — Full Report</p>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p style={bricolage} className="text-[13px] font-semibold sm:text-[15px]">acme.com — Full Report</p>
           <span
-            className="rounded-full px-2.5 py-1 text-[11px] font-medium"
+            className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium"
             style={{ backgroundColor: "rgba(22,163,74,0.1)", color: "#16a34a" }}
           >
             Analysis complete
@@ -768,8 +735,8 @@ function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"] }) {
               style={{ border: "1px solid rgba(33,12,55,0.08)" }}
             >
               <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: f.severity }} />
-              <p className="w-[140px] shrink-0 text-[13px] font-medium">{f.title}</p>
-              <p className="flex-1 truncate text-[13px] opacity-60">{f.detail}</p>
+              <p className="w-[86px] shrink-0 text-[12px] font-medium sm:w-[140px] sm:text-[13px]">{f.title}</p>
+              <p className="flex-1 truncate text-[12px] opacity-60 sm:text-[13px]">{f.detail}</p>
             </div>
           ))}
         </div>
@@ -780,10 +747,10 @@ function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"] }) {
   if (tool === "drafts") {
     return (
       <div className="flex h-full flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <p style={bricolage} className="text-[15px] font-semibold">Privacy Policy — Suggested edit</p>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p style={bricolage} className="text-[13px] font-semibold sm:text-[15px]">Privacy Policy — Suggested edit</p>
           <span
-            className="rounded-full px-2.5 py-1 text-[11px] font-medium"
+            className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium"
             style={{ backgroundColor: "rgba(33,12,55,0.06)" }}
           >
             Awaiting approval
@@ -822,16 +789,16 @@ function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"] }) {
   if (tool === "code") {
     return (
       <div className="flex h-full flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <p style={bricolage} className="text-[15px] font-semibold">Suggested fix — ContactForm.tsx</p>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p style={bricolage} className="text-[13px] font-semibold sm:text-[15px]">Suggested fix — ContactForm.tsx</p>
           <span
-            className="rounded-full px-2.5 py-1 text-[11px] font-medium"
+            className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium"
             style={{ backgroundColor: "rgba(33,12,55,0.06)" }}
           >
             Accessibility
           </span>
         </div>
-        <div className="flex-1 overflow-hidden rounded-[10px] p-4 font-mono text-[12.5px] leading-6" style={{ backgroundColor: INK, color: "rgba(250,249,246,0.85)" }}>
+        <div className="flex-1 overflow-hidden rounded-[10px] p-4 font-mono text-[11px] leading-6 sm:text-[12.5px]" style={{ backgroundColor: INK, color: "rgba(250,249,246,0.85)" }}>
           <p style={{ color: "rgba(250,249,246,0.4)" }}>{"<form onSubmit={handleSubmit}>"}</p>
           <p className="rounded px-1" style={{ backgroundColor: "rgba(228,87,46,0.18)" }}>
             {"-  <input type=\"email\" placeholder=\"Email\" />"}
@@ -847,10 +814,10 @@ function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"] }) {
 
   return (
     <div className="flex h-full flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <p style={bricolage} className="text-[15px] font-semibold">Monitoring — Weekly recheck</p>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p style={bricolage} className="text-[13px] font-semibold sm:text-[15px]">Monitoring — Weekly recheck</p>
         <span
-          className="rounded-full px-2.5 py-1 text-[11px] font-medium"
+          className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium"
           style={{ backgroundColor: "rgba(33,12,55,0.06)" }}
         >
           Next check in 3 days
@@ -863,8 +830,8 @@ function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"] }) {
             className="flex items-center gap-3 rounded-[10px] px-3 py-2.5"
             style={{ border: "1px solid rgba(33,12,55,0.08)" }}
           >
-            <p className="w-[150px] shrink-0 text-[13px] font-medium">{r.title}</p>
-            <p className="w-[100px] shrink-0 text-[12px] opacity-70">{r.checked}</p>
+            <p className="w-[90px] shrink-0 text-[12px] font-medium sm:w-[150px] sm:text-[13px]">{r.title}</p>
+            <p className="hidden shrink-0 text-[12px] opacity-70 sm:block sm:w-[100px]">{r.checked}</p>
             <span
               className="shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium"
               style={{ backgroundColor: `${r.statusColor}1a`, color: r.statusColor }}
@@ -988,6 +955,7 @@ export function VerenaHomepage() {
   const [pricingRef, pricingVisible] = useReveal<HTMLElement>();
   const [faqRef, faqVisible] = useReveal<HTMLElement>();
   const [finalCtaRef, finalCtaVisible] = useReveal<HTMLElement>();
+  const [openFaq, setOpenFaq] = useState<string | null>(FAQ_ITEMS[0].q);
 
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -1040,7 +1008,7 @@ export function VerenaHomepage() {
 
       {/* Nav */}
       <div className="sticky top-0 z-30 bg-white">
-        <header className="mx-auto flex h-20 max-w-[1536px] items-center justify-between gap-6 px-6 sm:px-12">
+        <header className="section-pad-x mx-auto flex h-20 max-w-[1536px] items-center justify-between gap-6">
           <img src={verenaLogo} alt="Verena" className="h-[2rem] w-auto object-contain" />
 
           <nav className="hidden items-center gap-7 md:flex">
@@ -1109,9 +1077,9 @@ export function VerenaHomepage() {
 
       <div>
       {/* Hero */}
-      <section className="flex flex-col items-center gap-16 px-4 py-24 text-center sm:py-32">
+      <section className="section-pad-x section-pad-y-lg flex flex-col items-center gap-16 text-center">
         <div className="flex max-w-[860px] flex-col items-center gap-2">
-          <h1 style={bricolage} className="text-[40px] font-bold leading-[1.1] tracking-[-0.01em] sm:text-[56px] md:text-[64px]">
+          <h1 style={bricolage} className="fluid-h1 font-bold leading-[1.1] tracking-[-0.01em]">
             Your website looks ready.
             <br />
             But what might be{" "}
@@ -1160,7 +1128,7 @@ export function VerenaHomepage() {
           </p>
         </div>
 
-        <div className="relative h-[280px] w-full max-w-[1280px] overflow-hidden rounded-[24px] bg-white shadow-sm sm:h-[360px] md:h-[450px]">
+        <div className="hero-demo-box relative w-full max-w-[1280px] overflow-hidden rounded-[24px] bg-white shadow-sm">
           <img
             src={gradientBackdrop}
             alt=""
@@ -1248,7 +1216,7 @@ export function VerenaHomepage() {
       </section>
 
       {/* Trusted-by logo strip */}
-      <section className="relative flex items-center overflow-hidden px-4 py-14 sm:py-20">
+      <section className="section-pad-x section-pad-y-sm relative flex items-center overflow-hidden">
         <div className="relative w-full overflow-hidden">
           <div className="logo-marquee-track flex w-max items-center gap-14">
             {MARQUEE_LOGOS.map((logo, i) => (
@@ -1292,13 +1260,13 @@ export function VerenaHomepage() {
           </div>
         </div>
         <div
-          className="absolute left-1/2 top-1/2 flex h-[120px] -translate-x-1/2 -translate-y-1/2 items-center justify-center px-20"
+          className="absolute left-1/2 top-1/2 flex h-[120px] -translate-x-1/2 -translate-y-1/2 items-center justify-center px-6 sm:px-20"
           style={{
             backgroundImage:
               "linear-gradient(270deg, rgba(255,255,255,0.95) 0%, rgb(255,255,255) 30%, rgb(255,255,255) 70%, rgba(255,255,255,0.95) 100%)",
           }}
         >
-          <p className="whitespace-nowrap text-[20px] font-medium leading-[27px]">
+          <p className="whitespace-nowrap text-[15px] font-medium leading-[27px] sm:text-[20px]">
             Trusted by 1000+ website owner
           </p>
         </div>
@@ -1308,7 +1276,7 @@ export function VerenaHomepage() {
       <section
         ref={statementRef}
         style={{ backgroundColor: INK }}
-        className="relative flex flex-col items-center overflow-hidden px-4 py-24 text-center text-white sm:py-36"
+        className="section-pad-x section-pad-y-lg relative flex flex-col items-center overflow-hidden text-center text-white"
       >
         <img
           src={ellipse92}
@@ -1321,7 +1289,7 @@ export function VerenaHomepage() {
         <div
           className={`area-reveal relative z-10 flex max-w-[794px] flex-col items-center gap-2 ${statementVisible ? "is-shown" : ""}`}
         >
-          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
+          <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Website compliance shouldn't take
             <br />
             over your to-do list
@@ -1334,46 +1302,48 @@ export function VerenaHomepage() {
         </div>
       </section>
 
-      {/* Getting started / Analyze cards */}
+      {/* Getting started / Analyze steps */}
       <section
         ref={startedRef}
         style={{ backgroundColor: CREAM }}
-        className="flex flex-col items-center gap-16 px-6 py-20 sm:px-12 sm:py-28"
+        className="section-pad-x section-pad-y flex flex-col gap-16"
       >
         <div
-          className={`area-reveal flex max-w-[935px] flex-col items-center gap-2 text-center ${startedVisible ? "is-shown" : ""}`}
+          className={`area-reveal mx-auto grid w-full max-w-[1536px] gap-6 sm:grid-cols-[1.3fr_1fr] sm:items-end ${startedVisible ? "is-shown" : ""}`}
         >
-          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
+          <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Getting started is simpler than you think
           </h2>
-          <p className="text-[18px] leading-[27px]">
+          <p className="text-[18px] leading-[27px] sm:text-right">
             Set up your website, run an analysis, and explore the findings at your own pace.
           </p>
         </div>
-        <div className="grid w-full max-w-[1536px] gap-8 sm:grid-cols-3">
+        <div className="mx-auto grid w-full max-w-[1536px] gap-x-10 gap-y-14 sm:grid-cols-3">
           {ANALYZE_CARDS.map((card, i) => (
             <div
               key={i}
-              className={`area-reveal flex flex-col gap-8 rounded-[20px] bg-white p-8 ${startedVisible ? "is-shown" : ""}`}
+              className={`area-reveal flex flex-col gap-6 ${startedVisible ? "is-shown" : ""} ${i === 1 ? "sm:mt-14" : ""}`}
               style={{ transitionDelay: `${i * 90}ms` }}
             >
               <img
                 src={analyzeScreenshot}
                 alt=""
                 loading="lazy"
-                className="aspect-[393/232] w-full rounded-lg object-cover"
+                className="aspect-[393/260] w-full rounded-lg object-cover"
               />
-              <div className="flex flex-col items-center gap-3 text-center">
-                <div
-                  className="flex h-11 w-11 items-center justify-center rounded-full"
-                  style={{ backgroundColor: "rgba(33,12,55,0.06)" }}
+              <div className="flex items-start gap-4">
+                <span
+                  style={{ ...bricolage, color: ACCENT }}
+                  className="text-[40px] font-semibold leading-none tracking-[-0.02em]"
                 >
-                  <StepIcon name={card.icon} />
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="flex flex-col gap-1.5 pt-1.5">
+                  <h3 style={bricolage} className="text-[20px] font-semibold tracking-[-0.01em]">
+                    {card.title}
+                  </h3>
+                  <p className="text-[15px] leading-6 opacity-75">{card.body}</p>
                 </div>
-                <h3 style={bricolage} className="w-full text-[32px] font-semibold tracking-[-0.01em]">
-                  {card.title}
-                </h3>
-                <p className="w-full text-[16px] leading-6">{card.body}</p>
               </div>
             </div>
           ))}
@@ -1383,12 +1353,12 @@ export function VerenaHomepage() {
       {/* More than a website scan */}
       <section
         ref={scanRef}
-        className="flex flex-col items-center gap-16 bg-white px-6 py-20 sm:px-12 sm:py-28"
+        className="section-pad-x section-pad-y flex flex-col items-center gap-16 bg-white"
       >
         <div
-          className={`area-reveal flex max-w-[595px] flex-col items-center gap-2 text-center ${scanVisible ? "is-shown" : ""}`}
+          className={`area-reveal flex max-w-[595px] flex-col items-start gap-2 self-start text-left ${scanVisible ? "is-shown" : ""}`}
         >
-          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
+          <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             More than a website scan
           </h2>
           <p className="text-[18px] leading-[27px]">
@@ -1400,7 +1370,7 @@ export function VerenaHomepage() {
           className={`area-reveal flex w-full max-w-[1536px] flex-col gap-10 ${scanVisible ? "is-shown" : ""}`}
           style={{ transitionDelay: "100ms" }}
         >
-          <div role="tablist" aria-label="Verena tools" className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 sm:gap-x-12">
+          <div role="tablist" aria-label="Verena tools" className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 sm:gap-x-12">
             {TOOL_TABS.map((tab) => {
               const active = tab.id === activeTool;
               return (
@@ -1413,12 +1383,13 @@ export function VerenaHomepage() {
                   aria-controls="verena-scan-tabpanel"
                   onClick={() => setActiveTool(tab.id)}
                   style={bricolage}
-                  className={`relative flex items-center gap-2 whitespace-nowrap rounded-sm pb-[9px] text-[16px] font-medium transition-opacity duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:text-[18px] ${
+                  className={`relative flex items-center gap-2 whitespace-nowrap rounded-sm pb-[9px] text-[15px] font-medium transition-opacity duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:text-[18px] ${
                     active ? "opacity-100" : "opacity-60 hover:opacity-85"
                   }`}
                 >
                   <ToolTabIcon name={tab.icon} active={active} />
-                  {tab.label}
+                  <span className="sm:hidden">{tab.shortLabel}</span>
+                  <span className="hidden sm:inline">{tab.label}</span>
                   <span
                     aria-hidden="true"
                     className="absolute bottom-0 left-0 h-[2px] w-full rounded-full"
@@ -1453,7 +1424,7 @@ export function VerenaHomepage() {
               loading="lazy"
               className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="relative flex aspect-[1080/450] w-[92%] max-w-[1080px] flex-col overflow-hidden rounded-t-2xl border-8 border-b-0 border-white/24 bg-white shadow-2xl">
+            <div className="relative flex aspect-[4/5] w-[92%] max-w-[1080px] flex-col overflow-hidden rounded-t-2xl border-8 border-b-0 border-white/24 bg-white shadow-2xl sm:aspect-[1080/450]">
               <div
                 className="flex items-center gap-4 border-b px-5 py-3"
                 style={{ borderColor: "rgba(33,12,55,0.08)", backgroundColor: "#f5f3f0" }}
@@ -1487,12 +1458,12 @@ export function VerenaHomepage() {
       <section
         ref={areasSectionRef}
         style={{ backgroundColor: CREAM }}
-        className="flex flex-col items-center gap-16 px-6 py-20 sm:px-12 sm:py-28"
+        className="section-pad-x section-pad-y flex flex-col items-center gap-16"
       >
         <div
-          className={`area-reveal flex max-w-[696px] flex-col items-center gap-2 text-center ${areasVisible ? "is-shown" : ""}`}
+          className={`area-reveal flex max-w-[696px] flex-col items-start gap-2 self-start text-left ${areasVisible ? "is-shown" : ""}`}
         >
-          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
+          <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Six areas. One website review.
           </h2>
           <p className="text-[18px] leading-[27px]">
@@ -1506,12 +1477,12 @@ export function VerenaHomepage() {
           >
             <img src={gradientBackdrop} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
             <div className="relative flex aspect-[450/500] w-full max-w-[450px] flex-col gap-4 rounded-2xl bg-white p-6 shadow-xl">
-              <div className="flex items-center justify-between">
-                <p style={bricolage} className="text-[15px] font-semibold">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p style={bricolage} className="text-[13px] font-semibold sm:text-[15px]">
                   acme.com — Review summary
                 </p>
                 <span
-                  className="rounded-full px-2.5 py-1 text-[11px] font-medium"
+                  className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium"
                   style={{ backgroundColor: "rgba(33,12,55,0.06)" }}
                 >
                   6 areas scanned
@@ -1602,7 +1573,7 @@ export function VerenaHomepage() {
       <section
         ref={humanRef}
         style={{ backgroundColor: INK }}
-        className="relative flex flex-col items-center justify-center gap-16 overflow-hidden px-4 py-24 sm:py-36 lg:min-h-[1018px]"
+        className="section-pad-x section-pad-y-lg relative flex flex-col items-center justify-center gap-16 overflow-hidden lg:min-h-[1018px]"
       >
         <img
           src={ellipse92}
@@ -1618,7 +1589,7 @@ export function VerenaHomepage() {
             src={avatarPhoto}
             alt=""
             loading="lazy"
-            className="human-orbit-avatar absolute left-1/2 top-1/2 -ml-9 -mt-9 size-[72px] rounded-full border-2 border-[rgba(244,235,255,0.25)] object-cover"
+            className="human-orbit-avatar absolute left-1/2 top-1/2 -ml-6 -mt-6 size-12 rounded-full border-2 border-[rgba(244,235,255,0.25)] object-cover sm:-ml-9 sm:-mt-9 sm:size-[72px]"
             style={
               {
                 "--orbit-duration": `${AVATAR_ORBIT_DURATION}s`,
@@ -1634,7 +1605,7 @@ export function VerenaHomepage() {
         >
           <div className="h-8 w-[136px] bg-white" style={{ WebkitMaskImage: `url("${invictusMask}")`, maskImage: `url("${invictusMask}")`, WebkitMaskSize: "contain", maskSize: "contain", WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat" }} />
           <div className="flex max-w-[861px] flex-col items-center gap-2 text-center text-white">
-            <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
+            <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
               When AI isn't enough, there's +Human
             </h2>
             <p className="text-[18px] leading-[27px]">
@@ -1656,12 +1627,12 @@ export function VerenaHomepage() {
       <section
         ref={pricingRef}
         style={{ backgroundColor: CREAM }}
-        className="flex flex-col items-center gap-16 px-6 py-20 sm:px-12 sm:py-28"
+        className="section-pad-x section-pad-y flex flex-col items-center gap-16"
       >
         <div
-          className={`area-reveal flex max-w-[636px] flex-col items-center gap-2 text-center ${pricingVisible ? "is-shown" : ""}`}
+          className={`area-reveal flex max-w-[636px] flex-col items-start gap-2 self-start text-left ${pricingVisible ? "is-shown" : ""}`}
         >
-          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
+          <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Choose what works for you
           </h2>
           <p className="text-[18px] leading-[27px]">
@@ -1670,7 +1641,7 @@ export function VerenaHomepage() {
         </div>
 
         <div className="flex w-full flex-col items-center gap-6">
-        <div className="grid w-full max-w-[1200px] gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="flex w-full max-w-[1200px] flex-col divide-y divide-[rgba(33,12,55,0.12)] overflow-hidden rounded-[20px] border border-[rgba(33,12,55,0.12)] bg-white">
           {PRICING_PLANS.map((plan, planIndex) => {
             const hasAddOn = Boolean(humanAddOns[plan.name]);
             const touched = Boolean(toggleTouched[plan.name]);
@@ -1679,92 +1650,94 @@ export function VerenaHomepage() {
               <div
                 key={plan.name}
                 style={plan.featured ? { backgroundColor: INK, transitionDelay: `${planIndex * 80}ms` } : { transitionDelay: `${planIndex * 80}ms` }}
-                className={`area-reveal flex flex-col gap-6 rounded-[20px] p-8 ${
-                  plan.featured ? "text-white" : "border border-[rgba(33,12,55,0.12)] bg-white"
+                className={`area-reveal flex flex-col gap-6 p-8 lg:flex-row lg:items-center lg:gap-8 xl:gap-10 ${
+                  plan.featured ? "text-white" : ""
                 } ${pricingVisible ? "is-shown" : ""}`}
               >
-                <div className="flex flex-col gap-2">
-                  <p style={bricolage} className="text-[18px] font-semibold">
+                <div className="flex flex-col gap-1 lg:w-[190px] lg:shrink-0">
+                  <p style={bricolage} className="text-[20px] font-semibold tracking-[-0.01em]">
                     {plan.name}
-                  </p>
-                  <div className="flex items-end gap-1">
-                    <span style={bricolage} className="text-[36px] font-semibold leading-none">
-                      ${totalPrice}
-                    </span>
-                    {plan.period && (
-                      <span className={`pb-1 text-[16px] ${plan.featured ? "opacity-70" : "opacity-60"}`}>
-                        {plan.period}
-                      </span>
-                    )}
-                  </div>
-                  <p className={`text-[16px] font-medium ${plan.featured ? "opacity-90" : "opacity-80"}`}>
-                    {plan.credits}
                   </p>
                   <p className={`text-[14px] leading-5 ${plan.featured ? "opacity-70" : "opacity-60"}`}>
                     {plan.description}
                   </p>
                 </div>
 
-                <ul className="flex flex-col gap-2.5">
+                <div className="flex flex-col gap-1 lg:w-[150px] lg:shrink-0">
+                  <div className="flex items-end gap-1">
+                    <span style={bricolage} className="text-[30px] font-semibold leading-none">
+                      ${totalPrice}
+                    </span>
+                    {plan.period && (
+                      <span className={`pb-0.5 text-[14px] ${plan.featured ? "opacity-70" : "opacity-60"}`}>
+                        {plan.period}
+                      </span>
+                    )}
+                  </div>
+                  <p className={`text-[13px] font-medium ${plan.featured ? "opacity-80" : "opacity-70"}`}>
+                    {plan.credits}
+                  </p>
+                </div>
+
+                <ul className="flex flex-1 flex-wrap gap-2">
                   {plan.features.map((feature) => (
                     <li
                       key={feature}
-                      className={`flex items-start gap-2 text-[14px] leading-5 ${
-                        plan.featured ? "opacity-90" : "opacity-80"
+                      className={`rounded-full px-3 py-1 text-[13px] leading-5 ${
+                        plan.featured ? "bg-white/10 opacity-90" : "bg-[rgba(33,12,55,0.05)] opacity-80"
                       }`}
                     >
-                      <span className="mt-0.5 shrink-0" style={{ color: plan.featured ? ACCENT : INK }}>
-                        <CheckIcon />
-                      </span>
                       {feature}
                     </li>
                   ))}
                 </ul>
 
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={hasAddOn}
-                  aria-label={`Add +Human review to ${plan.name}`}
-                  data-on={hasAddOn}
-                  onClick={() => toggleHumanAddOn(plan.name)}
-                  className={`flex w-full items-center justify-between gap-3 rounded-[10px] px-4 py-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
-                    plan.featured
-                      ? "bg-white/10 hover:bg-white/15 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
-                      : "bg-[rgba(33,12,55,0.04)] hover:bg-[rgba(33,12,55,0.07)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
-                  }`}
-                >
-                  <span className="flex flex-col gap-0.5">
-                    <span className="text-[14px] font-medium">+Human review</span>
-                    <span className={`text-[12px] ${plan.featured ? "opacity-70" : "opacity-60"}`}>
-                      +${plan.addOnPrice}/mo · attorney-supervised
-                    </span>
-                  </span>
-                  <span
-                    className={`t-toggle relative h-6 w-10 shrink-0 rounded-full ${touched ? "is-init" : ""}`}
-                    style={{
-                      backgroundColor: hasAddOn
-                        ? ACCENT
-                        : plan.featured
-                          ? "rgba(244,235,255,0.25)"
-                          : "rgba(33,12,55,0.15)",
-                    }}
+                <div className="flex flex-col gap-3 lg:w-[240px] lg:shrink-0">
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={hasAddOn}
+                    aria-label={`Add +Human review to ${plan.name}`}
+                    data-on={hasAddOn}
+                    onClick={() => toggleHumanAddOn(plan.name)}
+                    className={`flex w-full items-center justify-between gap-3 rounded-[10px] px-4 py-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                      plan.featured
+                        ? "bg-white/10 hover:bg-white/15 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
+                        : "bg-[rgba(33,12,55,0.04)] hover:bg-[rgba(33,12,55,0.07)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
+                    }`}
                   >
-                    <span className="t-toggle-thumb absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm" />
-                  </span>
-                </button>
+                    <span className="flex flex-col gap-0.5">
+                      <span className="text-[13px] font-medium">+Human review</span>
+                      <span className={`text-[11px] ${plan.featured ? "opacity-70" : "opacity-60"}`}>
+                        +${plan.addOnPrice}/mo · attorney-supervised
+                      </span>
+                    </span>
+                    <span
+                      className={`t-toggle relative h-6 w-10 shrink-0 rounded-full ${touched ? "is-init" : ""}`}
+                      style={{
+                        backgroundColor: hasAddOn
+                          ? ACCENT
+                          : plan.featured
+                            ? "rgba(244,235,255,0.25)"
+                            : "rgba(33,12,55,0.15)",
+                      }}
+                    >
+                      <span className="t-toggle-thumb absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm" />
+                    </span>
+                  </button>
 
-                <button
-                  type="button"
-                  style={plan.featured ? { backgroundColor: ACCENT, color: "#fff" } : undefined}
-                  className={`mt-auto rounded-[10px] px-5 py-3 text-sm font-medium transition active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
-                    plan.featured
-                      ? "hover:brightness-95 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
-                      : "border border-[rgba(33,12,55,0.3)] hover:bg-[rgba(33,12,55,0.04)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
-                  }`}
-                >
-                  {hasAddOn ? `${plan.cta} with +Human` : plan.cta}
-                </button>
+                  <button
+                    type="button"
+                    style={plan.featured ? { backgroundColor: ACCENT, color: "#fff" } : undefined}
+                    className={`rounded-[10px] px-5 py-3 text-sm font-medium transition active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                      plan.featured
+                        ? "hover:brightness-95 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
+                        : "border border-[rgba(33,12,55,0.3)] hover:bg-[rgba(33,12,55,0.04)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
+                    }`}
+                  >
+                    {hasAddOn ? `${plan.cta} with +Human` : plan.cta}
+                  </button>
+                </div>
               </div>
             );
           })}
@@ -1777,14 +1750,11 @@ export function VerenaHomepage() {
       </section>
 
       {/* FAQ */}
-      <section
-        ref={faqRef}
-        className="flex flex-col items-center gap-16 bg-white px-4 py-20 text-center sm:py-28"
-      >
+      <section ref={faqRef} className="section-pad-x section-pad-y flex flex-col gap-16 bg-white">
         <div
-          className={`area-reveal flex max-w-[909px] flex-col items-center gap-2 ${faqVisible ? "is-shown" : ""}`}
+          className={`area-reveal flex max-w-[560px] flex-col items-start gap-2 self-start text-left ${faqVisible ? "is-shown" : ""}`}
         >
-          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
+          <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Good questions deserve clear answers.
           </h2>
           <p className="text-[18px] leading-[27px]">
@@ -1792,30 +1762,50 @@ export function VerenaHomepage() {
           </p>
         </div>
 
-        <div className="flex w-full max-w-[760px] flex-col text-left">
-          {FAQ_ITEMS.map((item, index) => (
-            <details
-              key={item.q}
-              className={`area-reveal group border-b border-[rgba(33,12,55,0.12)] ${faqVisible ? "is-shown" : ""}`}
-              style={{ transitionDelay: `${Math.min(index, 4) * 70}ms` }}
+        <div className="mx-auto flex w-full max-w-[1200px] flex-col">
+          {FAQ_CATEGORIES.map((category, catIndex) => (
+            <div
+              key={category}
+              className={`grid gap-4 border-[rgba(33,12,55,0.12)] py-10 first:pt-0 sm:grid-cols-[200px_1fr] sm:gap-12 ${
+                catIndex > 0 ? "border-t" : ""
+              }`}
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 rounded-lg px-2 py-6 transition-colors hover:bg-[rgba(33,12,55,0.03)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2">
-                <span style={bricolage} className="text-[18px] font-medium sm:text-[20px]">
-                  {item.q}
-                </span>
-                <span className="relative h-4 w-4 shrink-0">
-                  <span
-                    className="absolute left-0 top-1/2 h-[1.5px] w-4 -translate-y-1/2"
-                    style={{ backgroundColor: INK }}
-                  />
-                  <span
-                    className="absolute left-0 top-1/2 h-[1.5px] w-4 -translate-y-1/2 rotate-90 transition-transform duration-200 ease-out group-open:rotate-0"
-                    style={{ backgroundColor: INK }}
-                  />
-                </span>
-              </summary>
-              <p className="mb-6 max-w-[680px] px-2 text-[16px] leading-6 opacity-70">{item.a}</p>
-            </details>
+              <p
+                style={bricolage}
+                className="text-[13px] font-semibold uppercase tracking-[0.08em] opacity-50 sm:pt-5"
+              >
+                {category}
+              </p>
+              <div className="flex flex-col">
+                {FAQ_ITEMS.filter((item) => item.category === category).map((item, index) => {
+                  const isOpen = openFaq === item.q;
+                  return (
+                    <div
+                      key={item.q}
+                      className={`area-reveal ${faqVisible ? "is-shown" : ""} ${index > 0 ? "border-t" : ""}`}
+                      style={{ transitionDelay: `${Math.min(catIndex * 2 + index, 6) * 70}ms`, borderColor: "rgba(33,12,55,0.1)" }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setOpenFaq(isOpen ? null : item.q)}
+                        aria-expanded={isOpen}
+                        className="flex w-full items-center justify-between gap-6 rounded-lg py-5 text-left transition-colors hover:bg-[rgba(33,12,55,0.03)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+                      >
+                        <span style={bricolage} className="text-[17px] font-medium sm:text-[19px]">
+                          {item.q}
+                        </span>
+                        <ChevronIcon open={isOpen} />
+                      </button>
+                      <div className={`area-accordion-body ${isOpen ? "is-open" : ""}`}>
+                        <div className="overflow-hidden">
+                          <p className="max-w-[560px] pb-5 pr-8 text-[15px] leading-6 opacity-70">{item.a}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           ))}
         </div>
       </section>
@@ -1823,40 +1813,46 @@ export function VerenaHomepage() {
       {/* Final CTA */}
       <section
         ref={finalCtaRef}
-        style={{ backgroundColor: CREAM }}
-        className="flex flex-col items-center gap-12 px-4 py-24 text-center sm:py-36"
+        style={{ backgroundColor: INK, color: "#faf9f6" }}
+        className="section-pad-x section-pad-y-lg relative overflow-hidden"
       >
-        <div
-          className={`area-reveal flex max-w-[691px] flex-col items-center gap-2 ${finalCtaVisible ? "is-shown" : ""}`}
-        >
-          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
-            Your website. Your next move.
-          </h2>
-          <p className="text-[18px] leading-[27px]">
-            Start with your URL and take the first step toward understanding your website's
-            compliance needs.
-          </p>
-        </div>
+        <div className="relative mx-auto flex w-full max-w-[1280px] flex-col gap-14 lg:flex-row lg:items-center lg:justify-between">
+          <div
+            className={`area-reveal flex max-w-[480px] flex-col gap-5 ${finalCtaVisible ? "is-shown" : ""}`}
+          >
+            <h2 style={bricolage} className="fluid-h2-lg font-semibold leading-tight tracking-[-0.01em]">
+              Your website.
+              <br />
+              Your next move.
+            </h2>
+            <p className="text-[18px] leading-[27px] opacity-70">
+              Start with your URL and take the first step toward understanding your website&rsquo;s
+              compliance needs.
+            </p>
+            <div className="flex items-center gap-2 text-[14px] font-medium opacity-60">
+              <CheckIcon />
+              Free to run, no credit card required
+            </div>
+          </div>
 
-        <form
-          onSubmit={handleSubmit}
-          noValidate
-          className={`area-reveal flex w-full max-w-[600px] flex-col items-stretch gap-2 ${finalCtaVisible ? "is-shown" : ""}`}
-          style={{ transitionDelay: "120ms" }}
-        >
-          <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
+          <form
+            onSubmit={handleSubmit}
+            noValidate
+            className={`area-reveal flex w-full max-w-[440px] flex-col gap-3 rounded-[20px] border border-white/15 bg-white/[0.04] p-6 ${finalCtaVisible ? "is-shown" : ""}`}
+            style={{ transitionDelay: "120ms" }}
+          >
+            <label htmlFor="verena-final-cta-domain" className="text-[13px] font-medium opacity-60">
+              Website to scan
+            </label>
             <div
-              className="flex h-14 w-full items-center rounded-[10px] border bg-white px-5 transition focus-within:ring-2"
+              className="flex h-14 w-full items-center rounded-[10px] border bg-[#1a0a2e] px-5 transition focus-within:ring-2"
               style={
                 {
-                  borderColor: domainError ? "#e4572e" : "rgba(33,12,55,0.12)",
-                  "--tw-ring-color": INK,
+                  borderColor: domainError ? "#ff8a65" : "rgba(255,255,255,0.15)",
+                  "--tw-ring-color": ACCENT,
                 } as CSSProperties
               }
             >
-              <label htmlFor="verena-final-cta-domain" className="sr-only">
-                Website to scan
-              </label>
               <input
                 id="verena-final-cta-domain"
                 name="domain"
@@ -1870,35 +1866,35 @@ export function VerenaHomepage() {
                 placeholder="yourwebsite.com"
                 aria-invalid={domainError ? true : undefined}
                 aria-describedby={domainError ? "verena-final-cta-domain-error" : undefined}
-                className="w-full min-w-0 flex-1 bg-transparent text-left text-[16px] leading-6 outline-none placeholder:text-[#210c37]/70"
+                className="w-full min-w-0 flex-1 bg-transparent text-left text-[16px] leading-6 text-white outline-none placeholder:text-white/40"
               />
             </div>
+            {domainError && (
+              <p
+                id="verena-final-cta-domain-error"
+                role="alert"
+                className="pl-1 text-left text-[13px] font-medium"
+                style={{ color: "#ff8a65" }}
+              >
+                {domainError}
+              </p>
+            )}
             <button
               type="submit"
               disabled={status === "loading"}
               style={{ backgroundColor: ACCENT }}
-              className="h-14 w-full shrink-0 rounded-[10px] px-6 text-sm font-medium text-white transition hover:brightness-95 active:scale-[0.97] disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:w-auto"
+              className="h-14 w-full shrink-0 rounded-[10px] px-6 text-sm font-medium text-white transition hover:brightness-95 active:scale-[0.97] disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37]"
             >
               {status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Analyze for free"}
             </button>
-          </div>
-          {domainError && (
-            <p
-              id="verena-final-cta-domain-error"
-              role="alert"
-              className="pl-1 text-left text-[13px] font-medium"
-              style={{ color: "#e4572e" }}
-            >
-              {domainError}
-            </p>
-          )}
-        </form>
+          </form>
+        </div>
       </section>
       </div>
 
       {/* Footer */}
       <footer
-        className="relative overflow-hidden px-6 pt-20 sm:px-12 sm:pt-28"
+        className="section-pad-x relative overflow-hidden pt-[clamp(5rem,4rem+2.5vw,7rem)]"
         style={{ backgroundColor: INK, color: "rgba(250, 249, 246, 0.7)" }}
       >
         <div className="mx-auto max-w-[1280px]">
