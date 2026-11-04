@@ -38,7 +38,10 @@ onboarding solves for money).
 
 ## Anti-references
 
-- Generic "legal SaaS": boring, form-heavy, blue-and-grey.
+- Generic "legal SaaS": boring, form-heavy, pale corporate blue-and-grey with
+  no identity of its own. (This is distinct from Verena's own committed
+  palette — a dark ink-purple plus one saturated cobalt accent is a deliberate
+  choice, not the washed-out blue-grey this anti-reference means.)
 - Generic "AI startup" cliché: gradient-on-black, hero-metric template,
   over-applied glassmorphism/bento-grid treated as automatically "modern."
 - Fear-based compliance marketing: alarm red, warning iconography, urgency
@@ -49,12 +52,13 @@ onboarding solves for money).
 
 ## Design Principles
 
-1. Calm authority over alarm — grounded maroon reads as serious, not warning;
-   no fear-based urgency copy or red alert iconography.
+1. Calm authority over alarm — grounded ink-purple (#210c37) reads as serious,
+   not warning; no fear-based urgency copy or red alert iconography.
 2. Human-in-the-loop is a trust feature — surface the human-backstop signal
    early and visibly, not as footnote caveat text.
-3. One deliberate accent, used sparingly — #FCF56F carries emphasis, not
-   decoration; it does not appear everywhere at once.
+3. One deliberate accent, used sparingly — #2653F3 carries emphasis
+   (primary actions, active states, the scan motif), not decoration; it does
+   not appear everywhere at once.
 4. Motion restrained and purposeful — entrance and hover only, always gated
    behind `prefers-reduced-motion`.
 5. Polish signals competence for this audience — a visitor deciding whether
@@ -66,4 +70,4 @@ onboarding solves for money).
 WCAG 2.1 AA minimum — accessibility is Verena's own product category, so the
 marketing site holding itself to that bar is part of the credibility story.
 Respect `prefers-reduced-motion` throughout. Maintain strong contrast against
-the cream/maroon/yellow palette; never rely on color alone to convey state.
+the cream/ink-purple/cobalt palette; never rely on color alone to convey state.

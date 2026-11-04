@@ -17,7 +17,11 @@ calibration of what below is actually verified vs. inferred.
 | [05-proposed-plan.md](./05-proposed-plan.md) | The proposed redesign plan, derived from the above |
 | [06-confidence-and-gaps.md](./06-confidence-and-gaps.md) | What's solid, what's inference, what's unverified — read this before acting on pricing or competitive claims |
 | [07-design-styles-and-component-systems.md](./07-design-styles-and-component-systems.md) | Three ultra-modern design style options, paired component systems (shadcn/ui, Magic UI, Aceternity UI, Tailark), and a recommendation |
+| [08-post-login-product-ui.md](./08-post-login-product-ui.md) | Screenshots and analysis of the actual logged-in product UI (Artifacts/compliance report, Activities log, +Human onboarding chat) |
+| [09-option-3-scroll-storytelling.md](./09-option-3-scroll-storytelling.md) | Design brief for a third homepage option: a scroll-driven "live audit" narrative, with its CTA and audit revision trail |
 | [sources.md](./sources.md) | Every source link surfaced during research |
+
+Reference screenshots for 08 live in `./screenshots/post-login/`.
 
 ## Status
 
