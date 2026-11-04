@@ -52,23 +52,26 @@ const NAV_FEATURED = {
 } satisfies Record<NavDropdownKey, { eyebrow: string; title: string; body: string; cta: string }>;
 
 const COMPANY_LOGOS: Array<{ src: string; alt: string; width: number }> = [
-  { src: companyAirbnb, alt: "Airbnb", width: 128 },
-  { src: companyLogoA, alt: "Adobe", width: 133 },
-  { src: companyLogoB, alt: "Airtasker", width: 144 },
-  { src: companyLogoC, alt: "Amplitude", width: 194 },
-  { src: companyLogoD, alt: "Atlassian", width: 178 },
-  { src: companyFivetran, alt: "Fivetran", width: 162 },
-  { src: companyPayPal, alt: "PayPal", width: 143 },
-  { src: companyBookingCom, alt: "Booking.com", width: 165 },
-  { src: companyPostman, alt: "Postman", width: 152 },
-  { src: companySpotify, alt: "Spotify", width: 140 },
-  { src: companyOutreach, alt: "Outreach", width: 169 },
+  { src: companyAirbnb, alt: "Airbnb", width: 107 },
+  { src: companyLogoA, alt: "Adobe", width: 111 },
+  { src: companyLogoB, alt: "Airtasker", width: 120 },
+  { src: companyLogoC, alt: "Amplitude", width: 162 },
+  { src: companyLogoD, alt: "Atlassian", width: 148 },
+  { src: companyFivetran, alt: "Fivetran", width: 135 },
+  { src: companyPayPal, alt: "PayPal", width: 119 },
+  { src: companyBookingCom, alt: "Booking.com", width: 138 },
+  { src: companyPostman, alt: "Postman", width: 127 },
+  { src: companySpotify, alt: "Spotify", width: 117 },
+  { src: companyOutreach, alt: "Outreach", width: 141 },
 ];
 
 const MARQUEE_LOGOS = [...COMPANY_LOGOS, ...COMPANY_LOGOS];
 
 const LOGO_SPOTLIGHT_MASK =
   "linear-gradient(to right, transparent 0%, transparent calc(10% - 130px), black calc(10% - 40px), black calc(10% + 40px), transparent calc(10% + 130px), transparent calc(90% - 130px), black calc(90% - 40px), black calc(90% + 40px), transparent calc(90% + 130px), transparent 100%)";
+
+const LOGO_EDGE_FADE_MASK =
+  "linear-gradient(to right, transparent 0%, black 64px, black calc(100% - 64px), transparent 100%)";
 
 const PLACEHOLDER_EXAMPLES = [
   "Which website should Verena review?",
@@ -2187,14 +2190,17 @@ export function VerenaHomepage() {
         ref={trustedRef}
         className={`area-reveal section-pad-x section-pad-y-sm relative flex items-center overflow-hidden ${trustedVisible ? "is-shown" : ""}`}
       >
-        <div className="relative w-full overflow-hidden">
-          <div className="logo-marquee-track flex w-max items-center gap-14">
+        <div
+          className="relative w-full overflow-hidden"
+          style={{ maskImage: LOGO_EDGE_FADE_MASK, WebkitMaskImage: LOGO_EDGE_FADE_MASK }}
+        >
+          <div className="logo-marquee-track flex w-max items-center gap-12">
             {MARQUEE_LOGOS.map((logo, i) => (
               <div
                 key={`gray-${i}`}
                 role="img"
                 aria-label={logo.alt}
-                className="h-12 shrink-0"
+                className="h-10 shrink-0"
                 style={{
                   width: `${logo.width}px`,
                   backgroundColor: "#D2CFD7",
@@ -2215,14 +2221,14 @@ export function VerenaHomepage() {
             className="pointer-events-none absolute inset-0"
             style={{ maskImage: LOGO_SPOTLIGHT_MASK, WebkitMaskImage: LOGO_SPOTLIGHT_MASK }}
           >
-            <div className="logo-marquee-track flex w-max items-center gap-14">
+            <div className="logo-marquee-track flex w-max items-center gap-12">
               {MARQUEE_LOGOS.map((logo, i) => (
                 <img
                   key={`color-${i}`}
                   src={logo.src}
                   alt=""
                   loading="lazy"
-                  className="h-12 shrink-0"
+                  className="h-10 shrink-0"
                   style={{ width: `${logo.width}px` }}
                 />
               ))}
