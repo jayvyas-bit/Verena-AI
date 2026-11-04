@@ -230,6 +230,49 @@ const FAQ_ITEMS = [
   },
 ];
 
+const STRUCTURED_DATA = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      name: "Verena",
+      url: "https://verena.ai/",
+      logo: "https://verena.ai/og-image.png",
+      description:
+        "Verena scans your website for accessibility, privacy, cookie, and compliance gaps with AI, backed by attorney-reviewed fixes through +Human.",
+      parentOrganization: {
+        "@type": "Organization",
+        name: "Invictus AI",
+      },
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: "Verena",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+      description:
+        "AI website compliance scans for accessibility, privacy, cookies, and terms of service, with optional attorney review through +Human.",
+      offers: PRICING_PLANS.map((plan) => ({
+        "@type": "Offer",
+        name: plan.name,
+        price: plan.price,
+        priceCurrency: "USD",
+      })),
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: FAQ_ITEMS.map((item) => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: item.a,
+        },
+      })),
+    },
+  ],
+};
+
 const FOOTER_LINK_GROUPS = [
   { title: "Product", links: ["Overview", "+Human", "Pricing", "Changelog"] },
   { title: "Resources", links: ["Trust Center", "Compliance Guides", "WCAG 2.1 AA Checklist", "Help Center"] },
@@ -842,7 +885,7 @@ export function VerenaHomepage() {
   useDocumentHead({
     title: "Verena — AI Website Compliance Scans | Invictus AI",
     description:
-      "Scan your website for accessibility, privacy, cookie, and compliance issues with AI, backed by attorney-reviewed fixes through +Human. Start free, no credit card required.",
+      "Scan your website for accessibility, privacy, cookie, and compliance issues with AI, backed by attorney-reviewed fixes through +Human. Start free.",
   });
 
   const [activeTool, setActiveTool] = useState<(typeof TOOL_TABS)[number]["id"]>(
@@ -959,6 +1002,10 @@ export function VerenaHomepage() {
 
   return (
     <div style={{ color: INK }} className="bg-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(STRUCTURED_DATA) }}
+      />
       {/* Announcement bar */}
       {announcementVisible && (
         <div
@@ -1234,6 +1281,7 @@ export function VerenaHomepage() {
                   key={`color-${i}`}
                   src={logo.src}
                   alt=""
+                  loading="lazy"
                   className="h-12 shrink-0"
                   style={{ width: `${logo.width}px` }}
                 />
@@ -1265,6 +1313,7 @@ export function VerenaHomepage() {
           alt=""
           width={1236}
           height={818}
+          loading="lazy"
           className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         />
         <div
@@ -1309,6 +1358,7 @@ export function VerenaHomepage() {
               <img
                 src={analyzeScreenshot}
                 alt=""
+                loading="lazy"
                 className="aspect-[393/232] w-full rounded-lg object-cover"
               />
               <div className="flex flex-col items-center gap-3 text-center">
@@ -1398,6 +1448,7 @@ export function VerenaHomepage() {
             <img
               src={gradientBackdrop}
               alt=""
+              loading="lazy"
               className="absolute inset-0 h-full w-full object-cover"
             />
             <div className="relative flex aspect-[1080/450] w-[92%] max-w-[1080px] flex-col overflow-hidden rounded-t-2xl border-8 border-b-0 border-white/24 bg-white shadow-2xl">
@@ -1451,7 +1502,7 @@ export function VerenaHomepage() {
             className={`area-reveal relative flex items-center justify-center overflow-hidden rounded-[20px] bg-white p-8 ${areasVisible ? "is-shown" : ""}`}
             style={{ transitionDelay: "80ms" }}
           >
-            <img src={gradientBackdrop} alt="" className="absolute inset-0 h-full w-full object-cover" />
+            <img src={gradientBackdrop} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
             <div className="relative flex aspect-[450/500] w-full max-w-[450px] flex-col gap-4 rounded-2xl bg-white p-6 shadow-xl">
               <div className="flex items-center justify-between">
                 <p style={bricolage} className="text-[15px] font-semibold">
@@ -1556,6 +1607,7 @@ export function VerenaHomepage() {
           alt=""
           width={1236}
           height={818}
+          loading="lazy"
           className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         />
         {AVATAR_ORBITS.map((orbit, i) => (
@@ -1563,6 +1615,7 @@ export function VerenaHomepage() {
             key={i}
             src={avatarPhoto}
             alt=""
+            loading="lazy"
             className="human-orbit-avatar absolute left-1/2 top-1/2 -ml-9 -mt-9 size-[72px] rounded-full border-2 border-[rgba(244,235,255,0.25)] object-cover"
             style={
               {
@@ -1849,7 +1902,12 @@ export function VerenaHomepage() {
         <div className="mx-auto max-w-[1280px]">
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-6">
             <div className="lg:col-span-2">
-              <img src={verenaLogo} alt="Verena" className="h-7 w-auto object-contain brightness-0 invert" />
+              <img
+                src={verenaLogo}
+                alt="Verena"
+                loading="lazy"
+                className="h-7 w-auto object-contain brightness-0 invert"
+              />
               <p className="mt-3 max-w-[280px] text-sm leading-[21px]">A product of Invictus AI.</p>
               <p className="mt-3 text-xs leading-[18px]" style={{ color: "rgba(250, 249, 246, 0.45)" }}>
                 548 Market St, Suite 200
