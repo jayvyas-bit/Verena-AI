@@ -2285,12 +2285,12 @@ export function VerenaHomepage() {
         className="section-pad-x section-pad-y flex flex-col gap-16"
       >
         <div
-          className={`area-reveal mx-auto grid w-full max-w-[1536px] gap-6 sm:grid-cols-[1.3fr_1fr] sm:items-end ${startedVisible ? "is-shown" : ""}`}
+          className={`area-reveal mx-auto flex w-full max-w-[700px] flex-col items-center gap-2 text-center ${startedVisible ? "is-shown" : ""}`}
         >
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Getting started is simpler than you think
           </h2>
-          <p className="text-[18px] leading-[27px] sm:text-right">
+          <p className="text-[18px] leading-[27px]">
             Set up your website, run an analysis, and explore the findings at your own pace.
           </p>
         </div>
@@ -2329,7 +2329,7 @@ export function VerenaHomepage() {
         className="section-pad-x section-pad-y flex flex-col items-center gap-16 bg-white"
       >
         <div
-          className={`area-reveal flex max-w-[595px] flex-col items-start gap-2 self-start text-left ${scanVisible ? "is-shown" : ""}`}
+          className={`area-reveal flex max-w-[595px] flex-col items-center gap-2 text-center ${scanVisible ? "is-shown" : ""}`}
         >
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             More than a website scan
@@ -2482,7 +2482,7 @@ export function VerenaHomepage() {
         className="section-pad-x section-pad-y flex flex-col items-center gap-16"
       >
         <div
-          className={`area-reveal flex max-w-[696px] flex-col items-start gap-2 self-start text-left ${areasVisible ? "is-shown" : ""}`}
+          className={`area-reveal flex max-w-[696px] flex-col items-center gap-2 text-center ${areasVisible ? "is-shown" : ""}`}
         >
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Six areas. One website review.
@@ -2632,7 +2632,7 @@ export function VerenaHomepage() {
         className="section-pad-x section-pad-y flex flex-col items-center gap-16"
       >
         <div
-          className={`area-reveal flex max-w-[636px] flex-col items-start gap-2 self-start text-left ${pricingVisible ? "is-shown" : ""}`}
+          className={`area-reveal flex max-w-[636px] flex-col items-center gap-2 text-center ${pricingVisible ? "is-shown" : ""}`}
         >
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Choose what works for you
@@ -2754,7 +2754,7 @@ export function VerenaHomepage() {
       {/* FAQ */}
       <section ref={faqRef} className="section-pad-x section-pad-y flex flex-col gap-16 bg-white">
         <div
-          className={`area-reveal flex max-w-[560px] flex-col items-start gap-2 self-start text-left ${faqVisible ? "is-shown" : ""}`}
+          className={`area-reveal mx-auto flex max-w-[560px] flex-col items-center gap-2 text-center ${faqVisible ? "is-shown" : ""}`}
         >
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Good questions deserve clear answers.
