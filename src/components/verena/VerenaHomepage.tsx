@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import { useDocumentHead } from "../../lib/useDocumentHead";
 import verenaLogo from "../../assets/homepage/image-15.png";
 import gradientBackdrop from "../../assets/homepage/image-19.png";
@@ -1324,6 +1324,187 @@ function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" }) {
   );
 }
 
+const FLOW_INPUTS = ["Pages", "Forms", "Policies & notices", "Cookies & trackers", "Marketing claims"];
+
+const FLOW_OUTPUTS = [
+  "Plain-English findings",
+  "Suggested next steps",
+  "Developer-ready guidance",
+  "Evidence for each finding",
+  "Optional +Human review",
+];
+
+const FLOW_NODE_YS = [40, 140, 240, 340, 440];
+
+function ComplianceFlowDiagram() {
+  const uid = useId();
+  const boxGradId = `${uid}-box`;
+  const sweepGradId = `${uid}-sweep`;
+  const clipId = `${uid}-clip`;
+  const glowId = `${uid}-glow`;
+
+  return (
+    <div aria-hidden="true" className="mx-auto hidden w-full max-w-[1100px] md:block">
+      <svg viewBox="0 0 1200 480" className="h-auto w-full overflow-visible">
+        <defs>
+          <linearGradient id={boxGradId} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#3f66ff" />
+            <stop offset="100%" stopColor="#121a52" />
+          </linearGradient>
+          <linearGradient id={sweepGradId} x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#8aa0ff" stopOpacity="0" />
+            <stop offset="50%" stopColor="#8aa0ff" stopOpacity="0.55" />
+            <stop offset="100%" stopColor="#8aa0ff" stopOpacity="0" />
+          </linearGradient>
+          <clipPath id={clipId}>
+            <rect x="545" y="110" width="255" height="260" rx="20" />
+          </clipPath>
+          <filter id={glowId} x="-200%" y="-200%" width="500%" height="500%">
+            <feGaussianBlur stdDeviation="3" />
+          </filter>
+        </defs>
+
+        {FLOW_INPUTS.map((label, i) => {
+          const y = FLOW_NODE_YS[i];
+          const pathId = `${uid}-in-${i}`;
+          return (
+            <g key={label}>
+              <path
+                id={pathId}
+                d={`M 100 ${y} C 260 ${y} 260 240 400 240`}
+                fill="none"
+                stroke="rgba(255,255,255,0.14)"
+                strokeWidth="1.5"
+              />
+              <circle className="flow-motion" r="4" fill="#8aa0ff" filter={`url(#${glowId})`}>
+                <animateMotion dur="3.2s" begin={`${i * 0.3}s`} repeatCount="indefinite">
+                  <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
+                </animateMotion>
+              </circle>
+              <circle className="flow-motion" r="3" fill="#8aa0ff" opacity="0.55" filter={`url(#${glowId})`}>
+                <animateMotion dur="3.2s" begin={`${i * 0.3 + 1.6}s`} repeatCount="indefinite">
+                  <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
+                </animateMotion>
+              </circle>
+              <circle cx="100" cy={y} r="8" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.5" />
+              <circle cx="100" cy={y} r="3" fill="rgba(255,255,255,0.7)" />
+              <text
+                x="80"
+                y={y + 5}
+                textAnchor="end"
+                fill="rgba(255,255,255,0.75)"
+                fontSize="18"
+                fontWeight="500"
+              >
+                {label}
+              </text>
+            </g>
+          );
+        })}
+
+        {FLOW_OUTPUTS.map((label, i) => {
+          const y = FLOW_NODE_YS[i];
+          const pathId = `${uid}-out-${i}`;
+          return (
+            <g key={label}>
+              <path
+                id={pathId}
+                d={`M 800 240 C 940 240 940 ${y} 1100 ${y}`}
+                fill="none"
+                stroke="rgba(255,255,255,0.14)"
+                strokeWidth="1.5"
+              />
+              <circle className="flow-motion" r="4" fill="#8aa0ff" filter={`url(#${glowId})`}>
+                <animateMotion dur="3.2s" begin={`${1.2 + i * 0.3}s`} repeatCount="indefinite">
+                  <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
+                </animateMotion>
+              </circle>
+              <circle className="flow-motion" r="3" fill="#8aa0ff" opacity="0.55" filter={`url(#${glowId})`}>
+                <animateMotion dur="3.2s" begin={`${1.2 + i * 0.3 + 1.6}s`} repeatCount="indefinite">
+                  <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
+                </animateMotion>
+              </circle>
+              <rect
+                x={1100 - 7}
+                y={y - 7}
+                width="14"
+                height="14"
+                fill={ACCENT}
+                filter={`url(#${glowId})`}
+                transform={`rotate(45 1100 ${y})`}
+              />
+              <rect x={1100 - 4.5} y={y - 4.5} width="9" height="9" fill="#fff" transform={`rotate(45 1100 ${y})`} />
+              <text x="1120" y={y + 5} textAnchor="start" fill="rgba(255,255,255,0.85)" fontSize="18" fontWeight="500">
+                {label}
+              </text>
+            </g>
+          );
+        })}
+
+        <rect x="400" y="150" width="60" height="180" rx="30" fill={ACCENT} opacity="0.9" />
+        <rect x="400" y="150" width="60" height="40" rx="20" fill="#ffffff" opacity="0.1" />
+        <text
+          x="430"
+          y="352"
+          textAnchor="middle"
+          fill="#9db4ff"
+          fontSize="13"
+          fontWeight="700"
+          style={{ fontFamily: "'Bricolage Grotesque', sans-serif", textTransform: "uppercase", letterSpacing: "0.04em" }}
+        >
+          One review
+        </text>
+
+        <rect x="478" y="145" width="12" height="190" rx="5" fill="#5b7bff" opacity="0.45" />
+        <rect x="498" y="135" width="12" height="210" rx="5" fill="#5b7bff" opacity="0.65" />
+        <rect x="518" y="125" width="12" height="230" rx="5" fill="#5b7bff" opacity="0.85" />
+
+        <g style={{ filter: "drop-shadow(0 0 32px rgba(38,83,243,0.45))" }}>
+          <g clipPath={`url(#${clipId})`}>
+            <rect x="545" y="110" width="255" height="260" fill={`url(#${boxGradId})`} />
+            <rect className="flow-motion" y="110" height="260" width="70" fill={`url(#${sweepGradId})`}>
+              <animate attributeName="x" values="490;800;490" dur="4.5s" repeatCount="indefinite" />
+            </rect>
+          </g>
+          <rect x="545" y="110" width="255" height="260" rx="20" fill="none" stroke="rgba(255,255,255,0.18)" />
+        </g>
+        <circle cx="672" cy="195" r="17" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.3)" />
+        <path
+          d="M 664 192 L 672 200 L 680 192"
+          fill="none"
+          stroke="#fff"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <text
+          x="672"
+          y="245"
+          textAnchor="middle"
+          fill="#ffffff"
+          fontSize="21"
+          fontWeight="600"
+          style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
+        >
+          Six-area review
+        </text>
+
+        <text
+          x="600"
+          y="408"
+          textAnchor="middle"
+          fill="#9db4ff"
+          fontSize="14"
+          fontWeight="700"
+          style={{ fontFamily: "'Bricolage Grotesque', sans-serif", textTransform: "uppercase", letterSpacing: "0.12em" }}
+        >
+          Verena review
+        </text>
+      </svg>
+    </div>
+  );
+}
+
 export function VerenaHomepage() {
   useDocumentHead({
     title: "Verena — AI Website Compliance Scans | Invictus AI",
@@ -1914,6 +2095,12 @@ export function VerenaHomepage() {
             <br />
             your website review into one place.
           </p>
+        </div>
+        <div
+          className={`area-reveal relative z-10 mt-16 w-full ${statementVisible ? "is-shown" : ""}`}
+          style={{ transitionDelay: statementVisible ? "150ms" : "0ms" }}
+        >
+          <ComplianceFlowDiagram />
         </div>
       </section>
 

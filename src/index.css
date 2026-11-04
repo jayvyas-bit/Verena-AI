@@ -305,6 +305,12 @@ button:not(:disabled),
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .flow-motion {
+    display: none;
+  }
+}
+
 @property --orbit-angle {
   syntax: "<angle>";
   inherits: false;
