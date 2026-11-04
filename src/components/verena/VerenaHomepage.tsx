@@ -2721,10 +2721,6 @@ export function VerenaHomepage() {
             );
           })}
         </div>
-
-          <p className="max-w-[500px] text-[16px] leading-6 opacity-70">
-            Toggle +Human on any plan for an attorney-supervised review from Invictus Counsel.
-          </p>
         </div>
       </section>
 
