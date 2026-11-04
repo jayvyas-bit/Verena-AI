@@ -60,9 +60,9 @@ const FAQS = [
   },
 ] as const;
 
-function CheckIcon({ className }: { className?: string }) {
+function CheckIcon({ className, style }: { className?: string; style?: CSSProperties }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" className={className} style={style} aria-hidden="true">
       <path d="M4 12.5l5.5 5.5L20 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -81,6 +81,7 @@ export default function VerenaLiveAudit() {
   const [domain, setDomain] = useState("");
   const [filed, setFiled] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [activeArea, setActiveArea] = useState(0);
   const wrapRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -158,29 +159,34 @@ export default function VerenaLiveAudit() {
     <div ref={wrapRef} className="la">
       <style>{`
         .la {
-          --la-paper: oklch(98.3% 0.006 90);
-          --la-paper-line: oklch(90% 0.01 90);
-          --la-ink: oklch(22% 0.015 260);
-          --la-ink-soft: oklch(45% 0.015 260);
-          --la-ink-faint: oklch(62% 0.012 260);
-          --la-exposed: oklch(55% 0.15 25);
-          --la-exposed-soft: oklch(94% 0.03 25);
-          --la-gap: oklch(62% 0.12 70);
-          --la-gap-soft: oklch(94% 0.03 72);
-          --la-applicable: oklch(48% 0.09 155);
-          --la-applicable-soft: oklch(93% 0.025 155);
+          --la-paper: oklch(99.3% 0.002 255);
+          --la-paper-line: oklch(91.5% 0.006 255);
+          --la-ink: oklch(15% 0.012 260);
+          --la-ink-soft: oklch(42% 0.012 260);
+          --la-ink-faint: oklch(58% 0.01 260);
+          --la-exposed: oklch(56% 0.17 27);
+          --la-exposed-soft: oklch(94.5% 0.035 27);
+          --la-gap: oklch(63% 0.14 70);
+          --la-gap-soft: oklch(94.5% 0.035 72);
+          --la-applicable: oklch(49% 0.1 155);
+          --la-applicable-soft: oklch(93.5% 0.028 155);
           --la-neutral: oklch(55% 0.01 260);
-          --la-neutral-soft: oklch(92% 0.006 260);
+          --la-neutral-soft: oklch(93% 0.006 260);
           --la-header-h: 72px;
-          --la-serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+          --la-radius-sm: 10px;
+          --la-radius-md: 16px;
+          --la-radius-lg: 24px;
+          --la-shadow: 0 1px 2px oklch(20% 0.01 260 / 6%), 0 16px 40px -14px oklch(20% 0.01 260 / 16%);
+          --la-serif: "Bricolage Grotesque", var(--la-sans);
           --la-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
           --la-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
           background: var(--la-paper);
           color: var(--la-ink);
           font-family: var(--la-sans);
         }
-        .la :is(h1, h2, h3, .la-serif) { font-family: var(--la-serif); }
+        .la :is(h1, h2, h3, .la-serif) { font-family: var(--la-serif); font-weight: 600; }
         .la .la-mono { font-family: var(--la-mono); font-variant-numeric: tabular-nums; }
+        .la .la-elevated { box-shadow: var(--la-shadow); }
 
         .la-reveal {
           opacity: 0;
@@ -227,7 +233,8 @@ export default function VerenaLiveAudit() {
         }
         .la-callout { display: none; }
 
-        .la-card-shell { position: relative; width: 100%; max-width: 30rem; }
+        .la-window-shell { position: relative; width: 100%; max-width: 30rem; overflow: hidden; }
+        .la-card-shell { position: relative; width: 100%; }
         .la-card-front { display: none; }
         .la-card-back { display: block; }
 
@@ -261,12 +268,24 @@ export default function VerenaLiveAudit() {
         @media (prefers-reduced-motion: reduce) {
           .la-faq-body { transition: none; }
         }
+
+        .la-btn {
+          transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms cubic-bezier(0.22, 1, 0.36, 1),
+            box-shadow 180ms cubic-bezier(0.22, 1, 0.36, 1), background-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+            color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .la-btn:hover { transform: translateY(-1px); }
+        .la-btn:active { transform: translateY(0); }
+        @media (prefers-reduced-motion: reduce) {
+          .la-btn { transition: opacity 180ms ease, background-color 180ms ease, color 180ms ease; }
+          .la-btn:hover { transform: none; }
+        }
       `}</style>
 
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <link
-        href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap"
         rel="stylesheet"
       />
 
@@ -276,22 +295,31 @@ export default function VerenaLiveAudit() {
         style={{ height: "var(--la-header-h)", borderColor: "var(--la-paper-line)", background: "color-mix(in oklab, var(--la-paper) 94%, transparent)", backdropFilter: "blur(8px)" }}
       >
         <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-6 px-6">
-          <a href="#top" className="la-serif text-lg font-medium tracking-tight" style={{ color: "var(--la-ink)" }}>
+          <a href="#top" className="la-serif text-lg font-semibold tracking-tight" style={{ color: "var(--la-ink)" }}>
             Verena
           </a>
-          <nav className="hidden items-center gap-7 text-[0.9rem] md:flex" style={{ color: "var(--la-ink-soft)" }}>
+          <nav className="hidden items-center gap-7 text-[0.9rem] font-medium md:flex" style={{ color: "var(--la-ink-soft)" }}>
             <a className="la-underline" href="#coverage">Coverage</a>
             <a className="la-underline" href="#human">+Human</a>
             <a className="la-underline" href="#pricing">Pricing</a>
             <a className="la-underline" href="#faq">FAQ</a>
           </nav>
-          <a
-            href="#scan-input"
-            className="shrink-0 rounded-sm px-4 py-2 text-[0.9rem] font-medium text-white transition-opacity hover:opacity-90"
-            style={{ background: "var(--la-ink)" }}
-          >
-            Start a scan
-          </a>
+          <div className="flex shrink-0 items-center gap-5">
+            <a
+              href="#after-story"
+              className="la-underline hidden text-[0.88rem] font-medium sm:inline-block"
+              style={{ color: "var(--la-ink-soft)" }}
+            >
+              See a sample report
+            </a>
+            <a
+              href="#scan-input"
+              className="la-btn shrink-0 rounded-full px-5 py-2.5 text-[0.88rem] font-semibold text-white hover:opacity-85"
+              style={{ background: "var(--la-ink)" }}
+            >
+              Start a scan
+            </a>
+          </div>
         </div>
       </header>
 
@@ -307,25 +335,51 @@ export default function VerenaLiveAudit() {
         {/* Hero */}
         <section id="top" className="mx-auto max-w-6xl px-6 pt-16 pb-14 md:pt-20">
           <div className="la-reveal max-w-[62ch]">
-            <p className="la-mono mb-5 text-[0.75rem] font-medium uppercase tracking-[0.16em]" style={{ color: "var(--la-exposed)" }}>
-              One real finding · six areas scanned at once
-            </p>
-            <h1 className="text-[2.6rem] leading-[1.08] font-medium tracking-tight sm:text-[3.2rem]" style={{ textWrap: "balance" }}>
+            <div
+              className="mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1"
+              style={{ borderColor: "var(--la-exposed-soft)", background: "var(--la-exposed-soft)" }}
+            >
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: "var(--la-exposed)" }} />
+              <span className="text-[0.75rem] font-semibold uppercase tracking-[0.1em]" style={{ color: "var(--la-exposed)" }}>
+                One real finding · six areas scanned at once
+              </span>
+            </div>
+            <h1 className="text-[3rem] leading-[1.02] tracking-tight sm:text-[4rem]" style={{ textWrap: "balance" }}>
               Watch Verena turn one finding into a standing compliance record.
             </h1>
             <p className="mt-6 max-w-[52ch] text-[1.08rem] leading-relaxed" style={{ color: "var(--la-ink-soft)" }}>
               Scroll to see a real scan unfold: a flagged finding, a generated report, and the six areas
               Verena watches on every site. Or skip straight to the scan.
             </p>
+
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <a
+                href="#scan-input"
+                className="la-btn shrink-0 rounded-full px-5 py-2.5 text-[0.92rem] font-semibold text-white hover:opacity-85"
+                style={{ background: "var(--la-ink)" }}
+              >
+                Start a scan
+              </a>
+              <a
+                href="#after-story"
+                className="la-btn shrink-0 rounded-full border px-5 py-2.5 text-[0.92rem] font-semibold hover:bg-[var(--la-ink)] hover:text-white"
+                style={{ borderColor: "var(--la-ink)", color: "var(--la-ink)" }}
+              >
+                See a sample report
+              </a>
+            </div>
             <a href="#after-story" className="la-underline mt-5 inline-block text-[0.92rem] font-medium" style={{ color: "var(--la-ink)" }}>
               Skip the story ↓
             </a>
 
             <form id="scan-form" onSubmit={handleSubmit} className="mt-10 max-w-md">
-              <label htmlFor="scan-input" className="la-mono mb-2 block text-[0.72rem] uppercase tracking-[0.12em]" style={{ color: "var(--la-ink-faint)" }}>
+              <label htmlFor="scan-input" className="mb-2 block text-[0.72rem] font-medium uppercase tracking-[0.1em]" style={{ color: "var(--la-ink-faint)" }}>
                 Run a scan
               </label>
-              <div className="flex items-stretch gap-0 border-b-2 pb-2" style={{ borderColor: "var(--la-ink)" }}>
+              <div
+                className="la-elevated flex items-center gap-2 rounded-full border p-1.5 pl-5"
+                style={{ borderColor: "var(--la-paper-line)", background: "var(--la-paper)" }}
+              >
                 <input
                   id="scan-input"
                   name="domain"
@@ -338,10 +392,14 @@ export default function VerenaLiveAudit() {
                     setDomain(event.target.value);
                     setFiled(false);
                   }}
-                  className="w-full bg-transparent text-[1.05rem] outline-none"
+                  className="w-full bg-transparent text-[1rem] outline-none"
                   style={{ color: "var(--la-ink)" }}
                 />
-                <button type="submit" className="shrink-0 pl-4 text-[0.95rem] font-medium" style={{ color: "var(--la-exposed)" }}>
+                <button
+                  type="submit"
+                  className="la-btn shrink-0 rounded-full px-5 py-2.5 text-[0.88rem] font-semibold text-white hover:opacity-85"
+                  style={{ background: "var(--la-ink)" }}
+                >
                   Scan →
                 </button>
               </div>
@@ -362,16 +420,33 @@ export default function VerenaLiveAudit() {
               Checking cookie consent flow…
             </div>
 
+            <div className="la-window-shell la-elevated" style={{ borderRadius: "var(--la-radius-lg)" }}>
+              <div
+                className="la-window-chrome flex items-center gap-3 border border-b-0 px-4 py-3"
+                style={{ borderColor: "var(--la-paper-line)", background: "var(--la-neutral-soft)", borderRadius: "var(--la-radius-lg) var(--la-radius-lg) 0 0" }}
+              >
+                <span className="flex gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: "oklch(75% 0.14 27)" }} />
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: "oklch(80% 0.13 85)" }} />
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: "oklch(75% 0.13 155)" }} />
+                </span>
+                <span
+                  className="la-mono mx-auto rounded-full px-3 py-0.5 text-[0.7rem]"
+                  style={{ background: "var(--la-paper)", color: "var(--la-ink-faint)" }}
+                >
+                  verena.ai/scan
+                </span>
+              </div>
             <div className="la-card-shell">
               <div
-                className="la-card-front border p-6"
-                style={{ borderColor: "var(--la-paper-line)", background: "var(--la-paper)" }}
+                className="la-elevated la-card-front border p-6"
+                style={{ borderColor: "var(--la-paper-line)", background: "var(--la-paper)", borderRadius: "0 0 var(--la-radius-lg) var(--la-radius-lg)" }}
               >
                 <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: "var(--la-paper-line)" }}>
                   <span className="la-mono text-[0.72rem] uppercase tracking-[0.1em]" style={{ color: "var(--la-ink-faint)" }}>
                     Analyzing hirestepx.com
                   </span>
-                  <span className="la-mono rounded-sm px-2 py-0.5 text-[0.68rem] uppercase tracking-wide" style={{ background: STATUS_META.exposed.soft, color: STATUS_META.exposed.dot }}>
+                  <span className="la-mono rounded-full px-2.5 py-0.5 text-[0.68rem] uppercase tracking-wide" style={{ background: STATUS_META.exposed.soft, color: STATUS_META.exposed.dot }}>
                     In progress
                   </span>
                 </div>
@@ -387,8 +462,8 @@ export default function VerenaLiveAudit() {
               </div>
 
               <div
-                className="la-card-back border p-6"
-                style={{ borderColor: "var(--la-paper-line)", background: "var(--la-paper)" }}
+                className="la-elevated la-card-back border p-6"
+                style={{ borderColor: "var(--la-paper-line)", background: "var(--la-paper)", borderRadius: "0 0 var(--la-radius-lg) var(--la-radius-lg)" }}
               >
                 <p className="la-mono text-[0.72rem] uppercase tracking-[0.1em]" style={{ color: "var(--la-ink-faint)" }}>
                   High Level Compliance Report
@@ -418,7 +493,7 @@ export default function VerenaLiveAudit() {
                   {AREAS.map((area) => (
                     <div
                       key={area.n}
-                      className="la-finding flex items-center gap-2 rounded-sm border px-2.5 py-2"
+                      className="la-finding flex items-center gap-2 rounded-xl border px-2.5 py-2"
                       style={{ borderColor: "var(--la-paper-line)" }}
                     >
                       <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: STATUS_META[area.status].dot }} />
@@ -429,21 +504,22 @@ export default function VerenaLiveAudit() {
                   ))}
                 </div>
               </div>
-
-              <a
-                href="#scan-input"
-                className="la-inline-cta la-underline mt-5 inline-flex items-center gap-2 text-[0.95rem] font-medium"
-                style={{ color: "var(--la-ink)" }}
-              >
-                See this for your site <span aria-hidden="true">→</span>
-              </a>
             </div>
+            </div>
+
+            <a
+              href="#scan-input"
+              className="la-inline-cta la-underline inline-flex items-center gap-2 text-[0.95rem] font-medium"
+              style={{ color: "var(--la-ink)" }}
+            >
+              See this for your site <span aria-hidden="true">→</span>
+            </a>
 
             <div className="mt-2 grid w-full grid-cols-2 gap-3 sm:grid-cols-3">
               {AREAS.map((area) => (
                 <div
                   key={area.n}
-                  className="la-feature-tile rounded-sm border p-3 text-center"
+                  className="la-feature-tile rounded-2xl border p-3 text-center"
                   style={{ borderColor: "var(--la-paper-line)", background: STATUS_META[area.status].soft }}
                 >
                   <span className="text-[0.82rem] font-medium" style={{ color: "var(--la-ink)" }}>
@@ -459,7 +535,13 @@ export default function VerenaLiveAudit() {
         <section id="after-story" className="border-t" style={{ borderColor: "var(--la-paper-line)" }}>
           <div id="coverage" className="mx-auto max-w-6xl px-6 py-20">
             <div className="max-w-[56ch]">
-              <h2 className="text-[1.9rem] font-medium tracking-tight sm:text-[2.2rem]" style={{ textWrap: "balance" }}>
+              <span
+                className="la-mono inline-block rounded-full px-2.5 py-1 text-[0.7rem] uppercase tracking-[0.1em]"
+                style={{ background: "var(--la-neutral-soft)", color: "var(--la-ink-soft)" }}
+              >
+                Coverage
+              </span>
+              <h2 className="mt-4 text-[2.1rem] tracking-tight sm:text-[2.6rem]" style={{ textWrap: "balance" }}>
                 Six areas, scanned continuously.
               </h2>
               <p className="mt-3 text-[1.02rem] leading-relaxed" style={{ color: "var(--la-ink-soft)" }}>
@@ -467,31 +549,59 @@ export default function VerenaLiveAudit() {
               </p>
             </div>
 
-            <ul className="mt-10 border-t" style={{ borderColor: "var(--la-paper-line)" }}>
-              {AREAS.map((area) => (
-                <li
-                  key={area.n}
-                  className="flex flex-col gap-2 border-b py-5 sm:flex-row sm:items-baseline sm:gap-6 sm:py-6"
-                  style={{ borderColor: "var(--la-paper-line)" }}
-                >
-                  <span className="la-mono shrink-0 text-[0.85rem]" style={{ color: STATUS_META[area.status].dot }}>
-                    {area.n}
-                  </span>
-                  <span className="la-serif shrink-0 text-[1.1rem] sm:w-[13.5rem]" style={{ color: "var(--la-ink)" }}>
-                    {area.name}
-                  </span>
-                  <span className="text-[0.95rem] leading-relaxed sm:max-w-[48ch]" style={{ color: "var(--la-ink-soft)" }}>
-                    {area.detail}
+            <div className="mt-10 grid gap-3 lg:grid-cols-[20rem_1fr] lg:gap-10">
+              <div role="tablist" aria-orientation="vertical" className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:gap-1 lg:overflow-visible lg:pb-0">
+                {AREAS.map((area, index) => {
+                  const active = activeArea === index;
+                  return (
+                    <button
+                      key={area.n}
+                      type="button"
+                      role="tab"
+                      aria-selected={active}
+                      onClick={() => setActiveArea(index)}
+                      className="la-btn flex shrink-0 items-center gap-3 rounded-xl px-4 py-3.5 text-left"
+                      style={{ background: active ? "var(--la-neutral-soft)" : "transparent" }}
+                    >
+                      <span className="la-mono text-[0.78rem]" style={{ color: active ? STATUS_META[area.status].dot : "var(--la-ink-faint)" }}>
+                        {area.n}
+                      </span>
+                      <span className="la-serif whitespace-nowrap text-[0.98rem]" style={{ color: active ? "var(--la-ink)" : "var(--la-ink-soft)", fontWeight: active ? 600 : 500 }}>
+                        {area.name}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div
+                role="tabpanel"
+                className="la-elevated border p-8 sm:p-10"
+                style={{ borderColor: "var(--la-paper-line)", background: "var(--la-paper)", borderRadius: "var(--la-radius-md)" }}
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <span className="la-mono text-[0.75rem] uppercase tracking-[0.1em]" style={{ color: "var(--la-ink-faint)" }}>
+                    {AREAS[activeArea].n} · {AREAS[activeArea].name}
                   </span>
                   <span
-                    className="la-mono rounded-sm px-2 py-0.5 text-[0.68rem] uppercase tracking-wide sm:ml-auto"
-                    style={{ background: STATUS_META[area.status].soft, color: STATUS_META[area.status].dot }}
+                    className="la-mono shrink-0 rounded-full px-2.5 py-0.5 text-[0.68rem] uppercase tracking-wide"
+                    style={{ background: STATUS_META[AREAS[activeArea].status].soft, color: STATUS_META[AREAS[activeArea].status].dot }}
                   >
-                    {STATUS_META[area.status].label}
+                    {STATUS_META[AREAS[activeArea].status].label}
                   </span>
-                </li>
-              ))}
-            </ul>
+                </div>
+                <p className="la-serif mt-5 max-w-[46ch] text-[1.4rem] leading-snug" style={{ textWrap: "balance" }}>
+                  {AREAS[activeArea].detail}
+                </p>
+                <a
+                  href="#scan-input"
+                  className="la-underline mt-7 inline-flex items-center gap-2 text-[0.92rem] font-medium"
+                  style={{ color: "var(--la-ink)" }}
+                >
+                  Check this on your site <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -499,10 +609,13 @@ export default function VerenaLiveAudit() {
         <section id="human" className="border-t" style={{ borderColor: "var(--la-paper-line)", background: "var(--la-applicable-soft)" }}>
           <div className="mx-auto max-w-6xl px-6 py-20">
             <div className="max-w-[56ch]">
-              <p className="la-mono mb-3 text-[0.75rem] font-medium uppercase tracking-[0.16em]" style={{ color: "var(--la-applicable)" }}>
+              <span
+                className="la-mono inline-block rounded-full px-2.5 py-1 text-[0.7rem] uppercase tracking-[0.1em]"
+                style={{ background: "var(--la-paper)", color: "var(--la-applicable)" }}
+              >
                 +Human
-              </p>
-              <h2 className="text-[1.9rem] font-medium tracking-tight sm:text-[2.2rem]" style={{ textWrap: "balance" }}>
+              </span>
+              <h2 className="mt-4 text-[2.1rem] tracking-tight sm:text-[2.6rem]" style={{ textWrap: "balance" }}>
                 AI drafts. A human signs.
               </h2>
               <p className="mt-3 text-[1.02rem] leading-relaxed" style={{ color: "var(--la-ink-soft)" }}>
@@ -511,8 +624,8 @@ export default function VerenaLiveAudit() {
               </p>
             </div>
 
-            <div className="mt-12 grid gap-px overflow-hidden rounded-sm sm:grid-cols-2" style={{ background: "var(--la-paper-line)" }}>
-              <div className="p-7" style={{ background: "var(--la-paper)" }}>
+            <div className="mt-12 grid gap-4 sm:grid-cols-2">
+              <div className="la-elevated border p-7" style={{ background: "var(--la-paper)", borderColor: "var(--la-paper-line)", borderRadius: "var(--la-radius-md)" }}>
                 <span className="la-mono text-[0.7rem] uppercase tracking-[0.1em]" style={{ color: "var(--la-ink-faint)" }}>
                   Drafted by Verena
                 </span>
@@ -523,7 +636,7 @@ export default function VerenaLiveAudit() {
                   Proposed: a one-line consent toggle, added to the cookie settings panel.
                 </p>
               </div>
-              <div className="p-7" style={{ background: "var(--la-paper)" }}>
+              <div className="la-elevated border p-7" style={{ background: "var(--la-paper)", borderColor: "var(--la-paper-line)", borderRadius: "var(--la-radius-md)" }}>
                 <div className="flex items-center gap-2.5">
                   <SealIcon className="h-5 w-5" style={{ color: "var(--la-applicable)" }} />
                   <span className="la-mono text-[0.7rem] uppercase tracking-[0.1em]" style={{ color: "var(--la-ink-faint)" }}>
@@ -549,7 +662,13 @@ export default function VerenaLiveAudit() {
         <section id="pricing" className="border-t" style={{ borderColor: "var(--la-paper-line)" }}>
           <div className="mx-auto max-w-6xl px-6 py-20">
             <div className="max-w-[56ch]">
-              <h2 className="text-[1.9rem] font-medium tracking-tight sm:text-[2.2rem]" style={{ textWrap: "balance" }}>
+              <span
+                className="la-mono inline-block rounded-full px-2.5 py-1 text-[0.7rem] uppercase tracking-[0.1em]"
+                style={{ background: "var(--la-neutral-soft)", color: "var(--la-ink-soft)" }}
+              >
+                Pricing
+              </span>
+              <h2 className="mt-4 text-[2.1rem] tracking-tight sm:text-[2.6rem]" style={{ textWrap: "balance" }}>
                 Priced like a tool, not a retainer.
               </h2>
               <p className="mt-3 text-[1.02rem] leading-relaxed" style={{ color: "var(--la-ink-soft)" }}>
@@ -557,36 +676,53 @@ export default function VerenaLiveAudit() {
               </p>
             </div>
 
-            <div className="mt-10 overflow-x-auto">
-              <table className="w-full min-w-[640px] border-collapse text-left">
-                <thead>
-                  <tr className="border-b text-[0.72rem] uppercase tracking-[0.1em]" style={{ borderColor: "var(--la-ink)", color: "var(--la-ink-faint)" }}>
-                    <th className="pb-3 font-normal">Plan</th>
-                    <th className="pb-3 font-normal">Price</th>
-                    <th className="pb-3 font-normal">Scanning credits</th>
-                    <th className="pb-3 font-normal">Best for</th>
-                    <th className="pb-3 font-normal text-right">&nbsp;</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {PRICING.map((row) => (
-                    <tr key={row.tier} className="border-b" style={{ borderColor: "var(--la-paper-line)" }}>
-                      <td className="la-serif py-5 text-[1.05rem]">{row.tier}</td>
-                      <td className="la-mono py-5 text-[1.05rem]">
-                        {row.price}
-                        <span className="text-[0.8rem]" style={{ color: "var(--la-ink-faint)" }}>{row.unit}</span>
-                      </td>
-                      <td className="la-mono py-5 text-[0.9rem]" style={{ color: "var(--la-ink-soft)" }}>{row.credits}</td>
-                      <td className="py-5 text-[0.9rem]" style={{ color: "var(--la-ink-soft)" }}>{row.note}</td>
-                      <td className="py-5 text-right">
-                        <a href="#scan-input" className="la-underline text-[0.88rem] font-medium" style={{ color: "var(--la-ink)" }}>
-                          Choose {row.tier}
-                        </a>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {PRICING.map((row) => {
+                const featured = row.tier === "Professional";
+                return (
+                  <div
+                    key={row.tier}
+                    className="la-elevated relative flex flex-col border p-7"
+                    style={{
+                      borderColor: featured ? "var(--la-ink)" : "var(--la-paper-line)",
+                      borderWidth: featured ? "1.5px" : "1px",
+                      background: "var(--la-paper)",
+                      borderRadius: "var(--la-radius-md)",
+                    }}
+                  >
+                    {featured ? (
+                      <span
+                        className="la-mono absolute -top-3 left-6 rounded-full px-2.5 py-1 text-[0.65rem] uppercase tracking-wide text-white"
+                        style={{ background: "var(--la-ink)" }}
+                      >
+                        Most popular
+                      </span>
+                    ) : null}
+                    <p className="la-serif text-[1.05rem]">{row.tier}</p>
+                    <p className="la-mono mt-3 text-[2rem] leading-none">
+                      {row.price}
+                      <span className="text-[0.82rem] font-normal" style={{ color: "var(--la-ink-faint)" }}>{row.unit}</span>
+                    </p>
+                    <div
+                      className="mt-5 flex items-center gap-2 border-t pt-4"
+                      style={{ borderColor: "var(--la-paper-line)" }}
+                    >
+                      <CheckIcon className="h-3.5 w-3.5 shrink-0" style={{ color: featured ? "var(--la-ink)" : "var(--la-ink-faint)" }} />
+                      <span className="la-mono text-[0.88rem]" style={{ color: "var(--la-ink-soft)" }}>{row.credits}</span>
+                    </div>
+                    <p className="mt-3 text-[0.88rem] leading-relaxed" style={{ color: "var(--la-ink-soft)" }}>{row.note}</p>
+                    <a
+                      href="#scan-input"
+                      className={`la-btn mt-6 inline-flex items-center justify-center rounded-full px-4 py-2.5 text-[0.85rem] font-semibold ${
+                        featured ? "text-white" : "border hover:bg-[var(--la-ink)] hover:text-white"
+                      }`}
+                      style={featured ? { background: "var(--la-ink)" } : { borderColor: "var(--la-ink)", color: "var(--la-ink)" }}
+                    >
+                      Choose {row.tier}
+                    </a>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -594,7 +730,13 @@ export default function VerenaLiveAudit() {
         {/* FAQ */}
         <section id="faq" className="border-t" style={{ borderColor: "var(--la-paper-line)" }}>
           <div className="mx-auto max-w-6xl px-6 py-20">
-            <h2 className="max-w-[40ch] text-[1.9rem] font-medium tracking-tight sm:text-[2.2rem]" style={{ textWrap: "balance" }}>
+            <span
+              className="la-mono inline-block rounded-full px-2.5 py-1 text-[0.7rem] uppercase tracking-[0.1em]"
+              style={{ background: "var(--la-neutral-soft)", color: "var(--la-ink-soft)" }}
+            >
+              FAQ
+            </span>
+            <h2 className="mt-4 max-w-[40ch] text-[2.1rem] tracking-tight sm:text-[2.6rem]" style={{ textWrap: "balance" }}>
               Questions worth asking before you trust a scan.
             </h2>
 
@@ -636,7 +778,7 @@ export default function VerenaLiveAudit() {
         <section className="border-t" style={{ borderColor: "var(--la-paper-line)", background: "var(--la-ink)" }}>
           <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-6 py-16 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-[48ch]">
-              <h2 className="la-serif text-[1.7rem] text-white" style={{ textWrap: "balance" }}>
+              <h2 className="la-serif text-[1.9rem] text-white" style={{ textWrap: "balance" }}>
                 Run the same scan on your own site.
               </h2>
               <p className="mt-2 text-[0.98rem]" style={{ color: "oklch(85% 0.01 260)" }}>
@@ -645,7 +787,7 @@ export default function VerenaLiveAudit() {
             </div>
             <a
               href="#scan-input"
-              className="flex shrink-0 items-center gap-2 rounded-sm px-5 py-3 text-[0.95rem] font-medium"
+              className="la-btn flex shrink-0 items-center gap-2 rounded-full px-5 py-3 text-[0.95rem] font-semibold hover:opacity-90"
               style={{ background: "white", color: "var(--la-ink)" }}
             >
               <CheckIcon className="h-4 w-4" />
