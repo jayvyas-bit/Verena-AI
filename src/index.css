@@ -200,6 +200,22 @@ button:not(:disabled),
   }
 }
 
+.area-accordion-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.area-accordion-body.is-open {
+  grid-template-rows: 1fr;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .area-accordion-body {
+    transition: none;
+  }
+}
+
 :root {
   --toggle-dur: 350ms;
   --toggle-travel: 16px;
