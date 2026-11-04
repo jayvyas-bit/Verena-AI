@@ -1486,7 +1486,7 @@ const FLOW_OUTPUTS = [
 
 const FLOW_NODE_YS = [40, 140, 240, 340, 440];
 
-function ComplianceFlowDiagram() {
+function ComplianceFlowDiagram({ active }: { active: boolean }) {
   const uid = useId();
   const boxGradId = `${uid}-box`;
   const sweepGradId = `${uid}-sweep`;
@@ -1526,16 +1526,50 @@ function ComplianceFlowDiagram() {
                 stroke="rgba(255,255,255,0.14)"
                 strokeWidth="1.5"
               />
-              <circle className="flow-motion" r="4" fill="#8aa0ff" filter={`url(#${glowId})`}>
-                <animateMotion dur="3.2s" begin={`${i * 0.3}s`} repeatCount="indefinite">
-                  <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
-                </animateMotion>
-              </circle>
-              <circle className="flow-motion" r="3" fill="#8aa0ff" opacity="0.55" filter={`url(#${glowId})`}>
-                <animateMotion dur="3.2s" begin={`${i * 0.3 + 1.6}s`} repeatCount="indefinite">
-                  <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
-                </animateMotion>
-              </circle>
+              {active && (
+                <>
+                  <circle className="flow-motion" r="4" fill="#8aa0ff" filter={`url(#${glowId})`}>
+                    <animateMotion
+                      dur="3.2s"
+                      begin={`${i * 0.3}s`}
+                      repeatCount="indefinite"
+                      calcMode="spline"
+                      keyTimes="0;1"
+                      keySplines="0.22 1 0.36 1"
+                    >
+                      <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
+                    </animateMotion>
+                    <animate
+                      attributeName="opacity"
+                      values="0;1;1;0"
+                      keyTimes="0;0.12;0.85;1"
+                      dur="3.2s"
+                      begin={`${i * 0.3}s`}
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                  <circle className="flow-motion" r="3" fill="#8aa0ff" filter={`url(#${glowId})`}>
+                    <animateMotion
+                      dur="3.2s"
+                      begin={`${i * 0.3 + 1.6}s`}
+                      repeatCount="indefinite"
+                      calcMode="spline"
+                      keyTimes="0;1"
+                      keySplines="0.22 1 0.36 1"
+                    >
+                      <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
+                    </animateMotion>
+                    <animate
+                      attributeName="opacity"
+                      values="0;0.55;0.55;0"
+                      keyTimes="0;0.12;0.85;1"
+                      dur="3.2s"
+                      begin={`${i * 0.3 + 1.6}s`}
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                </>
+              )}
               <circle cx="100" cy={y} r="8" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.5" />
               <circle cx="100" cy={y} r="3" fill="rgba(255,255,255,0.7)" />
               <text
@@ -1564,16 +1598,50 @@ function ComplianceFlowDiagram() {
                 stroke="rgba(255,255,255,0.14)"
                 strokeWidth="1.5"
               />
-              <circle className="flow-motion" r="4" fill="#8aa0ff" filter={`url(#${glowId})`}>
-                <animateMotion dur="3.2s" begin={`${1.2 + i * 0.3}s`} repeatCount="indefinite">
-                  <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
-                </animateMotion>
-              </circle>
-              <circle className="flow-motion" r="3" fill="#8aa0ff" opacity="0.55" filter={`url(#${glowId})`}>
-                <animateMotion dur="3.2s" begin={`${1.2 + i * 0.3 + 1.6}s`} repeatCount="indefinite">
-                  <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
-                </animateMotion>
-              </circle>
+              {active && (
+                <>
+                  <circle className="flow-motion" r="4" fill="#8aa0ff" filter={`url(#${glowId})`}>
+                    <animateMotion
+                      dur="3.2s"
+                      begin={`${1.2 + i * 0.3}s`}
+                      repeatCount="indefinite"
+                      calcMode="spline"
+                      keyTimes="0;1"
+                      keySplines="0.22 1 0.36 1"
+                    >
+                      <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
+                    </animateMotion>
+                    <animate
+                      attributeName="opacity"
+                      values="0;1;1;0"
+                      keyTimes="0;0.12;0.85;1"
+                      dur="3.2s"
+                      begin={`${1.2 + i * 0.3}s`}
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                  <circle className="flow-motion" r="3" fill="#8aa0ff" filter={`url(#${glowId})`}>
+                    <animateMotion
+                      dur="3.2s"
+                      begin={`${1.2 + i * 0.3 + 1.6}s`}
+                      repeatCount="indefinite"
+                      calcMode="spline"
+                      keyTimes="0;1"
+                      keySplines="0.22 1 0.36 1"
+                    >
+                      <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
+                    </animateMotion>
+                    <animate
+                      attributeName="opacity"
+                      values="0;0.55;0.55;0"
+                      keyTimes="0;0.12;0.85;1"
+                      dur="3.2s"
+                      begin={`${1.2 + i * 0.3 + 1.6}s`}
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                </>
+              )}
               <rect
                 x={1100 - 7}
                 y={y - 7}
@@ -1612,9 +1680,19 @@ function ComplianceFlowDiagram() {
         <g style={{ filter: "drop-shadow(0 0 32px rgba(38,83,243,0.45))" }}>
           <g clipPath={`url(#${clipId})`}>
             <rect x="545" y="110" width="255" height="260" fill={`url(#${boxGradId})`} />
-            <rect className="flow-motion" y="110" height="260" width="70" fill={`url(#${sweepGradId})`}>
-              <animate attributeName="x" values="490;800;490" dur="4.5s" repeatCount="indefinite" />
-            </rect>
+            {active && (
+              <rect className="flow-motion" y="110" height="260" width="70" fill={`url(#${sweepGradId})`}>
+                <animate
+                  attributeName="x"
+                  values="490;800;490"
+                  keyTimes="0;0.5;1"
+                  calcMode="spline"
+                  keySplines="0.45 0 0.55 1;0.45 0 0.55 1"
+                  dur="4.5s"
+                  repeatCount="indefinite"
+                />
+              </rect>
+            )}
           </g>
           <rect x="545" y="110" width="255" height="260" rx="20" fill="none" stroke="rgba(255,255,255,0.18)" />
         </g>
@@ -2251,7 +2329,7 @@ export function VerenaHomepage() {
           className={`area-reveal relative z-10 mt-16 w-full ${statementVisible ? "is-shown" : ""}`}
           style={{ transitionDelay: statementVisible ? "150ms" : "0ms" }}
         >
-          <ComplianceFlowDiagram />
+          <ComplianceFlowDiagram active={statementVisible} />
         </div>
       </section>
 
