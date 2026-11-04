@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState, type FormEvent } from "react";
+import { useLayoutEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 
 type Status = "exposed" | "gap" | "applicable" | "unchecked";
 
@@ -68,9 +68,9 @@ function CheckIcon({ className }: { className?: string }) {
   );
 }
 
-function SealIcon({ className }: { className?: string }) {
+function SealIcon({ className, style }: { className?: string; style?: CSSProperties }) {
   return (
-    <svg viewBox="0 0 40 40" fill="none" className={className} aria-hidden="true">
+    <svg viewBox="0 0 40 40" fill="none" className={className} style={style} aria-hidden="true">
       <circle cx="20" cy="20" r="18.5" stroke="currentColor" strokeWidth="1.25" />
       <path d="M13.5 20.5l4 4 9-9.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
     </svg>

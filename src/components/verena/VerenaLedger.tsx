@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, type CSSProperties, type FormEvent } from "react";
 
 const AREAS = [
   {
@@ -85,9 +85,9 @@ const FAQS = [
   },
 ] as const;
 
-function SealIcon({ className }: { className?: string }) {
+function SealIcon({ className, style }: { className?: string; style?: CSSProperties }) {
   return (
-    <svg viewBox="0 0 40 40" fill="none" className={className} aria-hidden="true">
+    <svg viewBox="0 0 40 40" fill="none" className={className} style={style} aria-hidden="true">
       <circle cx="20" cy="20" r="18.5" stroke="currentColor" strokeWidth="1.25" />
       <circle cx="20" cy="20" r="13.5" stroke="currentColor" strokeWidth="1" strokeDasharray="2 3" />
       <path d="M13.5 20.5l4 4 9-9.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
@@ -95,9 +95,9 @@ function SealIcon({ className }: { className?: string }) {
   );
 }
 
-function MarkIcon({ className }: { className?: string }) {
+function MarkIcon({ className, style }: { className?: string; style?: CSSProperties }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" className={className} style={style} aria-hidden="true">
       <path
         d="M4 12.5l5.5 5.5L20 6"
         stroke="currentColor"
