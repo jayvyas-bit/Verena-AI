@@ -1562,21 +1562,45 @@ export function VerenaHomepage() {
   }, []);
 
   useEffect(() => {
-    const rows = areaRowRefs.current.filter((el): el is HTMLButtonElement => el !== null);
-    if (rows.length === 0) return;
+    let rafId = 0;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((entry) => entry.isIntersecting);
-        if (visible.length === 0) return;
-        const top = visible.reduce((a, b) => (b.intersectionRatio > a.intersectionRatio ? b : a));
-        const index = Number(top.target.getAttribute("data-area-index"));
-        if (!Number.isNaN(index)) setActiveArea(index);
-      },
-      { rootMargin: "-45% 0px -45% 0px", threshold: 0 },
-    );
-    rows.forEach((row) => observer.observe(row));
-    return () => observer.disconnect();
+    const update = () => {
+      rafId = 0;
+      const rows = areaRowRefs.current.filter((el): el is HTMLButtonElement => el !== null);
+      if (rows.length === 0) return;
+
+      const first = rows[0].getBoundingClientRect();
+      const last = rows[rows.length - 1].getBoundingClientRect();
+      if (last.bottom < 0 || first.top > window.innerHeight) return;
+
+      const viewportCenter = window.innerHeight / 2;
+      let closestIndex = 0;
+      let closestDistance = Infinity;
+      rows.forEach((row) => {
+        const rect = row.getBoundingClientRect();
+        const rowCenter = rect.top + rect.height / 2;
+        const distance = Math.abs(rowCenter - viewportCenter);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = Number(row.getAttribute("data-area-index"));
+        }
+      });
+      if (!Number.isNaN(closestIndex)) setActiveArea(closestIndex);
+    };
+
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const [domain, setDomain] = useState("");
@@ -2331,7 +2355,7 @@ export function VerenaHomepage() {
                   type="button"
                   onClick={() => setActiveArea(index)}
                   aria-pressed={isActive}
-                  className={`area-reveal flex w-full items-start gap-4 py-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 ${
+                  className={`area-reveal flex w-full items-start gap-4 py-7 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 ${
                     index > 0 ? "border-t" : ""
                   } ${areasVisible ? "is-shown" : ""}`}
                   style={{
