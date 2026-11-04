@@ -23,18 +23,33 @@ const CREAM = "#faf9f6";
 
 const NAV_DROPDOWNS = {
   Product: [
-    { label: "Overview", body: "What Verena checks and why it matters" },
-    { label: "+Human", body: "Optional attorney-supervised review for your findings" },
-    { label: "Pricing", body: "Credit-based plans for every team size" },
+    { label: "Overview", body: "What Verena checks and why it matters", icon: "overview" as const },
+    { label: "+Human", body: "Optional attorney-supervised review for your findings", icon: "human" as const },
+    { label: "Pricing", body: "Credit-based plans for every team size", icon: "pricing" as const },
   ],
   Resources: [
-    { label: "Trust Center", body: "How Verena handles your website's data" },
-    { label: "Compliance Guides", body: "Walkthroughs for common fixes" },
-    { label: "Help Center", body: "Answers to setup and billing questions" },
+    { label: "Trust Center", body: "How Verena handles your website's data", icon: "trust" as const },
+    { label: "Compliance Guides", body: "Walkthroughs for common fixes", icon: "guides" as const },
+    { label: "Help Center", body: "Answers to setup and billing questions", icon: "help" as const },
   ],
-} satisfies Record<string, Array<{ label: string; body: string }>>;
+} satisfies Record<string, Array<{ label: string; body: string; icon: NavIconName }>>;
 
 type NavDropdownKey = keyof typeof NAV_DROPDOWNS;
+
+const NAV_FEATURED = {
+  Product: {
+    eyebrow: "Get started",
+    title: "500 free credits",
+    body: "Run a full six-area review of your website before choosing a plan.",
+    cta: "See plans",
+  },
+  Resources: {
+    eyebrow: "Featured guide",
+    title: "WCAG 2.1 AA Checklist",
+    body: "A practical checklist for auditing accessibility yourself.",
+    cta: "Get the checklist",
+  },
+} satisfies Record<NavDropdownKey, { eyebrow: string; title: string; body: string; cta: string }>;
 
 const COMPANY_LOGOS: Array<{ src: string; alt: string; width: number }> = [
   { src: companyAirbnb, alt: "Airbnb", width: 128 },
@@ -644,6 +659,71 @@ function AreaIcon({
   }
 }
 
+type NavIconName = "overview" | "human" | "pricing" | "trust" | "guides" | "help";
+
+function NavIcon({ name }: { name: NavIconName }) {
+  const common = {
+    width: 18,
+    height: 18,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.7,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true as const,
+  };
+  switch (name) {
+    case "overview":
+      return (
+        <svg {...common}>
+          <rect x="3.5" y="3.5" width="7.5" height="7.5" rx="1.5" />
+          <rect x="13" y="3.5" width="7.5" height="7.5" rx="1.5" />
+          <rect x="3.5" y="13" width="7.5" height="7.5" rx="1.5" />
+          <rect x="13" y="13" width="7.5" height="7.5" rx="1.5" />
+        </svg>
+      );
+    case "human":
+      return (
+        <svg {...common}>
+          <circle cx="10" cy="8" r="3.2" />
+          <path d="M4 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
+          <path d="M16 11.5l2 2 3.5-3.5" />
+        </svg>
+      );
+    case "pricing":
+      return (
+        <svg {...common}>
+          <path d="M11.5 3.5H19a1 1 0 0 1 1 1v7.5a1 1 0 0 1-.3.7l-8 8a1 1 0 0 1-1.4 0l-7.5-7.5a1 1 0 0 1 0-1.4l8-8a1 1 0 0 1 .7-.3Z" />
+          <circle cx="15.5" cy="8.5" r="1.3" fill="currentColor" stroke="none" />
+        </svg>
+      );
+    case "trust":
+      return (
+        <svg {...common}>
+          <path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3Z" />
+          <path d="M9 12l2 2 4-4.5" />
+        </svg>
+      );
+    case "guides":
+      return (
+        <svg {...common}>
+          <rect x="6" y="3.5" width="12" height="17" rx="1.8" />
+          <path d="M9.5 3.5v2.5h5V3.5" />
+          <path d="M9 11h6M9 14.5h6M9 18h3.5" />
+        </svg>
+      );
+    case "help":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="8.5" />
+          <path d="M9.6 9.3a2.4 2.4 0 1 1 3.4 2.2c-.8.4-1 .9-1 1.6" />
+          <circle cx="12" cy="16.3" r="0.15" fill="currentColor" stroke="currentColor" strokeWidth="1.4" />
+        </svg>
+      );
+  }
+}
+
 function CheckIcon() {
   return (
     <svg
@@ -808,6 +888,23 @@ function NavItem({
 
   const isOpen = openDropdown === dropdownKey;
   const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const featured = NAV_FEATURED[dropdownKey!];
+
+  const [panelState, setPanelState] = useState<"closed" | "open" | "closing">("closed");
+
+  useEffect(() => {
+    if (isOpen) {
+      setPanelState("open");
+    } else {
+      setPanelState((prev) => (prev === "open" ? "closing" : "closed"));
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (panelState !== "closing") return;
+    const timer = setTimeout(() => setPanelState("closed"), 150);
+    return () => clearTimeout(timer);
+  }, [panelState]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -820,6 +917,8 @@ function NavItem({
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [isOpen, setOpenDropdown]);
+
+  const itemTabIndex = panelState === "open" ? 0 : -1;
 
   return (
     <div
@@ -855,23 +954,74 @@ function NavItem({
         </svg>
       </button>
 
-      {isOpen && (
-        <div className="absolute left-1/2 top-full z-20 w-64 -translate-x-1/2 pt-3" role="menu">
-          <div className="rounded-2xl bg-white p-2 shadow-lg ring-1 ring-[rgba(33,12,55,0.08)]">
+      <div
+        className={`t-dropdown absolute left-1/2 top-full z-20 w-[480px] -translate-x-1/2 pt-3 ${
+          panelState === "open" ? "is-open" : panelState === "closing" ? "is-closing" : ""
+        }`}
+        data-origin="top-center"
+        role="menu"
+        aria-hidden={panelState !== "open"}
+      >
+        <div className="grid grid-cols-[1.3fr_1fr] overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-[rgba(33,12,55,0.08)]">
+          <div className="p-3">
             {items.map((item) => (
               <a
                 key={item.label}
                 href="#"
                 role="menuitem"
-                className="block rounded-xl px-3 py-2.5 text-left transition hover:bg-[rgba(33,12,55,0.04)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+                tabIndex={itemTabIndex}
+                className="flex items-start gap-3 rounded-xl p-3 text-left transition hover:bg-[rgba(33,12,55,0.04)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
               >
-                <p className="text-sm font-semibold">{item.label}</p>
-                <p className="mt-0.5 text-xs opacity-60">{item.body}</p>
+                <span
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                  style={{ backgroundColor: "rgba(38,83,243,0.08)", color: ACCENT }}
+                >
+                  <NavIcon name={item.icon} />
+                </span>
+                <span>
+                  <p className="text-sm font-semibold" style={{ color: INK }}>
+                    {item.label}
+                  </p>
+                  <p className="mt-0.5 text-xs leading-snug opacity-60">{item.body}</p>
+                </span>
               </a>
             ))}
           </div>
+
+          <div className="flex flex-col justify-between gap-5 p-5" style={{ backgroundColor: INK }}>
+            <div>
+              <p className="text-[11px] font-medium uppercase tracking-wide text-white/50">
+                {featured.eyebrow}
+              </p>
+              <p className="mt-2 text-sm font-semibold text-white">{featured.title}</p>
+              <p className="mt-1.5 text-xs leading-relaxed text-white/60">{featured.body}</p>
+            </div>
+            <a
+              href="#"
+              tabIndex={itemTabIndex}
+              className="inline-flex items-center gap-1 text-xs font-medium transition-[gap] duration-200"
+              style={{ color: "#9db2ff" }}
+            >
+              {featured.cta}
+              <svg
+                width="11"
+                height="11"
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M4 8h8M8 4l4 4-4 4"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </a>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
