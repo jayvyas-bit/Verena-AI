@@ -1040,7 +1040,7 @@ export function VerenaHomepage() {
 
       {/* Nav */}
       <div className="sticky top-0 z-30 bg-white">
-        <header className="mx-auto flex h-20 items-center justify-between gap-6 px-6 sm:px-12">
+        <header className="mx-auto flex h-20 max-w-[1536px] items-center justify-between gap-6 px-6 sm:px-12">
           <img src={verenaLogo} alt="Verena" className="h-[2rem] w-auto object-contain" />
 
           <nav className="hidden items-center gap-7 md:flex">
@@ -1172,7 +1172,7 @@ export function VerenaHomepage() {
             <form
               onSubmit={handleSubmit}
               noValidate
-              className="flex items-center gap-3 rounded-xl border bg-white px-6 py-5 shadow-[0_1px_8px_rgba(45,0,15,0.08)] transition focus-within:ring-2"
+              className="flex flex-col gap-3 rounded-xl border bg-white px-4 py-4 shadow-[0_1px_8px_rgba(45,0,15,0.08)] transition focus-within:ring-2 sm:flex-row sm:items-center sm:px-6 sm:py-5"
               style={
                 {
                   borderColor: domainError ? "#e4572e" : "rgba(33,12,55,0.12)",
@@ -1180,32 +1180,34 @@ export function VerenaHomepage() {
                 } as CSSProperties
               }
             >
-              <div className="h-6 w-6 shrink-0 overflow-hidden">
-                <img
-                  src={verenaLogo}
-                  alt=""
-                  className="h-[102%] w-[474%] max-w-none"
-                  style={{ marginLeft: "-23%", marginTop: "-2%" }}
+              <div className="flex min-w-0 flex-1 items-center gap-3">
+                <div className="h-6 w-6 shrink-0 overflow-hidden">
+                  <img
+                    src={verenaLogo}
+                    alt=""
+                    className="h-[102%] w-[474%] max-w-none"
+                    style={{ marginLeft: "-23%", marginTop: "-2%" }}
+                  />
+                </div>
+                <label htmlFor="verena-homepage-domain" className="sr-only">
+                  Website to scan
+                </label>
+                <input
+                  id="verena-homepage-domain"
+                  name="domain"
+                  type="text"
+                  autoComplete="url"
+                  value={domain}
+                  onChange={(event) => {
+                    setDomain(event.target.value);
+                    if (domainError) setDomainError("");
+                  }}
+                  placeholder={placeholderText}
+                  aria-invalid={domainError ? true : undefined}
+                  aria-describedby={domainError ? "verena-homepage-domain-error" : undefined}
+                  className="w-full min-w-0 flex-1 bg-transparent text-left text-[16px] leading-6 outline-none placeholder:text-[#210c37]/70"
                 />
               </div>
-              <label htmlFor="verena-homepage-domain" className="sr-only">
-                Website to scan
-              </label>
-              <input
-                id="verena-homepage-domain"
-                name="domain"
-                type="text"
-                autoComplete="url"
-                value={domain}
-                onChange={(event) => {
-                  setDomain(event.target.value);
-                  if (domainError) setDomainError("");
-                }}
-                placeholder={placeholderText}
-                aria-invalid={domainError ? true : undefined}
-                aria-describedby={domainError ? "verena-homepage-domain-error" : undefined}
-                className="w-full min-w-0 flex-1 bg-transparent text-left text-[16px] leading-6 outline-none placeholder:text-[#210c37]/70"
-              />
               <button
                 type="submit"
                 disabled={status === "loading"}
@@ -1213,7 +1215,7 @@ export function VerenaHomepage() {
                   status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Submit"
                 }
                 style={{ backgroundColor: ACCENT }}
-                className="flex shrink-0 items-center justify-center gap-2 rounded-[10px] px-5 py-4 text-sm font-medium text-white transition hover:brightness-95 active:scale-[0.97] disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+                className="flex w-full shrink-0 items-center justify-center gap-2 rounded-[10px] px-5 py-4 text-sm font-medium text-white transition hover:brightness-95 active:scale-[0.97] disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:w-auto"
               >
                 <span key={status} className="hero-input-pop flex items-center justify-center">
                   <HeroStatusIcon status={status} />
@@ -1600,7 +1602,7 @@ export function VerenaHomepage() {
       <section
         ref={humanRef}
         style={{ backgroundColor: INK }}
-        className="relative flex min-h-[1018px] flex-col items-center justify-center gap-16 overflow-hidden px-4 py-24 sm:py-36"
+        className="relative flex flex-col items-center justify-center gap-16 overflow-hidden px-4 py-24 sm:py-36 lg:min-h-[1018px]"
       >
         <img
           src={ellipse92}
