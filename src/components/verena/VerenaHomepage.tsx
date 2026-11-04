@@ -1558,7 +1558,6 @@ export function VerenaHomepage() {
 
   const [pricingRef, pricingVisible] = useReveal<HTMLElement>();
   const [faqRef, faqVisible] = useReveal<HTMLElement>();
-  const [finalCtaRef, finalCtaVisible] = useReveal<HTMLElement>();
   const [openFaq, setOpenFaq] = useState<string | null>(FAQ_ITEMS[0].q);
 
   const [toolAutoplayPaused, setToolAutoplayPaused] = useState(false);
@@ -2446,86 +2445,6 @@ export function VerenaHomepage() {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section
-        ref={finalCtaRef}
-        style={{ backgroundColor: INK, color: "#faf9f6" }}
-        className="section-pad-x section-pad-y-lg relative overflow-hidden"
-      >
-        <div className="relative mx-auto flex w-full max-w-[1280px] flex-col gap-14 lg:flex-row lg:items-center lg:justify-between">
-          <div
-            className={`area-reveal flex max-w-[480px] flex-col gap-5 ${finalCtaVisible ? "is-shown" : ""}`}
-          >
-            <h2 style={bricolage} className="fluid-h2-lg font-semibold leading-tight tracking-[-0.01em]">
-              Your website.
-              <br />
-              Your next move.
-            </h2>
-            <p className="text-[18px] leading-[27px] opacity-70">
-              Start with your URL and take the first step toward understanding your website&rsquo;s
-              compliance needs.
-            </p>
-            <div className="flex items-center gap-2 text-[14px] font-medium opacity-60">
-              <CheckIcon />
-              Free to run, no credit card required
-            </div>
-          </div>
-
-          <form
-            onSubmit={handleSubmit}
-            noValidate
-            className={`area-reveal flex w-full max-w-[440px] flex-col gap-3 rounded-[20px] border border-white/15 bg-white/[0.04] p-6 ${finalCtaVisible ? "is-shown" : ""}`}
-            style={{ transitionDelay: "120ms" }}
-          >
-            <label htmlFor="verena-final-cta-domain" className="text-[13px] font-medium opacity-60">
-              Website to scan
-            </label>
-            <div
-              className="flex h-14 w-full items-center rounded-[10px] border bg-[#1a0a2e] px-5 transition focus-within:ring-2"
-              style={
-                {
-                  borderColor: domainError ? "#ff8a65" : "rgba(255,255,255,0.15)",
-                  "--tw-ring-color": ACCENT,
-                } as CSSProperties
-              }
-            >
-              <input
-                id="verena-final-cta-domain"
-                name="domain"
-                type="text"
-                autoComplete="url"
-                value={domain}
-                onChange={(event) => {
-                  setDomain(event.target.value);
-                  if (domainError) setDomainError("");
-                }}
-                placeholder="yourwebsite.com"
-                aria-invalid={domainError ? true : undefined}
-                aria-describedby={domainError ? "verena-final-cta-domain-error" : undefined}
-                className="w-full min-w-0 flex-1 bg-transparent text-left text-[16px] leading-6 text-white outline-none placeholder:text-white/40"
-              />
-            </div>
-            {domainError && (
-              <p
-                id="verena-final-cta-domain-error"
-                role="alert"
-                className="pl-1 text-left text-[13px] font-medium"
-                style={{ color: "#ff8a65" }}
-              >
-                {domainError}
-              </p>
-            )}
-            <button
-              type="submit"
-              disabled={status === "loading"}
-              style={{ backgroundColor: ACCENT }}
-              className="h-14 w-full shrink-0 rounded-[10px] px-6 text-sm font-medium text-white transition duration-200 ease-out hover:-translate-y-px hover:brightness-110 active:translate-y-0 active:scale-[0.96] active:duration-100 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:brightness-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37] sm:w-auto"
-            >
-              {status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Analyze for free"}
-            </button>
-          </form>
-        </div>
-      </section>
       </div>
 
       {/* Footer */}
