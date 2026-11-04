@@ -16,6 +16,36 @@ body {
   color: #16151a;
 }
 
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+:root {
+  --resize-dur: 600ms;
+  --resize-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.t-announcement-bar {
+  transition: height var(--resize-dur) var(--resize-ease);
+  will-change: height;
+}
+
+.t-announcement-content {
+  transition: opacity 400ms ease-in-out;
+}
+
+.t-announcement-bar.is-closing .t-announcement-content {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-announcement-bar,
+  .t-announcement-content {
+    transition: none !important;
+  }
+}
+
 @keyframes pulse-ring {
   0% {
     box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.35);
@@ -48,10 +78,56 @@ body {
   }
 }
 
-@keyframes tool-fade-in {
+.tool-stage-leaving {
+  animation: tool-stage-leave 320ms ease-in-out both;
+  pointer-events: none;
+  will-change: opacity, filter;
+}
+
+.tool-stage-entering {
+  animation: tool-stage-enter 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, filter;
+}
+
+@keyframes tool-stage-leave {
+  from {
+    opacity: 1;
+    filter: blur(0);
+  }
+  to {
+    opacity: 0;
+    filter: blur(3px);
+  }
+}
+
+@keyframes tool-stage-enter {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tool-stage-leaving {
+    display: none;
+  }
+  .tool-stage-entering {
+    animation: none;
+  }
+}
+
+.tool-caption-swap {
+  animation: tool-caption-swap 150ms ease-in-out both;
+}
+
+@keyframes tool-caption-swap {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -59,12 +135,8 @@ body {
   }
 }
 
-.tool-fade-in {
-  animation: tool-fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .tool-fade-in {
+  .tool-caption-swap {
     animation: none;
   }
 }
@@ -210,22 +282,6 @@ body {
   }
 }
 
-.area-accordion-body {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 350ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.area-accordion-body.is-open {
-  grid-template-rows: 1fr;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .area-accordion-body {
-    transition: none;
-  }
-}
-
 .hero-scan-sweep {
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -249,57 +305,141 @@ body {
   }
 }
 
-.human-orbit-avatar {
-  offset-path: ellipse(618px 409px at 50% 50%);
-  offset-rotate: 0deg;
-  offset-distance: var(--orbit-progress, 0%);
-  animation:
-    human-orbit-move var(--orbit-duration, 34s) linear infinite,
-    human-orbit-depth var(--orbit-duration, 34s) linear infinite;
-  animation-delay:
-    var(--orbit-delay, 0s),
-    var(--orbit-delay, 0s);
-  will-change: offset-distance, transform, opacity;
+@property --orbit-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
 }
 
-@keyframes human-orbit-move {
+@property --orbit-depth {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+.human-orbit-avatar {
+  --orbit-rx: 618px;
+  --orbit-ry: 409px;
+  translate: var(--stack-x, 0px) var(--stack-y, 0px);
+  rotate: var(--stack-rotate, 0deg);
+  scale: 0.55;
+  opacity: 0.92;
+  transition:
+    translate 900ms var(--orbit-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    rotate 900ms var(--orbit-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    scale 900ms var(--orbit-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    opacity 600ms ease;
+  transition-delay: var(--orbit-stagger, 0ms);
+  will-change: translate, scale, opacity;
+}
+
+.human-orbit-avatar.is-spread {
+  translate: calc(var(--orbit-rx) * cos(var(--orbit-start-angle, 0deg)))
+    calc(var(--orbit-ry) * sin(var(--orbit-start-angle, 0deg)));
+  rotate: 0deg;
+  scale: 1;
+  opacity: 1;
+}
+
+.human-orbit-avatar.is-orbiting {
+  --orbit-angle: var(--orbit-start-angle, 0deg);
+  animation:
+    human-orbit-angle var(--orbit-duration, 34s) linear infinite,
+    human-orbit-depth var(--orbit-duration, 34s) linear infinite;
+  animation-delay:
+    0s,
+    var(--orbit-delay, 0s);
+  translate: calc(var(--orbit-rx) * cos(var(--orbit-angle)))
+    calc(var(--orbit-ry) * sin(var(--orbit-angle)));
+  rotate: 0deg;
+  scale: var(--orbit-depth, 1);
+  transition: opacity 600ms ease;
+}
+
+@keyframes human-orbit-angle {
   from {
-    offset-distance: 0%;
+    --orbit-angle: var(--orbit-start-angle, 0deg);
   }
   to {
-    offset-distance: 100%;
+    --orbit-angle: calc(var(--orbit-start-angle, 0deg) + 360deg);
   }
 }
 
 @keyframes human-orbit-depth {
   0%,
   100% {
-    transform: scale(0.82);
-    opacity: 1;
+    --orbit-depth: 0.88;
   }
   50% {
-    transform: scale(1.08);
+    --orbit-depth: 1.08;
+  }
+}
+
+.area-card-stage-leaving {
+  animation: area-card-leave 320ms ease-in-out both;
+  pointer-events: none;
+  will-change: opacity, filter;
+}
+
+.area-card-stage-entering {
+  animation: area-card-enter 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, filter;
+}
+
+@keyframes area-card-leave {
+  from {
     opacity: 1;
+    filter: blur(0);
+  }
+  to {
+    opacity: 0;
+    filter: blur(3px);
+  }
+}
+
+@keyframes area-card-enter {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .area-card-stage-leaving {
+    display: none;
+  }
+  .area-card-stage-entering {
+    animation: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .human-orbit-avatar {
+    transition: none;
     animation: none;
-    transform: scale(1);
+    translate: calc(var(--orbit-rx) * cos(var(--orbit-start-angle, 0deg)))
+      calc(var(--orbit-ry) * sin(var(--orbit-start-angle, 0deg)));
+    rotate: 0deg;
+    scale: 1;
     opacity: 1;
   }
 }
 
 @media (max-width: 640px) {
   .human-orbit-avatar {
-    offset-path: ellipse(130px 160px at 50% 50%);
+    --orbit-rx: 130px;
+    --orbit-ry: 160px;
   }
 }
 
 @media (min-width: 641px) and (max-width: 1024px) {
   .human-orbit-avatar {
-    offset-path: ellipse(360px 280px at 50% 50%);
+    --orbit-rx: 360px;
+    --orbit-ry: 280px;
   }
 }
 
@@ -342,3 +482,4 @@ body {
 .hero-demo-box {
   height: clamp(320px, 20vw + 220px, 450px);
 }
+

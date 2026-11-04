@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { useDocumentHead } from "../../lib/useDocumentHead";
 import verenaLogo from "../../assets/homepage/image-15.png";
-import gradientBackdrop from "../../assets/homepage/image-19.png";
 import analyzeScreenshot from "../../assets/homepage/screenshot-analyze.png";
+import gradientBackdrop from "../../assets/homepage/image-19.png";
 import invictusMask from "../../assets/homepage/rectangle-34.png";
 import avatarPhoto from "../../assets/homepage/avatar.png";
 import ellipse92 from "../../assets/homepage/ellipse-92.svg";
@@ -108,6 +108,26 @@ const REVIEW_AREAS = [
     status: "3 issues found",
     statusColor: "#e4572e",
     icon: "accessibility" as const,
+    auditLabel: "WCAG 2.2 AA Audit",
+    score: 88,
+    findings: [
+      {
+        severity: "deficit" as const,
+        title: "Color contrast ratio below 4.5:1 on primary CTA button",
+        detail: "Current ratio 3.1:1, falls below the WCAG AA minimum threshold.",
+      },
+      {
+        severity: "warning" as const,
+        title: "Missing alt text on 4 product images in the hero section",
+        detail: "Screen readers cannot describe these visual key assets.",
+      },
+      {
+        severity: "verified" as const,
+        title: "ARIA labels correctly structured across all navigation modals",
+        detail: "Keyboard and screen-reader navigation both pass review.",
+      },
+    ],
+    remediation: { label: "color #0056b3 — 4.8:1 ratio, compliant", cta: "Apply" },
   },
   {
     title: "Privacy Policy",
@@ -115,6 +135,26 @@ const REVIEW_AREAS = [
     status: "Needs review",
     statusColor: "#eab308",
     icon: "privacy" as const,
+    auditLabel: "GDPR / CCPA Review",
+    score: 74,
+    findings: [
+      {
+        severity: "warning" as const,
+        title: "No disclosure of third-party data sharing with ad partners",
+        detail: "Required under CCPA §1798.100 for opt-out disclosures.",
+      },
+      {
+        severity: "warning" as const,
+        title: "No retention period stated for collected data",
+        detail: "Visitors can't tell how long their data is kept.",
+      },
+      {
+        severity: "verified" as const,
+        title: "Data subject access request (DSAR) process is clearly documented",
+        detail: "Users can find how to request or delete their data.",
+      },
+    ],
+    remediation: { label: "Add a \"Data Sharing\" section naming each processor", cta: "Draft clause" },
   },
   {
     title: "Cookies & Trackers",
@@ -122,6 +162,26 @@ const REVIEW_AREAS = [
     status: "2 trackers flagged",
     statusColor: "#e4572e",
     icon: "cookies" as const,
+    auditLabel: "Cookie Consent Scan",
+    score: 61,
+    findings: [
+      {
+        severity: "deficit" as const,
+        title: "Analytics cookies load before consent is given",
+        detail: "Google Analytics fires on page load, ahead of the consent banner.",
+      },
+      {
+        severity: "deficit" as const,
+        title: "Marketing pixel detected with no entry in the cookie policy",
+        detail: "Meta Pixel collects data undisclosed to visitors.",
+      },
+      {
+        severity: "verified" as const,
+        title: "Essential session cookies are properly categorized",
+        detail: "Strictly-necessary cookies are correctly exempt from consent.",
+      },
+    ],
+    remediation: { label: "Gate analytics scripts behind a consent-granted event", cta: "Apply" },
   },
   {
     title: "Terms of Service",
@@ -129,6 +189,26 @@ const REVIEW_AREAS = [
     status: "No issues found",
     statusColor: "#16a34a",
     icon: "document" as const,
+    auditLabel: "Terms Coverage Check",
+    score: 96,
+    findings: [
+      {
+        severity: "verified" as const,
+        title: "Limitation of liability clause present and enforceable",
+        detail: "Standard carve-outs are clearly and properly scoped.",
+      },
+      {
+        severity: "verified" as const,
+        title: "Governing law and dispute resolution clearly stated",
+        detail: "Jurisdiction and arbitration terms are unambiguous.",
+      },
+      {
+        severity: "verified" as const,
+        title: "User termination rights clearly defined",
+        detail: "Cancellation and account-closure terms are easy to find.",
+      },
+    ],
+    remediation: null,
   },
   {
     title: "Commercial Email",
@@ -136,6 +216,26 @@ const REVIEW_AREAS = [
     status: "1 issue found",
     statusColor: "#eab308",
     icon: "email" as const,
+    auditLabel: "CAN-SPAM Review",
+    score: 82,
+    findings: [
+      {
+        severity: "warning" as const,
+        title: "Unsubscribe link requires login to process",
+        detail: "CAN-SPAM requires a working opt-out within 10 business days.",
+      },
+      {
+        severity: "verified" as const,
+        title: "Physical mailing address included in email footer",
+        detail: "Every campaign lists a valid postal address.",
+      },
+      {
+        severity: "verified" as const,
+        title: "Sender name matches the registered business entity",
+        detail: "From-name and domain are consistent across campaigns.",
+      },
+    ],
+    remediation: { label: "Add a no-login unsubscribe link to every campaign", cta: "Apply" },
   },
   {
     title: "Marketing Claims",
@@ -143,6 +243,26 @@ const REVIEW_AREAS = [
     status: "No issues found",
     statusColor: "#16a34a",
     icon: "megaphone" as const,
+    auditLabel: "FTC Claims Review",
+    score: 94,
+    findings: [
+      {
+        severity: "verified" as const,
+        title: "\"#1 rated\" claim is backed by a cited third-party source",
+        detail: "Substantiation is linked directly from the claim.",
+      },
+      {
+        severity: "verified" as const,
+        title: "Testimonials disclose any material connection",
+        detail: "Paid or affiliated reviewers are clearly labeled.",
+      },
+      {
+        severity: "verified" as const,
+        title: "Pricing claims match current published rates",
+        detail: "No stale discounts or expired promotions found.",
+      },
+    ],
+    remediation: null,
   },
 ];
 
@@ -150,7 +270,14 @@ const AVATAR_ORBIT_DURATION = 34;
 const AVATAR_ORBIT_COUNT = 6;
 const AVATAR_ORBITS = Array.from({ length: AVATAR_ORBIT_COUNT }, (_, i) => {
   const fraction = i / AVATAR_ORBIT_COUNT;
-  return { delay: -(fraction * AVATAR_ORBIT_DURATION), progress: fraction * 100 };
+  const stackAngle = fraction * Math.PI * 2;
+  return {
+    delay: -(fraction * AVATAR_ORBIT_DURATION),
+    angleDeg: fraction * 360 - 90,
+    stackX: Math.cos(stackAngle) * 10,
+    stackY: Math.sin(stackAngle) * 6,
+    stackRotate: (i - (AVATAR_ORBIT_COUNT - 1) / 2) * 5,
+  };
 });
 
 const PRICING_PLANS = [
@@ -418,26 +545,6 @@ function ToolTabIcon({
   }
 }
 
-function ChevronIcon({ open }: { open: boolean }) {
-  return (
-    <svg
-      width={16}
-      height={16}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className="shrink-0 transition-transform duration-300"
-      style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
-    >
-      <path d="M6 9l6 6 6-6" />
-    </svg>
-  );
-}
-
 function AreaIcon({
   name,
   size = 20,
@@ -524,6 +631,26 @@ function CheckIcon() {
   );
 }
 
+function ChevronIcon({ open }: { open: boolean }) {
+  return (
+    <svg
+      width={16}
+      height={16}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.7}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="shrink-0 transition-transform duration-300"
+      style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+    >
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  );
+}
+
 function HeroStatusIcon({ status }: { status: "idle" | "loading" | "success" }) {
   const common = {
     width: 16,
@@ -579,6 +706,23 @@ function useReveal<T extends HTMLElement>() {
   }, []);
 
   return [ref, visible] as const;
+}
+
+function useInViewport<T extends HTMLElement>(threshold = 0.3) {
+  const ref = useRef<T | null>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
+      threshold,
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return [ref, inView] as const;
 }
 
 function NavMenuIcon({ open }: { open: boolean }) {
@@ -848,6 +992,106 @@ function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"] }) {
   );
 }
 
+const SEVERITY_META = {
+  deficit: { label: "DEFICIT", color: "#e4572e" },
+  warning: { label: "WARNING", color: "#eab308" },
+  verified: { label: "VERIFIED", color: "#16a34a" },
+} as const;
+
+function SeverityTag({ severity }: { severity: keyof typeof SEVERITY_META }) {
+  const meta = SEVERITY_META[severity];
+  return (
+    <span
+      className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide"
+      style={{ backgroundColor: `${meta.color}1a`, color: meta.color }}
+    >
+      {meta.label}
+    </span>
+  );
+}
+
+function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
+  return (
+    <div className="flex w-full max-w-[500px] flex-col gap-4 rounded-2xl bg-white p-6 shadow-xl">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <div
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+            style={{ backgroundColor: "rgba(33,12,55,0.06)" }}
+          >
+            <AreaIcon name={area.icon} size={18} />
+          </div>
+          <div>
+            <p style={bricolage} className="text-[15px] font-semibold leading-tight">
+              {area.title} Scan
+            </p>
+            <p className="text-[12px] opacity-60">{area.auditLabel}</p>
+          </div>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <span
+            className="rounded-full px-2.5 py-1 text-[11px] font-semibold"
+            style={{ backgroundColor: `${area.statusColor}14`, color: area.statusColor }}
+          >
+            {area.score}/100
+          </span>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        {area.findings.map((finding) => (
+          <div
+            key={finding.title}
+            className="flex items-start gap-3 rounded-[10px] px-3 py-2.5"
+            style={{ border: "1px solid rgba(33,12,55,0.08)" }}
+          >
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-medium leading-snug">{finding.title}</p>
+              <p className="mt-0.5 text-[12px] leading-snug opacity-60">{finding.detail}</p>
+            </div>
+            <SeverityTag severity={finding.severity} />
+          </div>
+        ))}
+      </div>
+
+      {area.remediation ? (
+        <div
+          className="flex items-center justify-between gap-3 rounded-[10px] px-3 py-2.5"
+          style={{ backgroundColor: "rgba(38,83,243,0.06)" }}
+        >
+          <p className="text-[12px] leading-snug" style={{ color: ACCENT }}>
+            <span className="font-semibold">Suggested remediation: </span>
+            {area.remediation.label}
+          </p>
+          <span
+            className="shrink-0 rounded-[8px] px-2.5 py-1.5 text-[12px] font-medium"
+            style={{ backgroundColor: ACCENT, color: "#fff" }}
+          >
+            {area.remediation.cta} →
+          </span>
+        </div>
+      ) : (
+        <p className="text-[12px] font-medium" style={{ color: "#16a34a" }}>
+          No action needed — this area passed review.
+        </p>
+      )}
+    </div>
+  );
+}
+
+function VerenaMarkIcon({ className }: { className?: string }) {
+  return (
+    <div className={`shrink-0 overflow-hidden ${className ?? ""}`}>
+      <img
+        src={verenaLogo}
+        alt=""
+        className="h-[102%] w-[474%] max-w-none"
+        style={{ marginLeft: "-23%", marginTop: "-2%" }}
+      />
+    </div>
+  );
+}
+
 export function VerenaHomepage() {
   useDocumentHead({
     title: "Verena — AI Website Compliance Scans | Invictus AI",
@@ -858,8 +1102,69 @@ export function VerenaHomepage() {
   const [activeTool, setActiveTool] = useState<(typeof TOOL_TABS)[number]["id"]>(
     TOOL_TABS[0].id,
   );
+  const [leavingTool, setLeavingTool] = useState<(typeof TOOL_TABS)[number]["id"] | null>(null);
+  const prevActiveToolRef = useRef(TOOL_TABS[0].id);
+  const toolLeaveTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const prev = prevActiveToolRef.current;
+    if (prev === activeTool) return;
+    prevActiveToolRef.current = activeTool;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    setLeavingTool(prev);
+    if (toolLeaveTimeoutRef.current) window.clearTimeout(toolLeaveTimeoutRef.current);
+    toolLeaveTimeoutRef.current = window.setTimeout(() => setLeavingTool(null), 320);
+  }, [activeTool]);
+
+  useEffect(() => {
+    return () => {
+      if (toolLeaveTimeoutRef.current) window.clearTimeout(toolLeaveTimeoutRef.current);
+    };
+  }, []);
 
   const [activeArea, setActiveArea] = useState(0);
+  const [leavingArea, setLeavingArea] = useState<number | null>(null);
+  const prevActiveAreaRef = useRef(0);
+  const leaveTimeoutRef = useRef<number | null>(null);
+  const areaRowRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  useEffect(() => {
+    const prev = prevActiveAreaRef.current;
+    if (prev === activeArea) return;
+    prevActiveAreaRef.current = activeArea;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    setLeavingArea(prev);
+    if (leaveTimeoutRef.current) window.clearTimeout(leaveTimeoutRef.current);
+    leaveTimeoutRef.current = window.setTimeout(() => setLeavingArea(null), 420);
+  }, [activeArea]);
+
+  useEffect(() => {
+    return () => {
+      if (leaveTimeoutRef.current) window.clearTimeout(leaveTimeoutRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    const rows = areaRowRefs.current.filter((el): el is HTMLButtonElement => el !== null);
+    if (rows.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((entry) => entry.isIntersecting);
+        if (visible.length === 0) return;
+        const top = visible.reduce((a, b) => (b.intersectionRatio > a.intersectionRatio ? b : a));
+        const index = Number(top.target.getAttribute("data-area-index"));
+        if (!Number.isNaN(index)) setActiveArea(index);
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 },
+    );
+    rows.forEach((row) => observer.observe(row));
+    return () => observer.disconnect();
+  }, []);
 
   const [domain, setDomain] = useState("");
   const [domainError, setDomainError] = useState("");
@@ -938,6 +1243,17 @@ export function VerenaHomepage() {
   const [openDropdown, setOpenDropdown] = useState<NavDropdownKey | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [announcementVisible, setAnnouncementVisible] = useState(true);
+  const [announcementClosing, setAnnouncementClosing] = useState(false);
+
+  function closeAnnouncement() {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      setAnnouncementVisible(false);
+      return;
+    }
+    setAnnouncementClosing(true);
+    timeouts.current.push(window.setTimeout(() => setAnnouncementVisible(false), 600));
+  }
 
   const [humanAddOns, setHumanAddOns] = useState<Record<string, boolean>>({});
   const [toggleTouched, setToggleTouched] = useState<Record<string, boolean>>({});
@@ -947,17 +1263,79 @@ export function VerenaHomepage() {
     setHumanAddOns((prev) => ({ ...prev, [name]: !prev[name] }));
   }
 
+  const [heroRef, heroVisible] = useReveal<HTMLElement>();
+  const [trustedRef, trustedVisible] = useReveal<HTMLElement>();
+  const [footerRef, footerVisible] = useReveal<HTMLElement>();
   const [statementRef, statementVisible] = useReveal<HTMLElement>();
   const [startedRef, startedVisible] = useReveal<HTMLElement>();
   const [scanRef, scanVisible] = useReveal<HTMLElement>();
   const [areasSectionRef, areasVisible] = useReveal<HTMLElement>();
   const [humanRef, humanVisible] = useReveal<HTMLElement>();
+  const [humanOrbitSectionRef, humanOrbitInView] = useInViewport<HTMLElement>(0.25);
+  const avatarRefs = useRef<(HTMLImageElement | null)[]>([]);
+  const wasSpread = useRef(false);
+  const orbitTimeouts = useRef<number[]>([]);
+  const orbitRafs = useRef<number[]>([]);
+
+  useEffect(() => {
+    if (wasSpread.current === humanOrbitInView) return;
+    wasSpread.current = humanOrbitInView;
+
+    orbitTimeouts.current.forEach((id) => window.clearTimeout(id));
+    orbitTimeouts.current = [];
+    orbitRafs.current.forEach((id) => window.cancelAnimationFrame(id));
+    orbitRafs.current = [];
+
+    const avatars = avatarRefs.current.filter((el): el is HTMLImageElement => el !== null);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
+
+    if (humanOrbitInView) {
+      avatars.forEach((el) => {
+        el.classList.remove("is-orbiting");
+        el.classList.add("is-spread");
+      });
+      const timeoutId = window.setTimeout(() => {
+        avatars.forEach((el) => el.classList.add("is-orbiting"));
+      }, 950);
+      orbitTimeouts.current.push(timeoutId);
+    } else {
+      avatars.forEach((el) => {
+        const computed = getComputedStyle(el);
+        el.style.translate = computed.translate;
+        el.style.rotate = computed.rotate;
+        el.style.scale = computed.scale;
+        el.classList.remove("is-orbiting");
+        el.classList.remove("is-spread");
+        void el.offsetWidth;
+      });
+      const rafId = window.requestAnimationFrame(() => {
+        avatars.forEach((el) => {
+          el.style.translate = "";
+          el.style.rotate = "";
+          el.style.scale = "";
+        });
+      });
+      orbitRafs.current.push(rafId);
+    }
+  }, [humanOrbitInView]);
+
+  useEffect(() => {
+    return () => {
+      orbitTimeouts.current.forEach((id) => window.clearTimeout(id));
+      orbitRafs.current.forEach((id) => window.cancelAnimationFrame(id));
+    };
+  }, []);
+
   const [pricingRef, pricingVisible] = useReveal<HTMLElement>();
   const [faqRef, faqVisible] = useReveal<HTMLElement>();
   const [finalCtaRef, finalCtaVisible] = useReveal<HTMLElement>();
   const [openFaq, setOpenFaq] = useState<string | null>(FAQ_ITEMS[0].q);
 
+  const [toolAutoplayPaused, setToolAutoplayPaused] = useState(false);
+
   useEffect(() => {
+    if (toolAutoplayPaused) return;
     const id = window.setInterval(() => {
       setActiveTool((prev) => {
         const currentIndex = TOOL_TABS.findIndex((tab) => tab.id === prev);
@@ -966,7 +1344,7 @@ export function VerenaHomepage() {
       });
     }, TOOL_TAB_AUTOPLAY_MS);
     return () => window.clearInterval(id);
-  }, [activeTool]);
+  }, [activeTool, toolAutoplayPaused]);
 
   return (
     <div style={{ color: INK }} className="bg-white">
@@ -977,32 +1355,34 @@ export function VerenaHomepage() {
       {/* Announcement bar */}
       {announcementVisible && (
         <div
-          style={{ backgroundColor: INK }}
-          className="relative flex h-10 items-center justify-center px-10 text-center"
+          style={{ backgroundColor: INK, height: announcementClosing ? "0px" : "40px" }}
+          className={`t-announcement-bar overflow-hidden ${announcementClosing ? "is-closing" : ""}`}
         >
-          <p className="text-[12px] leading-[27px] text-white [font-weight:300]">
-            We're in Beta! Explore Verena early and help shape what's next.
-          </p>
-          <button
-            type="button"
-            aria-label="Dismiss announcement"
-            onClick={() => setAnnouncementVisible(false)}
-            className="absolute right-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-sm text-white transition hover:bg-[rgba(255,255,255,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37]"
-          >
-            <svg
-              width={14}
-              height={14}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.7}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
+          <div className="t-announcement-content relative flex h-10 items-center justify-center px-10 text-center">
+            <p className="text-[12px] leading-[27px] text-white [font-weight:300]">
+              We're in Beta! Explore Verena early and help shape what's next.
+            </p>
+            <button
+              type="button"
+              aria-label="Dismiss announcement"
+              onClick={closeAnnouncement}
+              className="absolute right-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-sm text-white transition duration-200 ease-out hover:scale-110 hover:bg-[rgba(255,255,255,0.12)] active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37]"
             >
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          </button>
+              <svg
+                width={14}
+                height={14}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.7}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </button>
+          </div>
         </div>
       )}
 
@@ -1038,7 +1418,7 @@ export function VerenaHomepage() {
             <button
               type="button"
               style={{ backgroundColor: ACCENT }}
-              className="rounded-[10px] px-5 py-3 text-sm font-medium text-white transition hover:brightness-95 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+              className="rounded-full px-5 py-3 text-sm font-medium text-white transition duration-200 ease-out hover:-translate-y-px hover:brightness-110 active:translate-y-0 active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
             >
               Talk to founder
             </button>
@@ -1048,7 +1428,7 @@ export function VerenaHomepage() {
               aria-expanded={mobileMenuOpen}
               aria-controls="verena-homepage-mobile-nav"
               onClick={() => setMobileMenuOpen((open) => !open)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg transition hover:bg-[rgba(33,12,55,0.05)] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 md:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-lg transition duration-200 ease-out hover:bg-[rgba(33,12,55,0.05)] hover:scale-105 active:scale-90 active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 md:hidden"
             >
               <NavMenuIcon open={mobileMenuOpen} />
             </button>
@@ -1077,8 +1457,13 @@ export function VerenaHomepage() {
 
       <div>
       {/* Hero */}
-      <section className="section-pad-x section-pad-y-lg flex flex-col items-center gap-16 text-center">
-        <div className="flex max-w-[860px] flex-col items-center gap-2">
+      <section
+        ref={heroRef}
+        className="section-pad-x section-pad-y-lg flex flex-col items-center gap-16 text-center"
+      >
+        <div
+          className={`area-reveal flex max-w-[860px] flex-col items-center gap-2 ${heroVisible ? "is-shown" : ""}`}
+        >
           <h1 style={bricolage} className="fluid-h1 font-bold leading-[1.1] tracking-[-0.01em]">
             Your website looks ready.
             <br />
@@ -1128,7 +1513,10 @@ export function VerenaHomepage() {
           </p>
         </div>
 
-        <div className="hero-demo-box relative w-full max-w-[1280px] overflow-hidden rounded-[24px] bg-white shadow-sm">
+        <div
+          className={`area-reveal hero-demo-box relative w-full max-w-[1280px] overflow-hidden rounded-[24px] bg-white shadow-sm ${heroVisible ? "is-shown" : ""}`}
+          style={{ transitionDelay: "100ms" }}
+        >
           <img
             src={gradientBackdrop}
             alt=""
@@ -1140,23 +1528,16 @@ export function VerenaHomepage() {
             <form
               onSubmit={handleSubmit}
               noValidate
-              className="flex flex-col gap-3 rounded-xl border bg-white px-4 py-4 shadow-[0_1px_8px_rgba(45,0,15,0.08)] transition focus-within:ring-2 sm:flex-row sm:items-center sm:px-6 sm:py-5"
+              className="flex flex-col gap-3 rounded-2xl border bg-white px-4 py-4 shadow-[0_1px_8px_rgba(45,0,15,0.08)] transition focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-white sm:flex-row sm:items-center sm:px-6 sm:py-4"
               style={
                 {
                   borderColor: domainError ? "#e4572e" : "rgba(33,12,55,0.12)",
-                  "--tw-ring-color": INK,
+                  "--tw-ring-color": ACCENT,
                 } as CSSProperties
               }
             >
               <div className="flex min-w-0 flex-1 items-center gap-3">
-                <div className="h-6 w-6 shrink-0 overflow-hidden">
-                  <img
-                    src={verenaLogo}
-                    alt=""
-                    className="h-[102%] w-[474%] max-w-none"
-                    style={{ marginLeft: "-23%", marginTop: "-2%" }}
-                  />
-                </div>
+                <VerenaMarkIcon className="h-6 w-6" />
                 <label htmlFor="verena-homepage-domain" className="sr-only">
                   Website to scan
                 </label>
@@ -1183,7 +1564,7 @@ export function VerenaHomepage() {
                   status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Submit"
                 }
                 style={{ backgroundColor: ACCENT }}
-                className="flex w-full shrink-0 items-center justify-center gap-2 rounded-[10px] px-5 py-4 text-sm font-medium text-white transition hover:brightness-95 active:scale-[0.97] disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:w-auto"
+                className="flex w-full shrink-0 items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium text-white transition duration-200 ease-out hover:brightness-110 active:scale-[0.96] active:duration-100 disabled:cursor-not-allowed disabled:hover:brightness-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:w-auto"
               >
                 <span key={status} className="hero-input-pop flex items-center justify-center">
                   <HeroStatusIcon status={status} />
@@ -1216,7 +1597,10 @@ export function VerenaHomepage() {
       </section>
 
       {/* Trusted-by logo strip */}
-      <section className="section-pad-x section-pad-y-sm relative flex items-center overflow-hidden">
+      <section
+        ref={trustedRef}
+        className={`area-reveal section-pad-x section-pad-y-sm relative flex items-center overflow-hidden ${trustedVisible ? "is-shown" : ""}`}
+      >
         <div className="relative w-full overflow-hidden">
           <div className="logo-marquee-track flex w-max items-center gap-14">
             {MARQUEE_LOGOS.map((logo, i) => (
@@ -1405,6 +1789,7 @@ export function VerenaHomepage() {
                       backgroundColor: ACCENT,
                       transform: active ? undefined : "scaleX(0)",
                       animationDuration: active ? `${TOOL_TAB_AUTOPLAY_MS}ms` : undefined,
+                      animationPlayState: toolAutoplayPaused ? "paused" : "running",
                     }}
                   />
                 </button>
@@ -1442,15 +1827,62 @@ export function VerenaHomepage() {
                 </span>
               </div>
               <div className="flex-1 overflow-hidden p-5 sm:p-7">
-                <div key={activeTool} className="tool-fade-in h-full">
-                  <ToolMockupBody tool={activeTool} />
+                <div className="grid h-full">
+                  {leavingTool !== null ? (
+                    <div aria-hidden="true" className="tool-stage-leaving" style={{ gridArea: "1 / 1" }}>
+                      <ToolMockupBody tool={leavingTool} />
+                    </div>
+                  ) : null}
+                  <div key={activeTool} className="tool-stage-entering" style={{ gridArea: "1 / 1" }}>
+                    <ToolMockupBody tool={activeTool} />
+                  </div>
                 </div>
               </div>
             </div>
+            <button
+              type="button"
+              onClick={() => setToolAutoplayPaused((prev) => !prev)}
+              aria-label={toolAutoplayPaused ? "Resume autoplay" : "Pause autoplay"}
+              aria-pressed={toolAutoplayPaused}
+              className="absolute bottom-4 right-4 flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition duration-200 ease-out hover:scale-110 hover:bg-white/25 active:scale-95 active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+            >
+              {toolAutoplayPaused ? (
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M7 5v14l12-7z" />
+                </svg>
+              ) : (
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <rect x="6" y="5" width="4" height="14" rx="1" />
+                  <rect x="14" y="5" width="4" height="14" rx="1" />
+                </svg>
+              )}
+            </button>
           </div>
-          <p key={activeTool} className="tool-fade-in text-[18px] leading-[27px]">
-            {TOOL_CAPTIONS[activeTool]}
-          </p>
+          <div className="flex w-full flex-wrap items-center justify-between gap-4">
+            <p key={activeTool} className="tool-caption-swap text-[18px] leading-[27px]">
+              {TOOL_CAPTIONS[activeTool]}
+            </p>
+            <div className="flex shrink-0 items-center gap-2">
+              {TOOL_TABS.map((tab) => {
+                const active = tab.id === activeTool;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    aria-label={`Show ${tab.label}`}
+                    aria-current={active}
+                    onClick={() => setActiveTool(tab.id)}
+                    className="rounded-full p-1 transition-transform duration-200 ease-out hover:scale-125 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+                  >
+                    <span
+                      className="block h-2 w-2 rounded-full transition-colors duration-300"
+                      style={{ backgroundColor: active ? ACCENT : "rgba(33,12,55,0.15)" }}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1470,108 +1902,82 @@ export function VerenaHomepage() {
             From accessibility and privacy to cookies, policies, emails, and marketing claims
           </p>
         </div>
-        <div className="grid w-full max-w-[1536px] gap-6 lg:grid-cols-2">
+        <div className="grid w-full max-w-[1536px] gap-10 lg:grid-cols-2 lg:gap-6">
+          <div className="flex flex-col">
+            {REVIEW_AREAS.map((area, index) => {
+              const isActive = activeArea === index;
+              return (
+                <button
+                  key={area.title}
+                  ref={(el) => {
+                    areaRowRefs.current[index] = el;
+                  }}
+                  data-area-index={index}
+                  type="button"
+                  onClick={() => setActiveArea(index)}
+                  aria-pressed={isActive}
+                  className={`area-reveal flex w-full items-start gap-4 py-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 ${
+                    index > 0 ? "border-t" : ""
+                  } ${areasVisible ? "is-shown" : ""}`}
+                  style={{
+                    borderColor: "rgba(33,12,55,0.08)",
+                    borderLeft: `3px solid ${isActive ? area.statusColor : "transparent"}`,
+                    paddingLeft: isActive ? "17px" : "20px",
+                    transitionDelay: `${index * 70}ms`,
+                  }}
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-3">
+                      <span
+                        style={{ ...bricolage, opacity: isActive ? 1 : 0.45 }}
+                        className="text-[22px] font-semibold tracking-[-0.01em] transition-opacity sm:text-[26px]"
+                      >
+                        {area.title}
+                      </span>
+                      <span
+                        className="shrink-0 text-[13px] font-medium"
+                        style={{ color: area.statusColor, opacity: isActive ? 1 : 0.45 }}
+                      >
+                        {area.status}
+                      </span>
+                    </div>
+                    {isActive ? (
+                      <p className="mt-2 max-w-[520px] text-[16px] leading-6 opacity-70">{area.body}</p>
+                    ) : null}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
           <div
-            className={`area-reveal relative flex items-center justify-center overflow-hidden rounded-[20px] bg-white p-8 ${areasVisible ? "is-shown" : ""}`}
+            className={`area-reveal relative flex min-h-[520px] items-center justify-center overflow-hidden rounded-[20px] p-8 lg:sticky lg:top-24 lg:self-start ${areasVisible ? "is-shown" : ""}`}
             style={{ transitionDelay: "80ms" }}
           >
             <img src={gradientBackdrop} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
-            <div className="relative flex aspect-[450/500] w-full max-w-[450px] flex-col gap-4 rounded-2xl bg-white p-6 shadow-xl">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p style={bricolage} className="text-[13px] font-semibold sm:text-[15px]">
-                  acme.com — Review summary
-                </p>
-                <span
-                  className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium"
-                  style={{ backgroundColor: "rgba(33,12,55,0.06)" }}
+            <div className="relative grid w-full max-w-[500px]">
+              {leavingArea !== null ? (
+                <div
+                  aria-hidden="true"
+                  className="area-card-stage-leaving"
+                  style={{ gridArea: "1 / 1" }}
                 >
-                  6 areas scanned
-                </span>
-              </div>
-              <div className="flex flex-1 flex-col gap-2">
-                {REVIEW_AREAS.map((area, index) => {
-                  const isActive = activeArea === index;
-                  return (
-                    <button
-                      key={area.title}
-                      type="button"
-                      onClick={() => setActiveArea(index)}
-                      aria-pressed={isActive}
-                      className="flex items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
-                      style={{
-                        border: `1px solid ${isActive ? area.statusColor : "rgba(33,12,55,0.08)"}`,
-                        backgroundColor: isActive ? `${area.statusColor}14` : "transparent",
-                        opacity: isActive ? 1 : 0.55,
-                      }}
-                    >
-                      <AreaIcon name={area.icon} size={16} />
-                      <span
-                        className="h-2 w-2 shrink-0 rounded-full"
-                        style={{ backgroundColor: area.statusColor }}
-                      />
-                      <p className="flex-1 truncate text-[13px] font-medium">{area.title}</p>
-                      <p className="shrink-0 text-[12px] opacity-60">{area.status}</p>
-                    </button>
-                  );
-                })}
+                  <AreaDetailCard area={REVIEW_AREAS[leavingArea]} />
+                </div>
+              ) : null}
+              <div key={activeArea} className="area-card-stage-entering" style={{ gridArea: "1 / 1" }}>
+                <AreaDetailCard area={REVIEW_AREAS[activeArea]} />
               </div>
             </div>
-          </div>
-          <div className="flex flex-col gap-1 rounded-[20px] bg-white p-4 sm:p-6">
-            {REVIEW_AREAS.map((area, index) => {
-              const isOpen = activeArea === index;
-              return (
-                <div
-                  key={area.title}
-                  className={`area-reveal ${areasVisible ? "is-shown" : ""} ${
-                    index > 0 ? "border-t" : ""
-                  }`}
-                  style={{ transitionDelay: `${160 + index * 90}ms`, borderColor: "rgba(33,12,55,0.08)" }}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setActiveArea(index)}
-                    aria-expanded={isOpen}
-                    className="flex w-full items-center gap-4 rounded-[10px] px-2 py-4 text-left transition hover:bg-[rgba(33,12,55,0.03)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:px-4"
-                  >
-                    <div
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
-                      style={{ backgroundColor: "rgba(33,12,55,0.06)" }}
-                    >
-                      <AreaIcon name={area.icon} size={18} />
-                    </div>
-                    <span
-                      className="h-2.5 w-2.5 shrink-0 rounded-full"
-                      style={{ backgroundColor: area.statusColor }}
-                    />
-                    <span
-                      style={bricolage}
-                      className={`flex-1 text-[20px] font-semibold transition-opacity sm:text-[24px] ${
-                        isOpen ? "opacity-100" : "opacity-60"
-                      }`}
-                    >
-                      {area.title}
-                    </span>
-                    <span className="hidden shrink-0 text-[13px] font-medium opacity-60 sm:block">
-                      {area.status}
-                    </span>
-                    <ChevronIcon open={isOpen} />
-                  </button>
-                  <div className={`area-accordion-body ${isOpen ? "is-open" : ""}`}>
-                    <div className="overflow-hidden">
-                      <p className="px-2 pb-4 text-[16px] leading-6 opacity-80 sm:px-4">{area.body}</p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
           </div>
         </div>
       </section>
 
       {/* +Human */}
       <section
-        ref={humanRef}
+        ref={(el) => {
+          humanRef.current = el;
+          humanOrbitSectionRef.current = el;
+        }}
         style={{ backgroundColor: INK }}
         className="section-pad-x section-pad-y-lg relative flex flex-col items-center justify-center gap-16 overflow-hidden lg:min-h-[1018px]"
       >
@@ -1586,6 +1992,9 @@ export function VerenaHomepage() {
         {AVATAR_ORBITS.map((orbit, i) => (
           <img
             key={i}
+            ref={(el) => {
+              avatarRefs.current[i] = el;
+            }}
             src={avatarPhoto}
             alt=""
             loading="lazy"
@@ -1594,7 +2003,11 @@ export function VerenaHomepage() {
               {
                 "--orbit-duration": `${AVATAR_ORBIT_DURATION}s`,
                 "--orbit-delay": `${orbit.delay}s`,
-                "--orbit-progress": `${orbit.progress}%`,
+                "--orbit-start-angle": `${orbit.angleDeg}deg`,
+                "--stack-x": `${orbit.stackX}px`,
+                "--stack-y": `${orbit.stackY}px`,
+                "--stack-rotate": `${orbit.stackRotate}deg`,
+                "--orbit-stagger": `${i * 70}ms`,
               } as CSSProperties
             }
           />
@@ -1617,7 +2030,7 @@ export function VerenaHomepage() {
         <button
           type="button"
           style={{ backgroundColor: ACCENT, transitionDelay: "120ms" } as CSSProperties}
-          className={`area-reveal relative z-10 rounded-[10px] px-6 py-3 text-[16px] font-medium text-white transition hover:brightness-95 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37] ${humanVisible ? "is-shown" : ""}`}
+          className={`area-reveal relative z-10 rounded-full px-6 py-3 text-[16px] font-medium text-white transition duration-200 ease-out hover:-translate-y-px hover:brightness-110 active:translate-y-0 active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37] ${humanVisible ? "is-shown" : ""}`}
         >
           Explore +Human
         </button>
@@ -1700,7 +2113,7 @@ export function VerenaHomepage() {
                     aria-label={`Add +Human review to ${plan.name}`}
                     data-on={hasAddOn}
                     onClick={() => toggleHumanAddOn(plan.name)}
-                    className={`flex w-full items-center justify-between gap-3 rounded-[10px] px-4 py-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                    className={`flex w-full items-center justify-between gap-3 rounded-[10px] px-4 py-3 text-left transition duration-200 ease-out active:scale-[0.98] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
                       plan.featured
                         ? "bg-white/10 hover:bg-white/15 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
                         : "bg-[rgba(33,12,55,0.04)] hover:bg-[rgba(33,12,55,0.07)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
@@ -1729,10 +2142,10 @@ export function VerenaHomepage() {
                   <button
                     type="button"
                     style={plan.featured ? { backgroundColor: ACCENT, color: "#fff" } : undefined}
-                    className={`rounded-[10px] px-5 py-3 text-sm font-medium transition active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                    className={`rounded-full px-5 py-3 text-sm font-medium transition duration-200 ease-out active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
                       plan.featured
-                        ? "hover:brightness-95 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
-                        : "border border-[rgba(33,12,55,0.3)] hover:bg-[rgba(33,12,55,0.04)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
+                        ? "hover:-translate-y-px hover:brightness-110 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
+                        : "border border-[rgba(33,12,55,0.3)] hover:-translate-y-px hover:border-[rgba(33,12,55,0.5)] hover:bg-[rgba(33,12,55,0.04)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
                     }`}
                   >
                     {hasAddOn ? `${plan.cta} with +Human` : plan.cta}
@@ -1757,9 +2170,6 @@ export function VerenaHomepage() {
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Good questions deserve clear answers.
           </h2>
-          <p className="text-[18px] leading-[27px]">
-            Straightforward answers about Verena, getting started, and professional support
-          </p>
         </div>
 
         <div className="mx-auto flex w-full max-w-[1200px] flex-col">
@@ -1883,7 +2293,7 @@ export function VerenaHomepage() {
               type="submit"
               disabled={status === "loading"}
               style={{ backgroundColor: ACCENT }}
-              className="h-14 w-full shrink-0 rounded-[10px] px-6 text-sm font-medium text-white transition hover:brightness-95 active:scale-[0.97] disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37]"
+              className="h-14 w-full shrink-0 rounded-[10px] px-6 text-sm font-medium text-white transition duration-200 ease-out hover:-translate-y-px hover:brightness-110 active:translate-y-0 active:scale-[0.96] active:duration-100 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:brightness-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37] sm:w-auto"
             >
               {status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Analyze for free"}
             </button>
@@ -1894,11 +2304,14 @@ export function VerenaHomepage() {
 
       {/* Footer */}
       <footer
+        ref={footerRef}
         className="section-pad-x relative overflow-hidden pt-[clamp(5rem,4rem+2.5vw,7rem)]"
         style={{ backgroundColor: INK, color: "rgba(250, 249, 246, 0.7)" }}
       >
         <div className="mx-auto max-w-[1280px]">
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-6">
+          <div
+            className={`area-reveal grid gap-10 sm:grid-cols-2 lg:grid-cols-6 ${footerVisible ? "is-shown" : ""}`}
+          >
             <div className="lg:col-span-2">
               <img
                 src={verenaLogo}
@@ -1919,7 +2332,7 @@ export function VerenaHomepage() {
                     key={social.icon}
                     href="#"
                     aria-label={social.label}
-                    className="flex h-9 w-9 items-center justify-center rounded-full transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37]"
+                    className="flex h-9 w-9 items-center justify-center rounded-full transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-[rgba(250,249,246,0.14)] hover:text-white active:translate-y-0 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37]"
                     style={{ backgroundColor: "rgba(250, 249, 246, 0.07)" }}
                   >
                     <FooterIcon name={social.icon} size={15} />
@@ -1966,8 +2379,12 @@ export function VerenaHomepage() {
           </div>
 
           <div
-            className="mt-10 flex flex-col gap-3 border-t pt-6 text-xs sm:flex-row sm:items-center sm:justify-between"
-            style={{ borderColor: "rgba(250, 249, 246, 0.12)", color: "rgba(250, 249, 246, 0.6)" }}
+            className={`area-reveal mt-10 flex flex-col gap-3 border-t pt-6 text-xs sm:flex-row sm:items-center sm:justify-between ${footerVisible ? "is-shown" : ""}`}
+            style={{
+              borderColor: "rgba(250, 249, 246, 0.12)",
+              color: "rgba(250, 249, 246, 0.6)",
+              transitionDelay: "100ms",
+            }}
           >
             <p>© {new Date().getFullYear()} Invictus AI. All rights reserved.</p>
             <p>Verena is in beta. Check important results before you act on them.</p>
