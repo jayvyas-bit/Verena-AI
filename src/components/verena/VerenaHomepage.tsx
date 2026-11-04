@@ -1111,7 +1111,7 @@ export function VerenaHomepage() {
       {/* Hero */}
       <section className="flex flex-col items-center gap-16 px-4 py-24 text-center sm:py-32">
         <div className="flex max-w-[860px] flex-col items-center gap-2">
-          <h1 style={bricolage} className="text-[40px] font-bold leading-[70.4px] sm:text-[56px] md:text-[64px]">
+          <h1 style={bricolage} className="text-[40px] font-bold leading-[1.1] tracking-[-0.01em] sm:text-[56px] md:text-[64px]">
             Your website looks ready.
             <br />
             But what might be{" "}
@@ -1204,7 +1204,7 @@ export function VerenaHomepage() {
                 placeholder={placeholderText}
                 aria-invalid={domainError ? true : undefined}
                 aria-describedby={domainError ? "verena-homepage-domain-error" : undefined}
-                className="w-full min-w-0 flex-1 bg-transparent text-left text-[16px] leading-6 outline-none placeholder:opacity-60"
+                className="w-full min-w-0 flex-1 bg-transparent text-left text-[16px] leading-6 outline-none placeholder:text-[#210c37]/70"
               />
               <button
                 type="submit"
@@ -1319,7 +1319,7 @@ export function VerenaHomepage() {
         <div
           className={`area-reveal relative z-10 flex max-w-[794px] flex-col items-center gap-2 ${statementVisible ? "is-shown" : ""}`}
         >
-          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight sm:text-[48px]">
+          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
             Website compliance shouldn't take
             <br />
             over your to-do list
@@ -1341,7 +1341,7 @@ export function VerenaHomepage() {
         <div
           className={`area-reveal flex max-w-[935px] flex-col items-center gap-2 text-center ${startedVisible ? "is-shown" : ""}`}
         >
-          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight sm:text-[48px]">
+          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
             Getting started is simpler than you think
           </h2>
           <p className="text-[18px] leading-[27px]">
@@ -1368,7 +1368,7 @@ export function VerenaHomepage() {
                 >
                   <StepIcon name={card.icon} />
                 </div>
-                <h3 style={bricolage} className="w-full text-[32px] font-semibold">
+                <h3 style={bricolage} className="w-full text-[32px] font-semibold tracking-[-0.01em]">
                   {card.title}
                 </h3>
                 <p className="w-full text-[16px] leading-6">{card.body}</p>
@@ -1386,7 +1386,7 @@ export function VerenaHomepage() {
         <div
           className={`area-reveal flex max-w-[595px] flex-col items-center gap-2 text-center ${scanVisible ? "is-shown" : ""}`}
         >
-          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight sm:text-[48px]">
+          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
             More than a website scan
           </h2>
           <p className="text-[18px] leading-[27px]">
@@ -1490,7 +1490,7 @@ export function VerenaHomepage() {
         <div
           className={`area-reveal flex max-w-[696px] flex-col items-center gap-2 text-center ${areasVisible ? "is-shown" : ""}`}
         >
-          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight sm:text-[48px]">
+          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
             Six areas. One website review.
           </h2>
           <p className="text-[18px] leading-[27px]">
@@ -1632,7 +1632,7 @@ export function VerenaHomepage() {
         >
           <div className="h-8 w-[136px] bg-white" style={{ WebkitMaskImage: `url("${invictusMask}")`, maskImage: `url("${invictusMask}")`, WebkitMaskSize: "contain", maskSize: "contain", WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat" }} />
           <div className="flex max-w-[861px] flex-col items-center gap-2 text-center text-white">
-            <h2 style={bricolage} className="text-[32px] font-semibold leading-tight sm:text-[48px]">
+            <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
               When AI isn't enough, there's +Human
             </h2>
             <p className="text-[18px] leading-[27px]">
@@ -1659,7 +1659,7 @@ export function VerenaHomepage() {
         <div
           className={`area-reveal flex max-w-[636px] flex-col items-center gap-2 text-center ${pricingVisible ? "is-shown" : ""}`}
         >
-          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight sm:text-[48px]">
+          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
             Choose what works for you
           </h2>
           <p className="text-[18px] leading-[27px]">
@@ -1782,7 +1782,7 @@ export function VerenaHomepage() {
         <div
           className={`area-reveal flex max-w-[909px] flex-col items-center gap-2 ${faqVisible ? "is-shown" : ""}`}
         >
-          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight sm:text-[48px]">
+          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
             Good questions deserve clear answers.
           </h2>
           <p className="text-[18px] leading-[27px]">
@@ -1827,7 +1827,7 @@ export function VerenaHomepage() {
         <div
           className={`area-reveal flex max-w-[691px] flex-col items-center gap-2 ${finalCtaVisible ? "is-shown" : ""}`}
         >
-          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight sm:text-[48px]">
+          <h2 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em] sm:text-[48px]">
             Your website. Your next move.
           </h2>
           <p className="text-[18px] leading-[27px]">
@@ -1868,7 +1868,7 @@ export function VerenaHomepage() {
                 placeholder="yourwebsite.com"
                 aria-invalid={domainError ? true : undefined}
                 aria-describedby={domainError ? "verena-final-cta-domain-error" : undefined}
-                className="w-full min-w-0 flex-1 bg-transparent text-left text-[16px] leading-6 outline-none placeholder:opacity-60"
+                className="w-full min-w-0 flex-1 bg-transparent text-left text-[16px] leading-6 outline-none placeholder:text-[#210c37]/70"
               />
             </div>
             <button
@@ -1909,7 +1909,7 @@ export function VerenaHomepage() {
                 className="h-7 w-auto object-contain brightness-0 invert"
               />
               <p className="mt-3 max-w-[280px] text-sm leading-[21px]">A product of Invictus AI.</p>
-              <p className="mt-3 text-xs leading-[18px]" style={{ color: "rgba(250, 249, 246, 0.45)" }}>
+              <p className="mt-3 text-xs leading-[18px]" style={{ color: "rgba(250, 249, 246, 0.6)" }}>
                 548 Market St, Suite 200
                 <br />
                 San Francisco, CA 94104
@@ -1946,7 +1946,7 @@ export function VerenaHomepage() {
             {FOOTER_LINK_GROUPS.map((group) => (
               <div key={group.title}>
                 <p
-                  style={{ ...bricolage, color: "rgba(250, 249, 246, 0.45)" }}
+                  style={{ ...bricolage, color: "rgba(250, 249, 246, 0.6)" }}
                   className="text-xs font-semibold uppercase tracking-[0.1em]"
                 >
                   {group.title}
@@ -1969,7 +1969,7 @@ export function VerenaHomepage() {
 
           <div
             className="mt-10 flex flex-col gap-3 border-t pt-6 text-xs sm:flex-row sm:items-center sm:justify-between"
-            style={{ borderColor: "rgba(250, 249, 246, 0.12)", color: "rgba(250, 249, 246, 0.45)" }}
+            style={{ borderColor: "rgba(250, 249, 246, 0.12)", color: "rgba(250, 249, 246, 0.6)" }}
           >
             <p>© {new Date().getFullYear()} Invictus AI. All rights reserved.</p>
             <p>Verena is in beta. Check important results before you act on them.</p>
