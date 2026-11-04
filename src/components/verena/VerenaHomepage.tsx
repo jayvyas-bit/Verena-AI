@@ -331,34 +331,64 @@ const PRICING_PLANS = [
 
 const FAQ_ITEMS = [
   {
-    category: "How it works",
-    q: "What exactly does Verena check?",
-    a: "Verena reviews your website across six areas: accessibility, privacy policy, cookies & trackers, terms of service, commercial email, and marketing claims. Each finding comes with supporting evidence, not just a flag.",
+    category: "Plans and credits",
+    q: "Can I start for free?",
+    a: "Yes! Every account gets 500 credits. That is enough to run your first analysis and get your Compliance Report.",
   },
   {
-    category: "How it works",
-    q: "How long does an analysis take?",
-    a: "Most websites finish in a few minutes. Larger sites with more pages may take longer, and you'll see progress as each area completes.",
+    category: "Plans and credits",
+    q: "How does pricing work, and what is a credit?",
+    a: "Credits measure the work I do for you. Reading a site, producing a report and drafting a document each consume credits, and every plan comes with a monthly allowance. Plans come in two types: Standard, where you supervise my output, and +Human, where a +Human Supervisor from Invictus Counsel supervises it with you. The current plans and allowances are in the pricing section on the homepage.",
   },
   {
-    category: "Trust & data",
-    q: "Is this a replacement for legal advice?",
-    a: "No. Verena surfaces potential issues and evidence so you know what to look into. For anything that needs a professional sign-off, +Human connects you with someone who can review it.",
+    category: "Getting started",
+    q: "What do you actually check?",
+    a: "I analyze the public pages of your website and check key areas, including: accessibility, cookies and trackers, your privacy policy, your terms of service, your commercial email, and the claims in your marketing copy. You get one Compliance Report covering all six, showing where you stand in each area and the detail behind every finding.",
   },
   {
-    category: "Trust & data",
-    q: "What happens to my data?",
-    a: "We only analyze what's publicly visible on your website. Nothing is sold or shared, and you can delete your account and its data at any time.",
+    category: "Getting started",
+    q: "How long does it take, and what do I get at the end?",
+    a: "You receive a Compliance Report showing where you stand, the findings behind each result, and next steps you can work through with your team. Completion time depends on the website and the work requested. After making changes, run a new analysis and compare the reports.",
   },
   {
-    category: "Trust & data",
-    q: "What's included in +Human?",
-    a: "Optional access to a professional who reviews specific findings with you, for questions an automated analysis can't fully answer on its own.",
+    category: "Getting started",
+    q: "Do I have to install anything?",
+    a: "No. Nothing to install and no code to add. I work from your public site as it stands today, which also means I cannot slow your site down or break it.",
   },
   {
-    category: "Billing",
-    q: "Can I cancel anytime?",
-    a: "Yes. Pro is month to month with no lock-in, and you keep access through the end of the billing period you've already paid for.",
+    category: "Getting started",
+    q: "Do I need an account before I can analyze my site?",
+    a: "Yes. Enter your website address, then create an account and confirm you are authorized to have the site analyzed. Entering an address here does not start an analysis.",
+  },
+  {
+    category: "Working with Verena",
+    q: "How is Verena different from an accessibility widget or overlay?",
+    a: "An accessibility widget changes the interface a visitor sees. It does not replace fixing and testing the underlying website. I identify barriers in your public pages and give your developer findings and suggested changes to work through. You can add a +Human Supervisor when a finding needs professional judgment. Nothing is added to your site without your permission.",
+  },
+  {
+    category: "Working with Verena",
+    q: "Will you fix my site for me?",
+    a: "I produce findings and suggested work; you decide what changes. I do not edit your website directly. For accessibility, you get a developer fix guide naming the element, selector, issue, and suggested change, which can include software code. For privacy, terms, and cookies, you get a drafted or marked-up document. For commercial email and marketing claims, you get findings and a checklist. Your team or developer makes and tests the changes.",
+  },
+  {
+    category: "+Human and your relationship",
+    q: "What is +Human, and what do I actually get?",
+    a: "+Human adds a professional person who takes responsibility for supervising my work for you: a +Human Supervisor from Invictus Counsel, a law firm. You add +Human, complete a Legal Services Agreement in the conversation, and your supervisor completes the required checks and countersigns. Payment is authorized when you add +Human and charged once your supervisor countersigns. If the matter cannot be accepted, you are not charged. Findings that need human judgment can then be discussed with your supervisor in the same conversation.",
+  },
+  {
+    category: "+Human and your relationship",
+    q: "Who am I actually working with?",
+    a: "Verena is developed and operated by Invictus AI Corporation, a software company. Invictus AI is not a law firm. When you add +Human, your engagement is with Invictus Counsel, a law firm, under the Legal Services Agreement you sign. Your +Human Supervisor works there. The two relationships are separate and the documents say which is which.",
+  },
+  {
+    category: "+Human and your relationship",
+    q: "Which of my conversations are privileged?",
+    a: "Standard conversations are not privileged. A supervising relationship requires a completed Legal Services Agreement. Signing up alone does not establish it. Review the agreement with your +Human Supervisor to understand which work it covers.",
+  },
+  {
+    category: "Scope and responsibility",
+    q: "Can I analyze sites for which I do not have authority?",
+    a: "I am built for sites you own or are authorized to audit, and that is what you agree to when you sign up. If you look after websites for clients, that is exactly the case +Human is designed around, and a supervisor can tell you how to set it up.",
   },
 ];
 
