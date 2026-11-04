@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import { useDocumentHead } from "../../lib/useDocumentHead";
 import verenaLogo from "../../assets/homepage/image-15.png";
-import analyzeScreenshot from "../../assets/homepage/screenshot-analyze.png";
 import gradientBackdrop from "../../assets/homepage/image-19.png";
 import invictusMask from "../../assets/homepage/rectangle-34.png";
 import avatarPhoto from "../../assets/homepage/avatar.png";
@@ -74,14 +73,17 @@ const ANALYZE_CARDS = [
   {
     title: "Add your website",
     body: "Enter your domain and connect the pages you want Verena to review.",
+    icon: "website" as const,
   },
   {
     title: "Run an analysis",
     body: "Verena scans your website across all six areas and gathers supporting evidence.",
+    icon: "scan" as const,
   },
   {
     title: "Explore your findings",
     body: "Review each issue at your own pace, with evidence and next steps included.",
+    icon: "findings" as const,
   },
 ];
 
@@ -1079,6 +1081,22 @@ function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
   );
 }
 
+function AnalyzeWindowFrame({ children }: { children: ReactNode }) {
+  return (
+    <div
+      className="flex h-full w-full items-center justify-center rounded-lg p-3"
+      style={{ backgroundColor: "rgba(33,12,55,0.04)" }}
+    >
+      <div
+        className="flex h-full w-full flex-col gap-2.5 rounded-[16px] bg-white p-4"
+        style={{ border: "1px solid rgba(33,12,55,0.08)" }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function VerenaMarkIcon({ className }: { className?: string }) {
   return (
     <div className={`shrink-0 overflow-hidden ${className ?? ""}`}>
@@ -1089,6 +1107,187 @@ function VerenaMarkIcon({ className }: { className?: string }) {
         style={{ marginLeft: "-23%", marginTop: "-2%" }}
       />
     </div>
+  );
+}
+
+function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" }) {
+  if (step === "website") {
+    return (
+      <AnalyzeWindowFrame>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <VerenaMarkIcon className="h-4 w-4" />
+            <p style={bricolage} className="text-[13px] font-semibold">Verena</p>
+          </div>
+          <span className="text-[11px] opacity-50">Getting started</span>
+        </div>
+        <div className="demo-pop flex items-start gap-2.5" style={{ animationDelay: "0s" }}>
+          <div
+            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
+            style={{ backgroundColor: "rgba(38,83,243,0.1)" }}
+          >
+            <VerenaMarkIcon className="h-3 w-3" />
+          </div>
+          <p className="text-[12.5px] leading-5 opacity-80">
+            I'll run a full compliance analysis. What's the website you'd like me to start with?
+          </p>
+        </div>
+        <span
+          className="demo-pop ml-8 w-fit rounded-[10px] px-2.5 py-1.5 text-[12px] font-medium"
+          style={{ backgroundColor: ACCENT, color: "#fff", animationDelay: "0.3s" }}
+        >
+          https://acme.com
+        </span>
+        <div
+          className="demo-pop mt-auto flex items-center gap-2 rounded-[10px] px-3 py-2.5"
+          style={{
+            border: "1px solid rgba(33,12,55,0.08)",
+            backgroundColor: "rgba(33,12,55,0.02)",
+            animationDelay: "0.6s",
+          }}
+        >
+          <span
+            className="flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px]"
+            style={{ backgroundColor: ACCENT }}
+          >
+            <CheckIcon />
+          </span>
+          <p className="flex-1 text-[11px] opacity-60">You're authorized by its owner</p>
+          <span
+            className="demo-authorize-pulse shrink-0 rounded-[8px] px-2.5 py-1 text-[11px] font-medium"
+            style={{ backgroundColor: ACCENT, color: "#fff" }}
+          >
+            Authorize
+          </span>
+        </div>
+      </AnalyzeWindowFrame>
+    );
+  }
+
+  if (step === "scan") {
+    const pages = [
+      { label: "Homepage and marketing claims", state: "done" as const },
+      { label: "Privacy policy and data rights", state: "done" as const },
+      { label: "Terms of service and liability", state: "done" as const },
+      { label: "Cookie banner and trackers", state: "done" as const },
+      { label: "Commercial email practices", state: "active" as const },
+      { label: "Accessibility and ADA compliance", state: "pending" as const },
+    ];
+    return (
+      <AnalyzeWindowFrame>
+        <div className="flex items-center justify-between">
+          <p style={bricolage} className="text-[13px] font-semibold">Analysis of acme.com</p>
+          <span className="text-[11px] opacity-50">4 of 6 areas</span>
+        </div>
+        <div className="h-1.5 w-full overflow-hidden rounded-full" style={{ backgroundColor: "rgba(33,12,55,0.08)" }}>
+          <div
+            className="demo-progress-fill h-full rounded-full"
+            style={{ width: "66%", backgroundColor: ACCENT }}
+          />
+        </div>
+        <div
+          className="flex flex-1 flex-col justify-center rounded-[10px]"
+          style={{ border: "1px solid rgba(33,12,55,0.06)" }}
+        >
+          {pages.map((page, i) => (
+            <div
+              key={page.label}
+              className="flex items-center gap-2.5 px-2.5 py-1.5"
+              style={i > 0 ? { borderTop: "1px solid rgba(33,12,55,0.06)" } : undefined}
+            >
+              {page.state === "done" ? (
+                <span className="relative flex h-4 w-4 shrink-0 items-center justify-center">
+                  <span
+                    className="absolute inset-0 rounded-full"
+                    style={{ border: "1.5px solid rgba(33,12,55,0.15)", backgroundColor: "#fff" }}
+                  />
+                  <span
+                    className="demo-check absolute inset-0 flex items-center justify-center rounded-full"
+                    style={{
+                      backgroundColor: "rgba(22,163,74,0.12)",
+                      color: "#16a34a",
+                      animationDelay: `${0.4 + i * 0.4}s`,
+                    }}
+                  >
+                    <CheckIcon />
+                  </span>
+                </span>
+              ) : page.state === "active" ? (
+                <span
+                  className="demo-active-row flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
+                  style={{ border: `1.5px solid ${ACCENT}`, backgroundColor: "#fff" }}
+                />
+              ) : (
+                <span
+                  className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
+                  style={{ border: "1.5px solid rgba(33,12,55,0.15)", backgroundColor: "#fff" }}
+                />
+              )}
+              <p className="text-[12px] leading-tight" style={{ opacity: page.state === "pending" ? 0.4 : 0.8 }}>
+                {page.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </AnalyzeWindowFrame>
+    );
+  }
+
+  return (
+    <AnalyzeWindowFrame>
+      <div className="flex items-center justify-between">
+        <p style={bricolage} className="text-[13px] font-semibold">Compliance report — acme.com</p>
+        <span
+          className="demo-badge-pulse rounded-full px-2 py-0.5 text-[10px] font-semibold"
+          style={{ backgroundColor: "rgba(228,87,46,0.1)", color: "#e4572e" }}
+        >
+          2 exposed
+        </span>
+      </div>
+      <p className="text-[11px] opacity-50">6 of 6 areas checked</p>
+      <div className="flex gap-1.5">
+        {REVIEW_AREAS.map((area, i) => (
+          <span
+            key={area.title}
+            className="demo-bar h-1.5 flex-1 rounded-full"
+            style={{ backgroundColor: area.statusColor, animationDelay: `${i * 0.08}s` }}
+          />
+        ))}
+      </div>
+      <div
+        className="demo-pop flex flex-col gap-1 rounded-[10px] p-3"
+        style={{
+          border: "1px solid rgba(33,12,55,0.08)",
+          backgroundColor: "rgba(33,12,55,0.02)",
+          animationDelay: "0.3s",
+        }}
+      >
+        <div className="flex items-center gap-2">
+          <AreaIcon name={REVIEW_AREAS[2].icon} size={14} />
+          <p className="flex-1 text-[12px] font-medium">{REVIEW_AREAS[2].title}</p>
+          <SeverityTag severity="deficit" />
+        </div>
+        <p className="text-[11px] leading-4 opacity-60">{REVIEW_AREAS[2].body}</p>
+        <span className="mt-1 w-fit text-[11px] font-medium" style={{ color: ACCENT }}>
+          Analyze cookie compliance →
+        </span>
+      </div>
+      <div
+        className="demo-pop flex items-center justify-between rounded-[10px] px-3 py-2"
+        style={{ border: "1px solid rgba(33,12,55,0.08)", animationDelay: "0.6s" }}
+      >
+        <div className="flex items-center gap-2">
+          <AreaIcon name={REVIEW_AREAS[3].icon} size={14} />
+          <p className="text-[12px] font-medium">{REVIEW_AREAS[3].title}</p>
+        </div>
+        <span
+          className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+          style={{ backgroundColor: "rgba(22,163,74,0.1)", color: "#16a34a" }}
+        >
+          {REVIEW_AREAS[3].status}
+        </span>
+      </div>
+    </AnalyzeWindowFrame>
   );
 }
 
@@ -1709,12 +1908,9 @@ export function VerenaHomepage() {
               className={`area-reveal flex flex-col gap-6 ${startedVisible ? "is-shown" : ""} ${i === 1 ? "sm:mt-14" : ""}`}
               style={{ transitionDelay: `${i * 90}ms` }}
             >
-              <img
-                src={analyzeScreenshot}
-                alt=""
-                loading="lazy"
-                className="aspect-[393/260] w-full rounded-lg object-cover"
-              />
+              <div className="aspect-[393/260] w-full overflow-hidden rounded-lg">
+                <AnalyzeMockup step={card.icon} />
+              </div>
               <div className="flex items-start gap-4">
                 <span
                   style={{ ...bricolage, color: ACCENT }}
