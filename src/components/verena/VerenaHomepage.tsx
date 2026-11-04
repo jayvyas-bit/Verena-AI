@@ -1113,12 +1113,15 @@ function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
 
 function AnalyzeWindowFrame({ children }: { children: ReactNode }) {
   return (
-    <div
-      className="flex h-full w-full items-center justify-center rounded-lg p-3"
-      style={{ backgroundColor: "rgba(33,12,55,0.04)" }}
-    >
+    <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-lg p-3">
+      <img
+        src={gradientBackdrop}
+        alt=""
+        loading="lazy"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
       <div
-        className="flex h-full w-full flex-col gap-2.5 rounded-[16px] bg-white p-4"
+        className="relative flex h-full w-full flex-col gap-2.5 rounded-[16px] bg-white p-4"
         style={{ border: "1px solid rgba(33,12,55,0.08)" }}
       >
         {children}
