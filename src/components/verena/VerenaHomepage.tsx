@@ -1263,21 +1263,54 @@ function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
 
 function AnalyzeWindowFrame({ children }: { children: ReactNode }) {
   return (
-    <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-lg p-3">
-      <img
-        src={gradientBackdrop}
-        alt=""
-        loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-      <div
-        className="relative flex h-full w-full flex-col gap-2.5 rounded-[16px] bg-white p-4"
-        style={{ border: "1px solid rgba(33,12,55,0.08)" }}
-      >
-        {children}
-      </div>
+    <div
+      className="flex h-[300px] w-full flex-col gap-2.5 overflow-hidden rounded-2xl p-4"
+      style={{ backgroundColor: "#faf9fb", border: "1px solid #ebe6ee" }}
+    >
+      {children}
     </div>
   );
+}
+
+function StepIcon({ name }: { name: "website" | "scan" | "findings" }) {
+  const common = {
+    width: 22,
+    height: 22,
+    viewBox: "0 0 24 24",
+    fill: "none" as const,
+    stroke: "currentColor",
+    strokeWidth: 1.6,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true as const,
+  };
+  switch (name) {
+    case "website":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="8.5" />
+          <path d="M3.5 12h17" />
+          <path d="M12 3.5c2.4 2.3 3.6 5.3 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.3-3.6-8.5S9.6 5.8 12 3.5Z" />
+        </svg>
+      );
+    case "scan":
+      return (
+        <svg {...common}>
+          <path d="M4 9V6a2 2 0 0 1 2-2h3" />
+          <path d="M20 9V6a2 2 0 0 0-2-2h-3" />
+          <path d="M4 15v3a2 2 0 0 0 2 2h3" />
+          <path d="M20 15v3a2 2 0 0 1-2 2h-3" />
+        </svg>
+      );
+    case "findings":
+      return (
+        <svg {...common}>
+          <circle cx="10.5" cy="10.5" r="6.5" />
+          <path d="M15.3 15.3 20 20" />
+          <path d="M7.8 10.5l1.8 1.8 3.1-3.5" />
+        </svg>
+      );
+  }
 }
 
 function VerenaMarkIcon({ className }: { className?: string }) {
@@ -1312,15 +1345,18 @@ function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" }) {
             <VerenaMarkIcon className="h-3 w-3" />
           </div>
           <p className="text-[12.5px] leading-5 opacity-80">
-            I'll run a full compliance analysis. What's the website you'd like me to start with?
+            Next I'll run a full compliance analysis, starting with the website. What's the
+            website you'd like me to start with?
           </p>
         </div>
-        <span
-          className="demo-pop ml-8 w-fit rounded-[10px] px-2.5 py-1.5 text-[12px] font-medium"
-          style={{ backgroundColor: ACCENT, color: "#fff", animationDelay: "0.3s" }}
-        >
-          https://acme.com
-        </span>
+        <div className="demo-pop flex w-full justify-end" style={{ animationDelay: "0.3s" }}>
+          <span
+            className="w-fit rounded-[14px] px-3.5 py-2 text-[12px] font-medium"
+            style={{ backgroundColor: ACCENT, color: "#fff" }}
+          >
+            https://acme.com
+          </span>
+        </div>
         <div
           className="demo-pop mt-auto flex items-center gap-2 rounded-[10px] px-3 py-2.5"
           style={{
@@ -1335,7 +1371,7 @@ function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" }) {
           >
             <CheckIcon />
           </span>
-          <p className="flex-1 text-[11px] opacity-60">You're authorized by its owner</p>
+          <p className="flex-1 text-[11px] opacity-60">You're authorized by its owner.</p>
           <span
             className="demo-authorize-pulse shrink-0 rounded-[8px] px-2.5 py-1 text-[11px] font-medium"
             style={{ backgroundColor: ACCENT, color: "#fff" }}
@@ -1359,7 +1395,7 @@ function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" }) {
     return (
       <AnalyzeWindowFrame>
         <div className="flex items-center justify-between">
-          <p style={bricolage} className="text-[13px] font-semibold">Analysis of acme.com</p>
+          <p style={bricolage} className="text-[13px] font-semibold">Analysis of your website</p>
           <span className="text-[11px] opacity-50">4 of 6 areas</span>
         </div>
         <div className="h-1.5 w-full overflow-hidden rounded-full" style={{ backgroundColor: "rgba(33,12,55,0.08)" }}>
@@ -1419,55 +1455,47 @@ function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" }) {
   return (
     <AnalyzeWindowFrame>
       <div className="flex items-center justify-between">
-        <p style={bricolage} className="text-[13px] font-semibold">Compliance report — acme.com</p>
-        <span
-          className="demo-badge-pulse rounded-full px-2 py-0.5 text-[10px] font-semibold"
-          style={{ backgroundColor: "rgba(228,87,46,0.1)", color: "#e4572e" }}
-        >
-          2 exposed
-        </span>
+        <p style={bricolage} className="text-[13px] font-semibold">High Level Compliance Report</p>
+        <span className="text-[11px] opacity-50">Acme</span>
       </div>
-      <p className="text-[11px] opacity-50">6 of 6 areas checked</p>
+      <div className="flex items-center justify-between">
+        <p className="text-[12px] font-medium opacity-80">6 of 6 areas checked</p>
+        <p className="text-[11px] opacity-50">2 Exposed</p>
+      </div>
       <div className="flex gap-1.5">
         {REVIEW_AREAS.map((area, i) => (
           <span
             key={area.title}
             className="demo-bar h-1.5 flex-1 rounded-full"
-            style={{ backgroundColor: area.statusColor, animationDelay: `${i * 0.08}s` }}
+            style={{
+              backgroundColor: area.statusColor === "#e4572e" ? "#e4572e" : "#16a34a",
+              animationDelay: `${i * 0.08}s`,
+            }}
           />
         ))}
       </div>
       <div
-        className="demo-pop flex flex-col gap-1 rounded-[10px] p-3"
-        style={{
-          border: "1px solid rgba(33,12,55,0.08)",
-          backgroundColor: "rgba(33,12,55,0.02)",
-          animationDelay: "0.3s",
-        }}
+        className="demo-pop flex items-center justify-between rounded-[10px] px-3 py-2"
+        style={{ border: "1px solid rgba(33,12,55,0.08)", animationDelay: "0.3s" }}
       >
-        <div className="flex items-center gap-2">
-          <AreaIcon name={REVIEW_AREAS[2].icon} size={14} />
-          <p className="flex-1 text-[12px] font-medium">{REVIEW_AREAS[2].title}</p>
-          <SeverityTag severity="deficit" />
-        </div>
-        <p className="text-[11px] leading-4 opacity-60">{REVIEW_AREAS[2].body}</p>
-        <span className="mt-1 w-fit text-[11px] font-medium" style={{ color: ACCENT }}>
-          Analyze cookie compliance →
+        <p className="text-[12px] font-medium">Cookie compliance</p>
+        <span
+          className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+          style={{ backgroundColor: "#fde9e7", color: "#b42318" }}
+        >
+          EXPOSED
         </span>
       </div>
       <div
         className="demo-pop flex items-center justify-between rounded-[10px] px-3 py-2"
         style={{ border: "1px solid rgba(33,12,55,0.08)", animationDelay: "0.6s" }}
       >
-        <div className="flex items-center gap-2">
-          <AreaIcon name={REVIEW_AREAS[3].icon} size={14} />
-          <p className="text-[12px] font-medium">{REVIEW_AREAS[3].title}</p>
-        </div>
+        <p className="text-[12px] font-medium">ADA / Web accessibility</p>
         <span
           className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-          style={{ backgroundColor: "rgba(22,163,74,0.1)", color: "#16a34a" }}
+          style={{ backgroundColor: "#e2f3e8", color: "#17673a" }}
         >
-          {REVIEW_AREAS[3].status}
+          APPLICABLE
         </span>
       </div>
     </AnalyzeWindowFrame>
@@ -2330,29 +2358,31 @@ export function VerenaHomepage() {
             Set up your website, run an analysis, and explore the findings at your own pace.
           </p>
         </div>
-        <div className="mx-auto grid w-full max-w-[1536px] gap-x-10 gap-y-14 sm:grid-cols-3">
+        <div className="mx-auto grid w-full max-w-[1536px] gap-8 sm:grid-cols-3">
           {ANALYZE_CARDS.map((card, i) => (
             <div
               key={i}
-              className={`area-reveal flex flex-col gap-6 ${startedVisible ? "is-shown" : ""} ${i === 1 ? "sm:mt-14" : ""}`}
+              className={`area-reveal flex flex-col overflow-hidden rounded-2xl bg-white ${startedVisible ? "is-shown" : ""}`}
               style={{ transitionDelay: `${i * 90}ms` }}
             >
-              <div className="aspect-[393/260] w-full overflow-hidden rounded-lg">
-                <AnalyzeMockup step={card.icon} />
-              </div>
-              <div className="flex items-start gap-4">
-                <span
-                  style={{ ...bricolage, color: ACCENT }}
-                  className="text-[40px] font-semibold leading-none tracking-[-0.02em]"
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div className="flex flex-col gap-1.5 pt-1.5">
-                  <h3 style={bricolage} className="text-[20px] font-semibold tracking-[-0.01em]">
-                    {card.title}
-                  </h3>
-                  <p className="text-[15px] leading-6 opacity-75">{card.body}</p>
+              <div className="p-6 pb-0">
+                <div className="rounded-xl p-4" style={{ backgroundColor: "#f2f1f3" }}>
+                  <AnalyzeMockup step={card.icon} />
                 </div>
+              </div>
+              <div className="flex flex-col items-center gap-3 p-8 pt-6 text-center">
+                <span
+                  className="flex h-11 w-11 items-center justify-center rounded-full"
+                  style={{ backgroundColor: "rgba(33,12,55,0.06)", color: INK }}
+                >
+                  <StepIcon name={card.icon} />
+                </span>
+                <h3 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em]">
+                  {card.title}
+                </h3>
+                <p className="text-[16px] leading-6" style={{ color: INK }}>
+                  {card.body}
+                </p>
               </div>
             </div>
           ))}
