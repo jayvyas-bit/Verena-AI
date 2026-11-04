@@ -2254,14 +2254,6 @@ export function VerenaHomepage() {
         style={{ backgroundColor: INK }}
         className="section-pad-x section-pad-y-lg relative flex flex-col items-center overflow-hidden text-center text-white"
       >
-        <img
-          src={ellipse92}
-          alt=""
-          width={1236}
-          height={818}
-          loading="lazy"
-          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        />
         <div
           className={`area-reveal relative z-10 flex max-w-[794px] flex-col items-center gap-2 ${statementVisible ? "is-shown" : ""}`}
         >
