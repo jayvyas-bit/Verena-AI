@@ -2468,8 +2468,8 @@ export function VerenaHomepage() {
         </div>
         <button
           type="button"
-          style={{ backgroundColor: ACCENT, transitionDelay: "120ms" } as CSSProperties}
-          className={`area-reveal relative z-10 rounded-full px-6 py-3 text-[16px] font-medium text-white transition duration-200 ease-out hover:-translate-y-px hover:brightness-110 active:translate-y-0 active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37] ${humanVisible ? "is-shown" : ""}`}
+          style={{ transitionDelay: "120ms" } as CSSProperties}
+          className={`area-reveal relative z-10 rounded-full bg-[#2653F3] px-6 py-3 text-[16px] font-medium text-white transition duration-200 ease-out hover:-translate-y-px hover:bg-[#1c3fd6] active:translate-y-0 active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37] ${humanVisible ? "is-shown" : ""}`}
         >
           Explore +Human
         </button>
