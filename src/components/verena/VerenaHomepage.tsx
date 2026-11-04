@@ -1976,7 +1976,7 @@ export function VerenaHomepage() {
       )}
 
       {/* Nav */}
-      <div className="sticky top-0 z-30 border-b border-[rgba(33,12,55,0.08)] bg-white/70 backdrop-blur-md backdrop-saturate-150">
+      <div className="sticky top-0 z-30 bg-white/70 backdrop-blur-md backdrop-saturate-150">
         <header className="section-pad-x mx-auto flex h-20 max-w-[1536px] items-center justify-between gap-6">
           <img src={verenaLogo} alt="Verena" className="h-[2rem] w-auto object-contain" />
 
