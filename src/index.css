@@ -580,11 +580,11 @@ button:not(:disabled),
   }
 
   .fluid-h1 {
-    font-size: 24px;
+    font-size: 28px;
   }
 
   .fluid-h2 {
-    font-size: 22px;
+    font-size: 26px;
   }
 
   .fluid-h2-lg {
@@ -621,6 +621,11 @@ button:not(:disabled),
   .section-pad-y-sm {
     padding-top: 2.5rem;
     padding-bottom: 2.5rem;
+  }
+
+  .scan-section-pad-mobile {
+    padding-top: 48px;
+    padding-bottom: 48px;
   }
 }
 

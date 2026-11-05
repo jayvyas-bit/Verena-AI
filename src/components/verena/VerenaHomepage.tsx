@@ -2686,7 +2686,7 @@ export function VerenaHomepage() {
       {/* More than a website scan */}
       <section
         ref={scanRef}
-        className="section-pad-x section-pad-y flex flex-col items-center gap-16 bg-white"
+        className="section-pad-x section-pad-y scan-section-pad-mobile flex flex-col items-center gap-16 bg-white"
       >
         <div
           className={`area-reveal flex max-w-[960px] flex-col items-center gap-2 text-center ${scanVisible ? "is-shown" : ""}`}
@@ -2815,8 +2815,11 @@ export function VerenaHomepage() {
               )}
             </button>
           </div>
-          <div className="flex w-full flex-wrap items-center justify-between gap-4">
-            <p key={activeTool} className="tool-caption-swap text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
+          <div className="flex w-full flex-col items-center gap-4 sm:flex-row sm:flex-wrap sm:justify-between">
+            <p
+              key={activeTool}
+              className="tool-caption-swap text-center text-[14px] leading-5 sm:text-left sm:text-[18px] sm:leading-[27px]"
+            >
               {TOOL_CAPTIONS[activeTool]}
             </p>
             <div className="flex shrink-0 items-center gap-1">
@@ -2846,7 +2849,7 @@ export function VerenaHomepage() {
       {/* Six areas */}
       <section
         style={{ backgroundColor: CREAM }}
-        className="section-pad-x section-pad-y flex flex-col items-center gap-16"
+        className="section-pad-x section-pad-y flex flex-col items-center gap-8 sm:gap-16"
       >
         <div className="flex max-w-[960px] flex-col items-center gap-2 text-center">
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
@@ -2897,12 +2900,15 @@ export function VerenaHomepage() {
                   <div className="lg:hidden">
                     <div className={`area-accordion-body ${isActive ? "is-open" : ""}`}>
                       <div className="overflow-hidden">
-                        <div className="relative mb-6 flex min-h-[420px] items-stretch justify-center overflow-hidden rounded-[20px] p-4">
+                        <div
+                          className="relative mb-6 flex min-h-[420px] items-stretch justify-center overflow-hidden rounded-[20px] p-4"
+                          style={{ backgroundColor: CREAM }}
+                        >
                           <img
                             src={gradientBackdrop}
                             alt=""
                             loading="lazy"
-                            className="absolute inset-0 h-full w-full object-cover"
+                            className="absolute inset-0 h-full w-full object-contain"
                           />
                           <div className="relative w-full max-w-[500px]">
                             <AreaDetailCard area={area} />
@@ -2918,8 +2924,9 @@ export function VerenaHomepage() {
           <div
             id="area-detail-panel"
             className="hidden min-h-[520px] items-stretch justify-center overflow-hidden rounded-[20px] p-4 sm:p-8 lg:relative lg:flex lg:sticky lg:top-24 lg:self-start"
+            style={{ backgroundColor: CREAM }}
           >
-            <img src={gradientBackdrop} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+            <img src={gradientBackdrop} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-contain" />
             <div className="relative grid w-full max-w-[500px]">
               {leavingArea !== null ? (
                 <div
