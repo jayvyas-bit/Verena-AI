@@ -3250,7 +3250,7 @@ export function VerenaHomepage() {
       <section
         ref={ctaRef}
         className="section-pad-y-lg relative overflow-hidden"
-        style={{ backgroundColor: CREAM }}
+        style={{ backgroundColor: CREAM, paddingBottom: 0 }}
       >
         <div
           className={`area-reveal section-pad-x relative mx-auto flex max-w-[1280px] flex-col items-center gap-8 text-center ${ctaVisible ? "is-shown" : ""}`}
