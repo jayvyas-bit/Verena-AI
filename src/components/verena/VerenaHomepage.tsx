@@ -3006,14 +3006,15 @@ export function VerenaHomepage() {
                 <div
                   key={area.title}
                   className={`area-reveal overflow-hidden rounded-2xl transition-colors duration-200 ${
-                    isActive ? "" : "bg-[rgba(33,12,55,0.035)] hover:bg-[rgba(33,12,55,0.06)]"
+                    isActive ? "" : "bg-[#f4f0f8] hover:bg-[#ede6f5]"
                   } ${areasVisible ? "is-shown" : ""}`}
                   style={{
                     transitionDelay: `${Math.min(index, 6) * 70}ms`,
                     ...(isActive
                       ? {
                           backgroundColor: "#ffffff",
-                          boxShadow: "0 1px 2px rgba(33,12,55,0.06), 0 16px 32px -20px rgba(33,12,55,0.22)",
+                          boxShadow:
+                            "0 0 0 1px rgba(33,12,55,0.05), 0 2px 6px rgba(33,12,55,0.07), 0 24px 48px -16px rgba(33,12,55,0.32)",
                         }
                       : undefined),
                   }}
