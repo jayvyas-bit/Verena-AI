@@ -3380,7 +3380,7 @@ export function VerenaHomepage() {
             >
               Explore what your website is missing
             </h2>
-            <p className="max-w-[560px] text-[15px] leading-6 sm:text-[18px] sm:leading-[27px]">
+            <p className="max-w-[560px] text-[14px] leading-6 sm:text-[18px] sm:leading-[27px]">
               Drop in your URL and Verena maps every compliance gap, with evidence and drafted fixes ready
               to ship
             </p>
