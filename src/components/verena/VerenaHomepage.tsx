@@ -1231,6 +1231,95 @@ function SeverityTag({ severity }: { severity: keyof typeof SEVERITY_META }) {
   );
 }
 
+function ScoreRing({ score, color }: { score: number; color: string }) {
+  const radius = 19;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference * (1 - score / 100);
+  return (
+    <div
+      className="relative flex h-11 w-11 shrink-0 items-center justify-center"
+      role="img"
+      aria-label={`Score ${score} out of 100`}
+    >
+      <svg width={44} height={44} viewBox="0 0 44 44" className="-rotate-90" aria-hidden="true">
+        <circle cx="22" cy="22" r={radius} fill="none" stroke="rgba(33,12,55,0.08)" strokeWidth="3.5" />
+        <circle
+          cx="22"
+          cy="22"
+          r={radius}
+          fill="none"
+          stroke={color}
+          strokeWidth="3.5"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          style={{ transition: "stroke-dashoffset 600ms cubic-bezier(0.16,1,0.3,1)" }}
+        />
+      </svg>
+      <span className="absolute text-[12px] font-semibold" style={{ color }} aria-hidden="true">
+        {score}
+      </span>
+    </div>
+  );
+}
+
+function RemediationIcon() {
+  return (
+    <svg
+      width={12}
+      height={12}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.9v.2h5v-.2c0-.8.4-1.5 1-1.9A6 6 0 0 0 12 3Z" />
+    </svg>
+  );
+}
+
+function FindingIcon({ severity }: { severity: keyof typeof SEVERITY_META }) {
+  const color = SEVERITY_META[severity].color;
+  const common = {
+    width: 12,
+    height: 12,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2.2,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true as const,
+  };
+  return (
+    <span
+      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
+      style={{ backgroundColor: `${color}1a`, color }}
+    >
+      {severity === "verified" ? (
+        <svg {...common}>
+          <path d="M5 12.5l4.5 4.5L19 7" />
+        </svg>
+      ) : severity === "warning" ? (
+        <svg {...common}>
+          <path d="M12 9v4.2" />
+          <path d="M10.3 4.2 2.9 17a1.8 1.8 0 0 0 1.6 2.7h15a1.8 1.8 0 0 0 1.6-2.7L13.7 4.2a1.8 1.8 0 0 0-3.4 0Z" />
+          <circle cx="12" cy="16.4" r="0.1" fill="currentColor" stroke="currentColor" strokeWidth="1.6" />
+        </svg>
+      ) : (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="8.5" />
+          <path d="M12 7.5v5.5" />
+          <circle cx="12" cy="16.4" r="0.1" fill="currentColor" stroke="currentColor" strokeWidth="1.6" />
+        </svg>
+      )}
+    </span>
+  );
+}
+
 function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
   return (
     <div className="flex h-full w-full max-w-[500px] flex-col gap-4 rounded-2xl bg-white p-6 shadow-[0_4px_12px_rgba(33,12,55,0.06),0_16px_32px_-8px_rgba(33,12,55,0.14)]">
@@ -1238,7 +1327,7 @@ function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
         <div className="flex items-center gap-2.5">
           <div
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
-            style={{ backgroundColor: "rgba(33,12,55,0.06)" }}
+            style={{ backgroundColor: `${area.statusColor}14`, color: area.statusColor }}
           >
             <AreaIcon name={area.icon} size={18} />
           </div>
@@ -1249,14 +1338,7 @@ function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
             <p className="text-[12px] opacity-60">{area.auditLabel}</p>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
-          <span
-            className="rounded-full px-2.5 py-1 text-[11px] font-semibold"
-            style={{ backgroundColor: `${area.statusColor}14`, color: area.statusColor }}
-          >
-            {area.score}/100
-          </span>
-        </div>
+        <ScoreRing score={area.score} color={area.statusColor} />
       </div>
 
       <div className="flex flex-1 flex-col gap-2">
@@ -1264,8 +1346,9 @@ function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
           <div
             key={finding.title}
             className="flex items-start gap-3 rounded-[10px] px-3 py-2.5"
-            style={{ border: "1px solid rgba(33,12,55,0.08)" }}
+            style={{ border: "1px solid rgba(33,12,55,0.08)", boxShadow: "0 1px 2px rgba(33,12,55,0.02)" }}
           >
+            <FindingIcon severity={finding.severity} />
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium leading-snug">{finding.title}</p>
               <p className="mt-0.5 text-[12px] leading-snug opacity-60">{finding.detail}</p>
@@ -1280,10 +1363,18 @@ function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
           className="flex items-center justify-between gap-3 rounded-[10px] px-3 py-2.5"
           style={{ backgroundColor: "rgba(38,83,243,0.06)" }}
         >
-          <p className="text-[12px] leading-snug" style={{ color: ACCENT }}>
-            <span className="font-semibold">Suggested remediation: </span>
-            {area.remediation.label}
-          </p>
+          <div className="flex min-w-0 items-start gap-2.5">
+            <span
+              className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
+              style={{ backgroundColor: "rgba(38,83,243,0.14)", color: ACCENT }}
+            >
+              <RemediationIcon />
+            </span>
+            <p className="text-[12px] leading-snug" style={{ color: ACCENT }}>
+              <span className="font-semibold">Suggested remediation: </span>
+              {area.remediation.label}
+            </p>
+          </div>
           <span
             className="shrink-0 rounded-[8px] px-2.5 py-1.5 text-[12px] font-medium"
             style={{ backgroundColor: ACCENT, color: "#fff" }}
@@ -1292,9 +1383,17 @@ function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
           </span>
         </div>
       ) : (
-        <p className="text-[12px] font-medium" style={{ color: STATUS_COLORS.verified }}>
-          No action needed — this area passed review.
-        </p>
+        <div className="flex items-center gap-2.5 px-1">
+          <span
+            className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
+            style={{ backgroundColor: "rgba(22,163,74,0.14)", color: STATUS_COLORS.verified }}
+          >
+            <CheckIcon />
+          </span>
+          <p className="text-[12px] font-medium" style={{ color: STATUS_COLORS.verified }}>
+            No action needed — this area passed review.
+          </p>
+        </div>
       )}
     </div>
   );
@@ -1555,12 +1654,17 @@ const FLOW_OUTPUTS = [
 const FLOW_NODE_YS = [40, 140, 240, 340, 440];
 
 const FLOW_EASE_OUT = "0.16 1 0.3 1";
-const FLOW_DOT_DUR = 0.85;
+const FLOW_DOT_DUR = 0.55;
 const FLOW_DOT_STAGGER = 0.1;
-const FLOW_CENTER_BEGIN = 0.9;
-const FLOW_CENTER_DUR = 0.65;
-const FLOW_OUTPUT_START = 1.3;
-const FLOW_CYCLE_PAUSE = 1.5;
+// Each phase only begins once the previous one has actually finished, so the
+// diagram reads as gather -> review -> deliver instead of three overlapping blurs.
+const FLOW_INPUTS_DONE = (FLOW_INPUTS.length - 1) * FLOW_DOT_STAGGER + FLOW_DOT_DUR;
+const FLOW_CENTER_BEGIN = FLOW_INPUTS_DONE + 0.1;
+const FLOW_CENTER_DUR = 0.5;
+const FLOW_PULSE_BEGIN = FLOW_CENTER_BEGIN + FLOW_CENTER_DUR;
+const FLOW_PULSE_DUR = 0.4;
+const FLOW_OUTPUT_START = FLOW_PULSE_BEGIN + 0.1;
+const FLOW_CYCLE_PAUSE = 1;
 const FLOW_CYCLE_DURATION =
   (FLOW_OUTPUT_START + (FLOW_OUTPUTS.length - 1) * FLOW_DOT_STAGGER + FLOW_DOT_DUR + FLOW_CYCLE_PAUSE) * 1000;
 
@@ -1570,6 +1674,7 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
   const sweepGradId = `${uid}-sweep`;
   const clipId = `${uid}-clip`;
   const glowId = `${uid}-glow`;
+  const boxGlowId = `${uid}-boxglow`;
   const prefersReducedMotion =
     typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const animateEnabled = active && !prefersReducedMotion;
@@ -1601,6 +1706,17 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
           </clipPath>
           <filter id={glowId} x="-200%" y="-200%" width="500%" height="500%">
             <feGaussianBlur stdDeviation="3" />
+          </filter>
+          <filter id={boxGlowId} x="-120%" y="-120%" width="340%" height="340%">
+            <feGaussianBlur stdDeviation="8" in="SourceGraphic" result="blur">
+              {animateEnabled && (
+                <animate attributeName="stdDeviation" values="6;11;6" dur="3s" repeatCount="indefinite" />
+              )}
+            </feGaussianBlur>
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
           </filter>
         </defs>
 
@@ -1669,7 +1785,15 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
                 strokeWidth="1.5"
               />
               {animateEnabled && (
-                <circle key={`${pathId}-${cycle}`} className="flow-motion" r="4.5" fill="#8aa0ff" filter={`url(#${glowId})`}>
+                <circle
+                  key={`${pathId}-${cycle}`}
+                  className="flow-motion"
+                  r="5"
+                  fill={ACCENT}
+                  stroke="#ffffff"
+                  strokeWidth="1"
+                  filter={`url(#${glowId})`}
+                >
                   <animateMotion
                     dur={`${FLOW_DOT_DUR}s`}
                     begin={`${FLOW_OUTPUT_START + i * FLOW_DOT_STAGGER}s`}
@@ -1727,7 +1851,7 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
         <rect x="498" y="135" width="12" height="210" rx="5" fill="#5b7bff" opacity="0.65" />
         <rect x="518" y="125" width="12" height="230" rx="5" fill="#5b7bff" opacity="0.85" />
 
-        <g style={{ filter: "drop-shadow(0 0 32px rgba(38,83,243,0.45))" }}>
+        <g style={{ filter: `url(#${boxGlowId})` }}>
           <g clipPath={`url(#${clipId})`}>
             <rect x="545" y="110" width="255" height="260" fill={`url(#${boxGradId})`} />
             {animateEnabled && (
@@ -1749,6 +1873,19 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
                   keyTimes="0;0.15;0.75;1"
                   dur={`${FLOW_CENTER_DUR}s`}
                   begin={`${FLOW_CENTER_BEGIN}s`}
+                  repeatCount="1"
+                  fill="freeze"
+                />
+              </rect>
+            )}
+            {animateEnabled && (
+              <rect key={`pulse-${cycle}`} className="flow-motion" x="545" y="110" width="255" height="260" fill="#ffffff" opacity="0">
+                <animate
+                  attributeName="opacity"
+                  values="0;0.32;0"
+                  keyTimes="0;0.5;1"
+                  dur={`${FLOW_PULSE_DUR}s`}
+                  begin={`${FLOW_PULSE_BEGIN}s`}
                   repeatCount="1"
                   fill="freeze"
                 />
@@ -2877,34 +3014,48 @@ export function VerenaHomepage() {
           </p>
         </div>
         <div className="grid w-full max-w-[1536px] gap-10 lg:grid-cols-2 lg:gap-6">
-          <div className="flex flex-col" role="group" aria-label="Review areas" aria-controls="area-detail-panel">
+          <div className="flex flex-col gap-3" role="group" aria-label="Review areas" aria-controls="area-detail-panel">
             {REVIEW_AREAS.map((area, index) => {
               const isActive = activeArea === index;
               return (
                 <div
                   key={area.title}
-                  className={index > 0 ? "border-t" : ""}
-                  style={{ borderColor: "rgba(33,12,55,0.08)" }}
+                  className={`overflow-hidden rounded-2xl transition-colors duration-200 ${
+                    isActive ? "" : "bg-[rgba(33,12,55,0.035)] hover:bg-[rgba(33,12,55,0.06)]"
+                  }`}
+                  style={
+                    isActive
+                      ? {
+                          backgroundColor: "#ffffff",
+                          boxShadow: "0 1px 2px rgba(33,12,55,0.06), 0 16px 32px -20px rgba(33,12,55,0.22)",
+                        }
+                      : undefined
+                  }
                 >
                   <button
                     type="button"
                     onClick={() => setActiveArea(index)}
                     aria-pressed={isActive}
                     aria-expanded={isActive}
-                    className="flex w-full items-start gap-4 rounded-2xl px-5 py-7 text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
-                    style={{ backgroundColor: isActive ? "rgba(33,12,55,0.05)" : "transparent" }}
+                    className="flex w-full items-start gap-4 px-5 py-6 text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
                   >
+                    <div
+                      className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+                      style={{ backgroundColor: `${area.statusColor}14`, color: area.statusColor }}
+                    >
+                      <AreaIcon name={area.icon} size={18} />
+                    </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-3">
                         <span
-                          style={{ ...bricolage, opacity: isActive ? 1 : 0.6 }}
+                          style={{ ...bricolage, opacity: isActive ? 1 : 0.7 }}
                           className="text-[22px] font-semibold tracking-[-0.01em] transition-opacity sm:text-[26px]"
                         >
                           {area.title}
                         </span>
                         <span
-                          className="shrink-0 text-[13px] font-medium transition-colors"
-                          style={isActive ? { color: area.statusColor } : { color: INK, opacity: 0.6 }}
+                          className="shrink-0 rounded-full px-2.5 py-1 text-[12px] font-semibold"
+                          style={{ backgroundColor: `${area.statusColor}14`, color: area.statusColor }}
                         >
                           {area.status}
                         </span>
