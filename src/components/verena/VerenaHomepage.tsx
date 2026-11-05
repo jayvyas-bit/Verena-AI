@@ -2657,7 +2657,7 @@ export function VerenaHomepage() {
           startedInViewRef.current = el;
         }}
         style={{ backgroundColor: CREAM }}
-        className="section-pad-x section-pad-y flex flex-col gap-16"
+        className="section-pad-x section-pad-y flex flex-col gap-8 sm:gap-16"
       >
         <div
           className={`area-reveal mx-auto flex w-full max-w-[960px] flex-col items-center gap-2 text-center ${startedVisible ? "is-shown" : ""}`}
