@@ -2549,7 +2549,7 @@ export function VerenaHomepage() {
       {/* Trusted-by logo strip */}
       <section
         ref={trustedRef}
-        className={`area-reveal section-pad-x section-pad-y-sm relative flex items-center overflow-hidden ${trustedVisible ? "is-shown" : ""}`}
+        className={`area-reveal section-pad-x section-pad-y-sm relative flex flex-col-reverse items-center gap-3 overflow-hidden sm:flex-row sm:gap-0 ${trustedVisible ? "is-shown" : ""}`}
       >
         <div
           className="relative w-full overflow-hidden"
@@ -2579,11 +2579,7 @@ export function VerenaHomepage() {
           </div>
         </div>
         <div
-          className="absolute left-1/2 top-1/2 flex h-[120px] -translate-x-1/2 -translate-y-1/2 items-center justify-center px-6 sm:px-20"
-          style={{
-            backgroundImage:
-              "linear-gradient(270deg, rgba(255,255,255,0.95) 0%, rgb(255,255,255) 30%, rgb(255,255,255) 70%, rgba(255,255,255,0.95) 100%)",
-          }}
+          className="flex items-center justify-center px-6 sm:absolute sm:left-1/2 sm:top-1/2 sm:h-[120px] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:px-20 sm:bg-[linear-gradient(270deg,rgba(255,255,255,0.95)_0%,rgb(255,255,255)_30%,rgb(255,255,255)_70%,rgba(255,255,255,0.95)_100%)]"
         >
           <p className="whitespace-nowrap text-[15px] font-medium leading-[27px] sm:text-[20px]">
             Trusted by 1000+ website owner
