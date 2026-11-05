@@ -2409,13 +2409,13 @@ export function VerenaHomepage() {
             <br />
             But what might be{" "}
             <span
-              className="relative inline-block overflow-hidden"
-              style={{ paddingBottom: "0.12em", verticalAlign: "-0.12em" }}
+              className="relative inline-block"
+              style={{ paddingBottom: "0.12em" }}
             >
               missing?
               <span
                 aria-hidden="true"
-                className="hero-scan-sweep pointer-events-none absolute inset-0"
+                className="hero-scan-sweep pointer-events-none absolute inset-0 overflow-hidden"
               >
                 <span
                   className="absolute inset-y-0 left-1/2 -translate-x-1/2"
