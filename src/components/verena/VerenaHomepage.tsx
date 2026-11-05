@@ -3302,7 +3302,7 @@ export function VerenaHomepage() {
       </section>
 
       {/* FAQ */}
-      <section ref={faqRef} className="section-pad-x section-pad-y flex flex-col gap-8 bg-white sm:gap-16">
+      <section ref={faqRef} className="section-pad-x section-pad-y flex flex-col gap-4 bg-white sm:gap-16">
         <div
           className={`area-reveal mx-auto flex max-w-[960px] flex-col items-center gap-2 text-center ${faqVisible ? "is-shown" : ""}`}
         >
