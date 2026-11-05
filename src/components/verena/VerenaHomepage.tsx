@@ -1775,8 +1775,8 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
           </g>
           <rect x="545" y="110" width="255" height="260" rx="20" fill="none" stroke="rgba(255,255,255,0.18)" />
         </g>
-        <circle cx="672" cy="195" r="17" fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.3)" />
-        <foreignObject x="661" y="184" width="22" height="22">
+        <circle cx="672" cy="221" r="17" fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.3)" />
+        <foreignObject x="661" y="210" width="22" height="22">
           <div
             xmlns="http://www.w3.org/1999/xhtml"
             style={{ width: "22px", height: "22px", overflow: "hidden", borderRadius: "9999px" }}
@@ -1790,7 +1790,7 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
         </foreignObject>
         <text
           x="672"
-          y="245"
+          y="271"
           textAnchor="middle"
           fill="#ffffff"
           fontSize="21"
