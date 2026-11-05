@@ -3454,7 +3454,7 @@ export function VerenaHomepage() {
           className={`area-reveal mx-auto flex w-full max-w-[1200px] flex-col gap-5 ${faqVisible ? "is-shown" : ""}`}
         >
           <div className="relative -mx-6 px-6 sm:mx-0 sm:px-0">
-            <div className="overflow-x-auto no-scrollbar">
+            <div className="touch-pan-x overflow-x-auto no-scrollbar">
               <div role="tablist" aria-label="FAQ categories" className="flex w-max min-w-full flex-nowrap justify-center gap-2">
                 {FAQ_CATEGORIES.map((category) => {
                   const categoryId = toFaqId(`category-${category}`);
