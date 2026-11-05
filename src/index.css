@@ -21,6 +21,15 @@ button:not(:disabled),
   cursor: pointer;
 }
 
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 :root {
   --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
   --resize-dur: 600ms;
