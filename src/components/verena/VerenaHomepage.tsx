@@ -761,7 +761,7 @@ function CheckIcon() {
   );
 }
 
-function ChevronIcon({ open }: { open: boolean }) {
+function PlusMinusIcon({ open }: { open: boolean }) {
   return (
     <svg
       width={16}
@@ -774,12 +774,15 @@ function ChevronIcon({ open }: { open: boolean }) {
       strokeLinejoin="round"
       aria-hidden="true"
       className="shrink-0"
-      style={{
-        transform: open ? "rotate(180deg)" : "rotate(0deg)",
-        transition: "transform 300ms cubic-bezier(0.22, 1, 0.36, 1)",
-      }}
     >
-      <path d="M6 9l6 6 6-6" />
+      <path d="M5 12h14" />
+      <path
+        d="M12 5v14"
+        style={{
+          opacity: open ? 0 : 1,
+          transition: "opacity 200ms ease-in-out",
+        }}
+      />
     </svg>
   );
 }
@@ -2195,7 +2198,7 @@ export function VerenaHomepage() {
     ? FAQ_CATEGORIES.filter((category) => filteredFaqItems.some((item) => item.category === category))
     : [activeFaqCategory];
 
-  const renderFaqAccordionItem = (item: (typeof FAQ_ITEMS)[number], index: number, delayIndex: number) => {
+  const renderFaqAccordionItem = (item: (typeof FAQ_ITEMS)[number], delayIndex: number) => {
     const isOpen = openFaqIds.has(item.id);
     const triggerId = `${item.id}-trigger`;
     const panelId = `${item.id}-panel`;
@@ -2203,10 +2206,13 @@ export function VerenaHomepage() {
       <div
         key={item.id}
         id={item.id}
-        className={`area-reveal ${faqVisible ? "is-shown" : ""} ${index > 0 ? "border-t" : ""}`}
+        className={`area-reveal overflow-hidden rounded-2xl transition-colors duration-200 ${faqVisible ? "is-shown" : ""}`}
         style={{
           transitionDelay: `${Math.min(delayIndex, 6) * 70}ms`,
-          borderColor: "rgba(33,12,55,0.1)",
+          backgroundColor: isOpen ? "#ffffff" : "rgba(33,12,55,0.035)",
+          boxShadow: isOpen
+            ? "0 1px 2px rgba(33,12,55,0.06), 0 16px 32px -20px rgba(33,12,55,0.22)"
+            : "none",
         }}
       >
         <h3 className="m-0">
@@ -2216,17 +2222,20 @@ export function VerenaHomepage() {
             onClick={() => toggleFaq(item.id)}
             aria-expanded={isOpen}
             aria-controls={panelId}
-            className="flex w-full items-center justify-between gap-6 rounded-lg py-5 text-left transition-colors hover:bg-[rgba(33,12,55,0.03)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+            className="flex w-full items-center justify-between gap-6 px-6 py-5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
           >
-            <span style={bricolage} className="text-[17px] font-medium sm:text-[19px]">
+            <span
+              style={bricolage}
+              className={`text-[16px] font-medium transition-opacity sm:text-[18px] ${isOpen ? "opacity-100" : "opacity-65"}`}
+            >
               {item.q}
             </span>
-            <ChevronIcon open={isOpen} />
+            <PlusMinusIcon open={isOpen} />
           </button>
         </h3>
         <div id={panelId} className={`area-accordion-body ${isOpen ? "is-open" : ""}`}>
           <div className="overflow-hidden">
-            <p className="max-w-[560px] pb-5 pr-8 text-[16px] leading-6 opacity-70">{item.a}</p>
+            <p className="px-6 pb-6 text-[15px] leading-6 opacity-70">{item.a}</p>
           </div>
         </div>
       </div>
@@ -3255,11 +3264,11 @@ export function VerenaHomepage() {
                 >
                   {category}
                 </p>
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-3">
                   {filteredFaqItems
                     .filter((item) => item.category === category)
                     .map((item, index) =>
-                      renderFaqAccordionItem(item, index, Math.min(catIndex * 2 + index, 6)),
+                      renderFaqAccordionItem(item, Math.min(catIndex * 2 + index, 6)),
                     )}
                 </div>
               </div>
@@ -3269,9 +3278,9 @@ export function VerenaHomepage() {
               id={`faq-panel-${toFaqId(`category-${activeFaqCategory}`)}`}
               role="tabpanel"
               aria-labelledby={`faq-tab-${toFaqId(`category-${activeFaqCategory}`)}`}
-              className="flex flex-col"
+              className="flex flex-col gap-3"
             >
-              {filteredFaqItems.map((item, index) => renderFaqAccordionItem(item, index, index))}
+              {filteredFaqItems.map((item, index) => renderFaqAccordionItem(item, index))}
             </div>
           )}
         </div>
