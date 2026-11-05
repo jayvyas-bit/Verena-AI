@@ -1843,49 +1843,6 @@ export function VerenaHomepage() {
 
   const [activeArea, setActiveArea] = useState(0);
   const leavingArea = useStageTransition(activeArea);
-  const areaRowRefs = useRef<(HTMLButtonElement | null)[]>([]);
-
-  useEffect(() => {
-    let rafId = 0;
-
-    const update = () => {
-      rafId = 0;
-      const rows = areaRowRefs.current.filter((el): el is HTMLButtonElement => el !== null);
-      if (rows.length === 0) return;
-
-      const first = rows[0].getBoundingClientRect();
-      const last = rows[rows.length - 1].getBoundingClientRect();
-      if (last.bottom < 0 || first.top > window.innerHeight) return;
-
-      const viewportCenter = window.innerHeight / 2;
-      let closestIndex = 0;
-      let closestDistance = Infinity;
-      rows.forEach((row) => {
-        const rect = row.getBoundingClientRect();
-        const rowCenter = rect.top + rect.height / 2;
-        const distance = Math.abs(rowCenter - viewportCenter);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestIndex = Number(row.getAttribute("data-area-index"));
-        }
-      });
-      if (!Number.isNaN(closestIndex)) setActiveArea(closestIndex);
-    };
-
-    const onScroll = () => {
-      if (rafId) return;
-      rafId = requestAnimationFrame(update);
-    };
-
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (rafId) cancelAnimationFrame(rafId);
-    };
-  }, []);
 
   const [domain, setDomain] = useState("");
   const [domainError, setDomainError] = useState("");
@@ -2829,10 +2786,6 @@ export function VerenaHomepage() {
               return (
                 <button
                   key={area.title}
-                  ref={(el) => {
-                    areaRowRefs.current[index] = el;
-                  }}
-                  data-area-index={index}
                   type="button"
                   onClick={() => setActiveArea(index)}
                   aria-pressed={isActive}
