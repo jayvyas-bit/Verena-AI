@@ -2522,13 +2522,23 @@ export function VerenaHomepage() {
                 {domainError}
               </p>
             )}
-            <div className="flex items-center justify-center gap-8 pt-2 text-[16px] leading-6 sm:gap-10">
+            <div className="flex items-center justify-center gap-6 pt-2 text-[15px] font-medium leading-6 sm:gap-8">
               <span className="flex items-center gap-2">
-                <CheckIcon />
+                <span
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
+                  style={{ backgroundColor: "rgba(38,83,243,0.12)", color: ACCENT }}
+                >
+                  <CheckIcon />
+                </span>
                 Free to Start
               </span>
               <span className="flex items-center gap-2">
-                <CheckIcon />
+                <span
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
+                  style={{ backgroundColor: "rgba(38,83,243,0.12)", color: ACCENT }}
+                >
+                  <CheckIcon />
+                </span>
                 5000 free credits
               </span>
             </div>
