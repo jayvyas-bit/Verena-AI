@@ -1251,7 +1251,7 @@ function SeverityTag({ severity }: { severity: keyof typeof SEVERITY_META }) {
 
 function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
   return (
-    <div className="flex w-full max-w-[500px] flex-col gap-4 rounded-2xl bg-white p-6 shadow-[0_4px_12px_rgba(33,12,55,0.06),0_16px_32px_-8px_rgba(33,12,55,0.14)]">
+    <div className="flex h-full w-full max-w-[500px] flex-col gap-4 rounded-2xl bg-white p-6 shadow-[0_4px_12px_rgba(33,12,55,0.06),0_16px_32px_-8px_rgba(33,12,55,0.14)]">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <div
@@ -1277,7 +1277,7 @@ function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-1 flex-col gap-2">
         {area.findings.map((finding) => (
           <div
             key={finding.title}
@@ -2898,7 +2898,7 @@ export function VerenaHomepage() {
                   <div className="lg:hidden">
                     <div className={`area-accordion-body ${isActive ? "is-open" : ""}`}>
                       <div className="overflow-hidden">
-                        <div className="relative mb-6 flex min-h-[420px] items-center justify-center overflow-hidden rounded-[20px] p-4">
+                        <div className="relative mb-6 flex min-h-[420px] items-stretch justify-center overflow-hidden rounded-[20px] p-4">
                           <img
                             src={gradientBackdrop}
                             alt=""
@@ -2918,7 +2918,7 @@ export function VerenaHomepage() {
           </div>
           <div
             id="area-detail-panel"
-            className="hidden min-h-[520px] items-center justify-center overflow-hidden rounded-[20px] p-4 sm:p-8 lg:relative lg:flex lg:sticky lg:top-24 lg:self-start"
+            className="hidden min-h-[520px] items-stretch justify-center overflow-hidden rounded-[20px] p-4 sm:p-8 lg:relative lg:flex lg:sticky lg:top-24 lg:self-start"
           >
             <img src={gradientBackdrop} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
             <div className="relative grid w-full max-w-[500px]">
