@@ -787,26 +787,6 @@ function PlusMinusIcon({ open }: { open: boolean }) {
   );
 }
 
-function FaqSearchIcon() {
-  return (
-    <svg
-      width={16}
-      height={16}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.8}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className="shrink-0"
-    >
-      <circle cx="10.5" cy="10.5" r="6.5" />
-      <path d="M15.3 15.3 20 20" />
-    </svg>
-  );
-}
-
 function HeroStatusIcon({ status }: { status: "idle" | "loading" | "success" }) {
   const common = {
     width: 16,
@@ -2168,7 +2148,6 @@ export function VerenaHomepage() {
   const [ctaRef, ctaVisible] = useReveal<HTMLElement>();
   const [activeFaqCategory, setActiveFaqCategory] = useState<string>(FAQ_CATEGORIES[0]);
   const [openFaqId, setOpenFaqId] = useState<string | null>(FAQ_ITEMS[0].id);
-  const [faqQuery, setFaqQuery] = useState("");
 
   const toggleFaq = (id: string) => {
     setOpenFaqId((prev) => (prev === id ? null : id));
@@ -2176,22 +2155,11 @@ export function VerenaHomepage() {
 
   const selectFaqCategory = (category: string) => {
     setActiveFaqCategory(category);
-    setFaqQuery("");
     const firstItem = FAQ_ITEMS.find((item) => item.category === category);
     setOpenFaqId(firstItem ? firstItem.id : null);
   };
 
-  const normalizedFaqQuery = faqQuery.trim().toLowerCase();
-  const isFaqSearching = normalizedFaqQuery.length > 0;
-  const filteredFaqItems = isFaqSearching
-    ? FAQ_ITEMS.filter(
-        (item) =>
-          item.q.toLowerCase().includes(normalizedFaqQuery) || item.a.toLowerCase().includes(normalizedFaqQuery),
-      )
-    : FAQ_ITEMS.filter((item) => item.category === activeFaqCategory);
-  const visibleFaqCategories = isFaqSearching
-    ? FAQ_CATEGORIES.filter((category) => filteredFaqItems.some((item) => item.category === category))
-    : [activeFaqCategory];
+  const filteredFaqItems = FAQ_ITEMS.filter((item) => item.category === activeFaqCategory);
 
   const renderFaqAccordionItem = (item: (typeof FAQ_ITEMS)[number], delayIndex: number) => {
     const isOpen = openFaqId === item.id;
@@ -3196,26 +3164,10 @@ export function VerenaHomepage() {
         <div
           className={`area-reveal mx-auto flex w-full max-w-[1200px] flex-col gap-5 ${faqVisible ? "is-shown" : ""}`}
         >
-          <div className="relative mx-auto w-full max-w-[440px]">
-            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 opacity-50">
-              <FaqSearchIcon />
-            </span>
-            <input
-              type="search"
-              id="faq-search"
-              name="faq-search"
-              value={faqQuery}
-              onChange={(event) => setFaqQuery(event.target.value)}
-              placeholder="Search questions"
-              aria-label="Search frequently asked questions"
-              className="w-full rounded-full border border-[rgba(33,12,55,0.14)] bg-[rgba(33,12,55,0.02)] py-3 pl-11 pr-4 text-[16px] outline-none transition-colors placeholder:text-[rgba(33,12,55,0.45)] focus-visible:border-[#210c37] focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-[rgba(33,12,55,0.15)]"
-            />
-          </div>
-
           <div role="tablist" aria-label="FAQ categories" className="flex flex-wrap justify-center gap-2">
             {FAQ_CATEGORIES.map((category) => {
               const categoryId = toFaqId(`category-${category}`);
-              const active = !isFaqSearching && category === activeFaqCategory;
+              const active = category === activeFaqCategory;
               return (
                 <button
                   key={category}
@@ -3239,51 +3191,15 @@ export function VerenaHomepage() {
           </div>
         </div>
 
-        <div className={`mx-auto flex w-full flex-col ${isFaqSearching ? "max-w-[1200px]" : "max-w-[720px]"}`}>
-          {filteredFaqItems.length === 0 ? (
-            <p className="py-10 text-center text-[15px]" style={{ color: "rgba(33,12,55,0.6)" }}>
-              No questions match "{faqQuery}".{" "}
-              <button
-                type="button"
-                onClick={() => setFaqQuery("")}
-                className="underline underline-offset-2 hover:opacity-70"
-              >
-                Clear search
-              </button>
-            </p>
-          ) : isFaqSearching ? (
-            visibleFaqCategories.map((category, catIndex) => (
-              <div
-                key={category}
-                className={`grid gap-4 border-[rgba(33,12,55,0.12)] py-10 first:pt-0 sm:grid-cols-[200px_1fr] sm:gap-12 ${
-                  catIndex > 0 ? "border-t" : ""
-                }`}
-              >
-                <p
-                  style={bricolage}
-                  className="text-[13px] font-semibold uppercase tracking-[0.08em] opacity-60 sm:pt-5"
-                >
-                  {category}
-                </p>
-                <div className="flex flex-col gap-3">
-                  {filteredFaqItems
-                    .filter((item) => item.category === category)
-                    .map((item, index) =>
-                      renderFaqAccordionItem(item, Math.min(catIndex * 2 + index, 6)),
-                    )}
-                </div>
-              </div>
-            ))
-          ) : (
-            <div
-              id={`faq-panel-${toFaqId(`category-${activeFaqCategory}`)}`}
-              role="tabpanel"
-              aria-labelledby={`faq-tab-${toFaqId(`category-${activeFaqCategory}`)}`}
-              className="flex flex-col gap-3"
-            >
-              {filteredFaqItems.map((item, index) => renderFaqAccordionItem(item, index))}
-            </div>
-          )}
+        <div className="mx-auto flex w-full max-w-[720px] flex-col">
+          <div
+            id={`faq-panel-${toFaqId(`category-${activeFaqCategory}`)}`}
+            role="tabpanel"
+            aria-labelledby={`faq-tab-${toFaqId(`category-${activeFaqCategory}`)}`}
+            className="flex flex-col gap-3"
+          >
+            {filteredFaqItems.map((item, index) => renderFaqAccordionItem(item, index))}
+          </div>
         </div>
       </section>
 
