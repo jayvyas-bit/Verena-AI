@@ -2656,10 +2656,10 @@ export function VerenaHomepage() {
                 >
                   <StepIcon name={card.icon} />
                 </span>
-                <h3 style={bricolage} className="text-[32px] font-semibold leading-tight tracking-[-0.01em]">
+                <h3 style={bricolage} className="text-[22px] font-semibold leading-tight tracking-[-0.01em] sm:text-[32px]">
                   {card.title}
                 </h3>
-                <p className="text-[16px] leading-6" style={{ color: INK }}>
+                <p className="text-[14px] leading-5 sm:text-[16px] sm:leading-6" style={{ color: INK }}>
                   {card.body}
                 </p>
               </div>
