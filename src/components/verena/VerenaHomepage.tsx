@@ -1666,6 +1666,27 @@ const FLOW_OUTPUT_START = FLOW_PULSE_BEGIN + 0.1;
 const FLOW_CYCLE_PAUSE = 1;
 const FLOW_CYCLE_DURATION =
   (FLOW_OUTPUT_START + (FLOW_OUTPUTS.length - 1) * FLOW_DOT_STAGGER + FLOW_DOT_DUR + FLOW_CYCLE_PAUSE) * 1000;
+const FLOW_TOTAL_SEC = FLOW_CYCLE_DURATION / 1000;
+const FLOW_MOTION_SPLINES = `0 0 1 1;${FLOW_EASE_OUT};0 0 1 1`;
+
+// Builds a single repeatCount="indefinite" SMIL timeline that plays one short
+// local animation (beginSec..beginSec+durSec) inside a longer, constantly
+// repeating cycle (totalSec), so the motion loops forever without any JS
+// timer or element remount restarting it.
+function loopedTimeline(beginSec: number, durSec: number, totalSec: number, localKeyTimes: number[], localValues: string[]) {
+  const eps = 0.0001;
+  const scaledTimes = localKeyTimes.map((t) => (beginSec + t * durSec) / totalSec);
+  const keyTimes = [0, ...scaledTimes, 1];
+  for (let i = 1; i < keyTimes.length; i++) {
+    if (keyTimes[i] <= keyTimes[i - 1]) keyTimes[i] = Math.min(1, keyTimes[i - 1] + eps);
+  }
+  keyTimes[keyTimes.length - 1] = 1;
+  const values = [localValues[0], ...localValues, localValues[localValues.length - 1]];
+  return {
+    keyTimes: keyTimes.map((t) => t.toFixed(5)).join(";"),
+    values: values.join(";"),
+  };
+}
 
 function ComplianceFlowDiagram({ active }: { active: boolean }) {
   const uid = useId();
@@ -1677,15 +1698,6 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
   const prefersReducedMotion =
     typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const animateEnabled = active && !prefersReducedMotion;
-  const [cycle, setCycle] = useState(0);
-
-  useEffect(() => {
-    if (!animateEnabled) return;
-    const interval = window.setInterval(() => {
-      setCycle((c) => c + 1);
-    }, FLOW_CYCLE_DURATION);
-    return () => window.clearInterval(interval);
-  }, [animateEnabled]);
 
   return (
     <div aria-hidden="true" className="mx-auto hidden w-full max-w-[1100px] md:block">
@@ -1722,6 +1734,14 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
         {FLOW_INPUTS.map((label, i) => {
           const y = FLOW_NODE_YS[i];
           const pathId = `${uid}-in-${i}`;
+          const motion = loopedTimeline(i * FLOW_DOT_STAGGER, FLOW_DOT_DUR, FLOW_TOTAL_SEC, [0, 1], ["0", "1"]);
+          const opacity = loopedTimeline(
+            i * FLOW_DOT_STAGGER,
+            FLOW_DOT_DUR,
+            FLOW_TOTAL_SEC,
+            [0, 0.15, 0.8, 1],
+            ["0", "1", "1", "0"],
+          );
           return (
             <g key={label}>
               <path
@@ -1732,26 +1752,23 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
                 strokeWidth="1.5"
               />
               {animateEnabled && (
-                <circle key={`${pathId}-${cycle}`} className="flow-motion" r="4.5" fill="#8aa0ff" filter={`url(#${glowId})`}>
+                <circle className="flow-motion" r="4.5" fill="#8aa0ff" filter={`url(#${glowId})`}>
                   <animateMotion
-                    dur={`${FLOW_DOT_DUR}s`}
-                    begin={`${i * FLOW_DOT_STAGGER}s`}
-                    repeatCount="1"
-                    fill="freeze"
+                    dur={`${FLOW_TOTAL_SEC}s`}
+                    repeatCount="indefinite"
                     calcMode="spline"
-                    keyTimes="0;1"
-                    keySplines={FLOW_EASE_OUT}
+                    keyTimes={motion.keyTimes}
+                    keyPoints={motion.values}
+                    keySplines={FLOW_MOTION_SPLINES}
                   >
                     <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
                   </animateMotion>
                   <animate
                     attributeName="opacity"
-                    values="0;1;1;0"
-                    keyTimes="0;0.15;0.8;1"
-                    dur={`${FLOW_DOT_DUR}s`}
-                    begin={`${i * FLOW_DOT_STAGGER}s`}
-                    repeatCount="1"
-                    fill="freeze"
+                    dur={`${FLOW_TOTAL_SEC}s`}
+                    repeatCount="indefinite"
+                    keyTimes={opacity.keyTimes}
+                    values={opacity.values}
                   />
                 </circle>
               )}
@@ -1774,6 +1791,9 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
         {FLOW_OUTPUTS.map((label, i) => {
           const y = FLOW_NODE_YS[i];
           const pathId = `${uid}-out-${i}`;
+          const outBegin = FLOW_OUTPUT_START + i * FLOW_DOT_STAGGER;
+          const motion = loopedTimeline(outBegin, FLOW_DOT_DUR, FLOW_TOTAL_SEC, [0, 1], ["0", "1"]);
+          const opacity = loopedTimeline(outBegin, FLOW_DOT_DUR, FLOW_TOTAL_SEC, [0, 0.15, 0.8, 1], ["0", "1", "1", "0"]);
           return (
             <g key={label}>
               <path
@@ -1785,7 +1805,6 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
               />
               {animateEnabled && (
                 <circle
-                  key={`${pathId}-${cycle}`}
                   className="flow-motion"
                   r="5"
                   fill={ACCENT}
@@ -1794,24 +1813,21 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
                   filter={`url(#${glowId})`}
                 >
                   <animateMotion
-                    dur={`${FLOW_DOT_DUR}s`}
-                    begin={`${FLOW_OUTPUT_START + i * FLOW_DOT_STAGGER}s`}
-                    repeatCount="1"
-                    fill="freeze"
+                    dur={`${FLOW_TOTAL_SEC}s`}
+                    repeatCount="indefinite"
                     calcMode="spline"
-                    keyTimes="0;1"
-                    keySplines={FLOW_EASE_OUT}
+                    keyTimes={motion.keyTimes}
+                    keyPoints={motion.values}
+                    keySplines={FLOW_MOTION_SPLINES}
                   >
                     <mpath href={`#${pathId}`} xlinkHref={`#${pathId}`} />
                   </animateMotion>
                   <animate
                     attributeName="opacity"
-                    values="0;1;1;0"
-                    keyTimes="0;0.15;0.8;1"
-                    dur={`${FLOW_DOT_DUR}s`}
-                    begin={`${FLOW_OUTPUT_START + i * FLOW_DOT_STAGGER}s`}
-                    repeatCount="1"
-                    fill="freeze"
+                    dur={`${FLOW_TOTAL_SEC}s`}
+                    repeatCount="indefinite"
+                    keyTimes={opacity.keyTimes}
+                    values={opacity.values}
                   />
                 </circle>
               )}
@@ -1854,39 +1870,36 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
           <g clipPath={`url(#${clipId})`}>
             <rect x="545" y="110" width="255" height="260" fill={`url(#${boxGradId})`} />
             {animateEnabled && (
-              <rect key={`sweep-${cycle}`} className="flow-motion" y="110" height="260" width="70" fill={`url(#${sweepGradId})`}>
+              <rect className="flow-motion" y="110" height="260" width="70" fill={`url(#${sweepGradId})`}>
                 <animate
                   attributeName="x"
-                  values="490;800"
-                  keyTimes="0;1"
+                  dur={`${FLOW_TOTAL_SEC}s`}
+                  repeatCount="indefinite"
                   calcMode="spline"
-                  keySplines={FLOW_EASE_OUT}
-                  dur={`${FLOW_CENTER_DUR}s`}
-                  begin={`${FLOW_CENTER_BEGIN}s`}
-                  repeatCount="1"
-                  fill="freeze"
+                  keySplines={FLOW_MOTION_SPLINES}
+                  {...loopedTimeline(FLOW_CENTER_BEGIN, FLOW_CENTER_DUR, FLOW_TOTAL_SEC, [0, 1], ["490", "800"])}
                 />
                 <animate
                   attributeName="opacity"
-                  values="0;1;1;0"
-                  keyTimes="0;0.15;0.75;1"
-                  dur={`${FLOW_CENTER_DUR}s`}
-                  begin={`${FLOW_CENTER_BEGIN}s`}
-                  repeatCount="1"
-                  fill="freeze"
+                  dur={`${FLOW_TOTAL_SEC}s`}
+                  repeatCount="indefinite"
+                  {...loopedTimeline(
+                    FLOW_CENTER_BEGIN,
+                    FLOW_CENTER_DUR,
+                    FLOW_TOTAL_SEC,
+                    [0, 0.15, 0.75, 1],
+                    ["0", "1", "1", "0"],
+                  )}
                 />
               </rect>
             )}
             {animateEnabled && (
-              <rect key={`pulse-${cycle}`} className="flow-motion" x="545" y="110" width="255" height="260" fill="#ffffff" opacity="0">
+              <rect className="flow-motion" x="545" y="110" width="255" height="260" fill="#ffffff" opacity="0">
                 <animate
                   attributeName="opacity"
-                  values="0;0.32;0"
-                  keyTimes="0;0.5;1"
-                  dur={`${FLOW_PULSE_DUR}s`}
-                  begin={`${FLOW_PULSE_BEGIN}s`}
-                  repeatCount="1"
-                  fill="freeze"
+                  dur={`${FLOW_TOTAL_SEC}s`}
+                  repeatCount="indefinite"
+                  {...loopedTimeline(FLOW_PULSE_BEGIN, FLOW_PULSE_DUR, FLOW_TOTAL_SEC, [0, 0.5, 1], ["0", "0.32", "0"])}
                 />
               </rect>
             )}
@@ -2212,6 +2225,7 @@ export function VerenaHomepage() {
   const [startedInViewRef, startedInView] = useInViewport<HTMLElement>(0.2);
   const [analyzeLoopKey, setAnalyzeLoopKey] = useState(0);
   const [scanRef, scanVisible] = useReveal<HTMLElement>();
+  const [areasRef, areasVisible] = useReveal<HTMLElement>();
   const [humanRef, humanVisible] = useReveal<HTMLElement>();
   const [humanOrbitSectionRef, humanOrbitInView] = useInViewport<HTMLElement>(0.25);
   const avatarRefs = useRef<(HTMLImageElement | null)[]>([]);
@@ -2999,10 +3013,13 @@ export function VerenaHomepage() {
 
       {/* Six areas */}
       <section
+        ref={areasRef}
         style={{ backgroundColor: CREAM }}
         className="section-pad-x section-pad-y flex flex-col items-center gap-8 sm:gap-16"
       >
-        <div className="flex max-w-[960px] flex-col items-center gap-2 text-center">
+        <div
+          className={`area-reveal flex max-w-[960px] flex-col items-center gap-2 text-center ${areasVisible ? "is-shown" : ""}`}
+        >
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Six areas. One website review.
           </h2>
@@ -3017,17 +3034,18 @@ export function VerenaHomepage() {
               return (
                 <div
                   key={area.title}
-                  className={`overflow-hidden rounded-2xl transition-colors duration-200 ${
+                  className={`area-reveal overflow-hidden rounded-2xl transition-colors duration-200 ${
                     isActive ? "" : "bg-[rgba(33,12,55,0.035)] hover:bg-[rgba(33,12,55,0.06)]"
-                  }`}
-                  style={
-                    isActive
+                  } ${areasVisible ? "is-shown" : ""}`}
+                  style={{
+                    transitionDelay: `${Math.min(index, 6) * 70}ms`,
+                    ...(isActive
                       ? {
                           backgroundColor: "#ffffff",
                           boxShadow: "0 1px 2px rgba(33,12,55,0.06), 0 16px 32px -20px rgba(33,12,55,0.22)",
                         }
-                      : undefined
-                  }
+                      : undefined),
+                  }}
                 >
                   <button
                     type="button"
@@ -3088,8 +3106,8 @@ export function VerenaHomepage() {
           </div>
           <div
             id="area-detail-panel"
-            className="hidden min-h-[520px] items-stretch justify-center overflow-hidden rounded-[20px] p-4 sm:p-8 lg:relative lg:flex lg:sticky lg:top-24 lg:self-start"
-            style={{ backgroundColor: CREAM }}
+            className={`area-reveal hidden min-h-[520px] items-stretch justify-center overflow-hidden rounded-[20px] p-4 sm:p-8 lg:relative lg:flex lg:sticky lg:top-24 lg:self-start ${areasVisible ? "is-shown" : ""}`}
+            style={{ backgroundColor: CREAM, transitionDelay: "150ms" }}
           >
             <img src={gradientBackdrop} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
             <div className="relative grid w-full max-w-[500px]">
