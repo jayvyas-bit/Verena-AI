@@ -3245,7 +3245,7 @@ export function VerenaHomepage() {
           </a>
 
           {/* Enterprise: contact bar instead of a fourth self-serve tier */}
-          <div className="flex w-full max-w-[1200px] flex-col items-center justify-between gap-4 rounded-[16px] border border-[rgba(33,12,55,0.12)] bg-[rgba(33,12,55,0.03)] p-6 sm:flex-row">
+          <div className="flex w-full max-w-[920px] flex-col items-center justify-between gap-4 rounded-[16px] border border-[rgba(33,12,55,0.12)] bg-[rgba(33,12,55,0.03)] p-6 sm:flex-row">
             <div className="flex flex-col gap-1 text-center sm:text-left">
               <p style={bricolage} className="text-[16px] font-semibold">
                 {ENTERPRISE_PLAN.name}
@@ -3334,6 +3334,11 @@ export function VerenaHomepage() {
           alt="A woman with a backpack standing in a wildflower meadow, pointing toward distant mountains at sunset"
           loading="lazy"
           className="absolute inset-0 h-full w-full object-cover object-[32%_40%]"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-24 sm:h-40"
+          style={{ background: "linear-gradient(to bottom, #fff 0%, transparent 100%)" }}
         />
         <div
           aria-hidden="true"
