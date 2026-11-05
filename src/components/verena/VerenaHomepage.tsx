@@ -2755,7 +2755,7 @@ export function VerenaHomepage() {
             <br className="hidden sm:block" />
             {" "}over your to-do list
           </h2>
-          <p className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
+          <p className="text-[14px] leading-5 sm:text-[16px] sm:leading-6">
             No more piecing together information from different sources. Verena brings
             <br className="hidden sm:block" />
             {" "}your website review into one place.
@@ -2785,7 +2785,7 @@ export function VerenaHomepage() {
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Getting started is simpler than you think
           </h2>
-          <p className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
+          <p className="text-[14px] leading-5 sm:text-[16px] sm:leading-6">
             Set up your website, run an analysis, and explore the findings at your own pace.
           </p>
         </div>
@@ -2831,7 +2831,7 @@ export function VerenaHomepage() {
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             More than a website scan
           </h2>
-          <p className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
+          <p className="text-[14px] leading-5 sm:text-[16px] sm:leading-6">
             Explore the tools that help you understand findings, make improvements, and keep track
             of your website
           </p>
@@ -2955,7 +2955,7 @@ export function VerenaHomepage() {
           <div className="flex w-full flex-col items-center gap-4 sm:flex-row sm:flex-wrap sm:justify-between">
             <p
               key={activeTool}
-              className="tool-caption-swap text-center text-[14px] leading-5 sm:text-left sm:text-[18px] sm:leading-[27px]"
+              className="tool-caption-swap text-center text-[14px] leading-5 sm:text-left sm:text-[16px] sm:leading-6"
             >
               {TOOL_CAPTIONS[activeTool]}
             </p>
@@ -2995,7 +2995,7 @@ export function VerenaHomepage() {
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Six areas. One website review.
           </h2>
-          <p className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
+          <p className="text-[14px] leading-5 sm:text-[16px] sm:leading-6">
             From accessibility and privacy to cookies, policies, emails, and marketing claims
           </p>
         </div>
@@ -3150,7 +3150,7 @@ export function VerenaHomepage() {
             <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
               When AI isn't enough, there's +Human
             </h2>
-            <p className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
+            <p className="text-[14px] leading-5 sm:text-[16px] sm:leading-6">
               Access optional professional support for questions that need more than an automated
               analysis
             </p>
@@ -3177,7 +3177,7 @@ export function VerenaHomepage() {
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Choose what works for you
           </h2>
-          <p className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
+          <p className="text-[14px] leading-5 sm:text-[16px] sm:leading-6">
             AI-enabled compliance review, priced by how many credits you need each month
           </p>
         </div>
@@ -3190,7 +3190,7 @@ export function VerenaHomepage() {
                 key={plan.name}
                 style={plan.featured ? { backgroundColor: INK, transitionDelay: `${planIndex * 80}ms` } : { transitionDelay: `${planIndex * 80}ms` }}
                 className={`area-reveal flex flex-col gap-4 rounded-[20px] border border-[rgba(33,12,55,0.12)] p-6 ${
-                  plan.featured ? "text-white" : ""
+                  plan.featured ? "text-white" : "bg-white"
                 } ${pricingVisible ? "is-shown" : ""}`}
               >
                 {plan.featured ? (
@@ -3228,7 +3228,7 @@ export function VerenaHomepage() {
                   className={`mt-auto rounded-full px-5 py-3 text-[14px] font-medium transition duration-200 ease-out active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
                     plan.featured
                       ? "hover:-translate-y-px hover:brightness-110 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
-                      : "border border-[rgba(33,12,55,0.55)] hover:-translate-y-px hover:border-[rgba(33,12,55,0.75)] hover:bg-[rgba(33,12,55,0.04)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
+                      : "border border-[rgba(33,12,55,0.55)] hover:-translate-y-px hover:border-[#2653F3] hover:text-[#2653F3] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
                   }`}
                 >
                   {plan.cta}
@@ -3258,7 +3258,7 @@ export function VerenaHomepage() {
               </span>
               <button
                 type="button"
-                className="rounded-full border border-[rgba(33,12,55,0.55)] px-5 py-2.5 text-[14px] font-medium transition duration-200 ease-out hover:-translate-y-px hover:border-[rgba(33,12,55,0.75)] hover:bg-white active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                className="rounded-full border border-[rgba(33,12,55,0.55)] px-5 py-2.5 text-[14px] font-medium transition duration-200 ease-out hover:-translate-y-px hover:border-[#2653F3] hover:text-[#2653F3] active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
               >
                 {ENTERPRISE_PLAN.cta}
               </button>
@@ -3357,7 +3357,7 @@ export function VerenaHomepage() {
             >
               Explore what your website is missing
             </h2>
-            <p className="max-w-[560px] text-[14px] leading-6 sm:text-[18px] sm:leading-[27px]">
+            <p className="max-w-[560px] text-[14px] leading-6 sm:text-[16px] sm:leading-6">
               Drop in your URL and Verena maps every compliance gap, with evidence and drafted fixes ready
               to ship
             </p>
