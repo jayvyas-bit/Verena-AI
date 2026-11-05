@@ -2167,23 +2167,18 @@ export function VerenaHomepage() {
   const [faqRef, faqVisible] = useReveal<HTMLElement>();
   const [ctaRef, ctaVisible] = useReveal<HTMLElement>();
   const [activeFaqCategory, setActiveFaqCategory] = useState<string>(FAQ_CATEGORIES[0]);
-  const [openFaqIds, setOpenFaqIds] = useState<Set<string>>(() => new Set([FAQ_ITEMS[0].id]));
+  const [openFaqId, setOpenFaqId] = useState<string | null>(FAQ_ITEMS[0].id);
   const [faqQuery, setFaqQuery] = useState("");
 
   const toggleFaq = (id: string) => {
-    setOpenFaqIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+    setOpenFaqId((prev) => (prev === id ? null : id));
   };
 
   const selectFaqCategory = (category: string) => {
     setActiveFaqCategory(category);
     setFaqQuery("");
     const firstItem = FAQ_ITEMS.find((item) => item.category === category);
-    setOpenFaqIds(firstItem ? new Set([firstItem.id]) : new Set());
+    setOpenFaqId(firstItem ? firstItem.id : null);
   };
 
   const normalizedFaqQuery = faqQuery.trim().toLowerCase();
@@ -2199,7 +2194,7 @@ export function VerenaHomepage() {
     : [activeFaqCategory];
 
   const renderFaqAccordionItem = (item: (typeof FAQ_ITEMS)[number], delayIndex: number) => {
-    const isOpen = openFaqIds.has(item.id);
+    const isOpen = openFaqId === item.id;
     const triggerId = `${item.id}-trigger`;
     const panelId = `${item.id}-panel`;
     return (
