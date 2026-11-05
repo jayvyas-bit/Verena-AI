@@ -1852,7 +1852,7 @@ function ComplianceFlowDiagramMobile() {
 
 export function VerenaHomepage() {
   useDocumentHead({
-    title: "Verena — AI Website Compliance Scans | Invictus AI",
+    title: "Verena — AI Accessibility & ADA Compliance Scans | Invictus AI",
     description:
       "Scan your website for accessibility, privacy, cookie, and compliance issues with AI, backed by attorney-reviewed fixes through +Human. Start free.",
   });
