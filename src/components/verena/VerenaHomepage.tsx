@@ -3253,23 +3253,32 @@ export function VerenaHomepage() {
       </section>
 
       {/* Explorer CTA */}
-      <section
-        ref={ctaRef}
-        className="section-pad-y-lg relative overflow-hidden"
-        style={{ backgroundColor: CREAM, paddingBottom: 0 }}
-      >
+      <section ref={ctaRef} className="relative overflow-hidden" style={{ backgroundColor: CREAM }}>
+        <img
+          src={ctaExplorer}
+          alt="A woman with a backpack standing in a wildflower meadow, pointing toward distant mountains at sunset"
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover object-[32%_40%]"
+        />
         <div
-          className={`area-reveal section-pad-x relative mx-auto flex max-w-[1280px] flex-col items-center gap-8 text-center ${ctaVisible ? "is-shown" : ""}`}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-[75%]"
+          style={{ background: `linear-gradient(to bottom, ${CREAM} 0%, ${CREAM}d9 55%, transparent 100%)` }}
+        />
+        <div
+          className={`area-reveal section-pad-x relative mx-auto flex min-h-[640px] max-w-[1280px] flex-col items-center gap-8 pb-20 pt-16 text-center sm:min-h-[760px] sm:pb-28 sm:pt-24 ${ctaVisible ? "is-shown" : ""}`}
         >
-          <h2
-            style={bricolage}
-            className="max-w-[640px] text-[26px] font-normal leading-snug tracking-[-0.01em] sm:text-[34px]"
-          >
-            <span className="block" style={{ color: INK }}>
+          <div className="flex max-w-[640px] flex-col items-center gap-2">
+            <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
               Explore what your website is missing.
-            </span>
-            <span style={{ color: "rgba(33,12,55,0.4)" }}>Free scan. No credit card required.</span>
-          </h2>
+            </h2>
+            <p
+              className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]"
+              style={{ color: "rgba(33,12,55,0.45)" }}
+            >
+              Free scan. No credit card required.
+            </p>
+          </div>
           <p
             className="max-w-[560px] text-[15px] leading-6 sm:text-[18px] sm:leading-[27px]"
             style={{ color: "rgba(33,12,55,0.65)" }}
@@ -3336,23 +3345,7 @@ export function VerenaHomepage() {
                 {domainError}
               </p>
             )}
-            <button
-              type="button"
-              className="text-[14px] font-medium underline decoration-[rgba(33,12,55,0.3)] underline-offset-4 transition hover:decoration-[rgba(33,12,55,0.6)]"
-              style={{ color: "rgba(33,12,55,0.65)" }}
-            >
-              Talk to founder
-            </button>
           </div>
-        </div>
-
-        <div className="relative mt-12 w-full">
-          <img
-            src={ctaExplorer}
-            alt="A woman with a backpack standing in a wildflower meadow, pointing toward distant mountains at sunset"
-            loading="lazy"
-            className="block h-auto w-full"
-          />
         </div>
       </section>
 
