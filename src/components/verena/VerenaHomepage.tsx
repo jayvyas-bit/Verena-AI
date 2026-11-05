@@ -3183,7 +3183,7 @@ export function VerenaHomepage() {
       <section
         ref={pricingRef}
         style={{ backgroundColor: CREAM }}
-        className="section-pad-x section-pad-y flex flex-col items-center gap-16"
+        className="section-pad-x section-pad-y flex flex-col items-center gap-8 sm:gap-16"
       >
         <div
           className={`area-reveal flex max-w-[960px] flex-col items-center gap-2 text-center ${pricingVisible ? "is-shown" : ""}`}
