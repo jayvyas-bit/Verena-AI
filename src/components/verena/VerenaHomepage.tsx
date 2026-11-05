@@ -2305,13 +2305,11 @@ export function VerenaHomepage() {
       <div
         key={item.id}
         id={item.id}
-        className={`area-reveal overflow-hidden rounded-2xl transition-colors duration-200 ${faqVisible ? "is-shown" : ""}`}
+        className={`area-reveal overflow-hidden rounded-2xl border transition-colors duration-200 ${faqVisible ? "is-shown" : ""}`}
         style={{
           transitionDelay: `${Math.min(delayIndex, 6) * 70}ms`,
           backgroundColor: isOpen ? "#ffffff" : "rgba(33,12,55,0.035)",
-          boxShadow: isOpen
-            ? "0 1px 2px rgba(33,12,55,0.06), 0 16px 32px -20px rgba(33,12,55,0.22)"
-            : "none",
+          borderColor: isOpen ? "rgba(33,12,55,0.12)" : "transparent",
         }}
       >
         <h3 className="m-0">
