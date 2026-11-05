@@ -3028,8 +3028,8 @@ export function VerenaHomepage() {
                   } ${areasVisible ? "is-shown" : ""}`}
                   style={{
                     transitionDelay: `${Math.min(index, 6) * 70}ms`,
-                    border: isActive ? `1px solid ${ACCENT}40` : "1px solid rgba(33,12,55,0.08)",
-                    ...(isActive ? { backgroundColor: `${ACCENT}0D` } : undefined),
+                    border: isActive ? `1px solid ${INK}40` : "1px solid rgba(33,12,55,0.08)",
+                    ...(isActive ? { backgroundColor: `${INK}0D` } : undefined),
                   }}
                 >
                   <button
