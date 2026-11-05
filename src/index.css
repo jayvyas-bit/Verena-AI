@@ -575,11 +575,11 @@ button:not(:disabled),
 
 @media (max-width: 640px) {
   .fluid-h1 {
-    font-size: clamp(2rem, 1.6rem + 2.5vw, 2.5rem);
+    font-size: 24px;
   }
 
   .fluid-h2 {
-    font-size: clamp(1.5rem, 1.1rem + 2.5vw, 1.875rem);
+    font-size: 22px;
   }
 
   .fluid-h2-lg {
