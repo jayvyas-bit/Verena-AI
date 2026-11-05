@@ -5,6 +5,7 @@ import gradientBackdrop from "../../assets/homepage/image-19.png";
 import invictusMask from "../../assets/homepage/rectangle-34.png";
 import avatarPhoto from "../../assets/homepage/avatar.png";
 import ellipse92 from "../../assets/homepage/ellipse-92.svg";
+import ctaExplorer from "../../assets/homepage/cta-explorer.png";
 import companyAirbnb from "../../assets/homepage/company-airbnb.svg";
 import companyBookingCom from "../../assets/homepage/company-booking-com.svg";
 import companyFivetran from "../../assets/homepage/company-fivetran.svg";
@@ -2146,6 +2147,7 @@ export function VerenaHomepage() {
 
   const [pricingRef, pricingVisible] = useReveal<HTMLElement>();
   const [faqRef, faqVisible] = useReveal<HTMLElement>();
+  const [ctaRef, ctaVisible] = useReveal<HTMLElement>();
   const [openFaqIds, setOpenFaqIds] = useState<Set<string>>(() => new Set([FAQ_ITEMS[0].id]));
   const [faqQuery, setFaqQuery] = useState("");
 
@@ -3207,6 +3209,101 @@ export function VerenaHomepage() {
               </div>
             ))
           )}
+        </div>
+      </section>
+
+      {/* Explorer CTA */}
+      <section
+        ref={ctaRef}
+        className="section-pad-x section-pad-y-lg relative overflow-hidden"
+        style={{ backgroundColor: INK, color: CREAM }}
+      >
+        <div
+          className={`area-reveal relative mx-auto flex max-w-[1280px] flex-col items-center gap-10 ${ctaVisible ? "is-shown" : ""}`}
+        >
+          <div className="flex max-w-[640px] flex-col items-center gap-4 text-center">
+            <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
+              Explore what your website is missing
+            </h2>
+            <p className="text-[15px] leading-6 opacity-70 sm:text-[18px] sm:leading-[27px]">
+              Drop in your URL and Verena maps every compliance gap, with evidence and drafted fixes ready to
+              ship.
+            </p>
+          </div>
+
+          <div className="flex w-full max-w-[560px] flex-col gap-2">
+            <form
+              onSubmit={handleSubmit}
+              noValidate
+              className="flex flex-col gap-3 rounded-2xl border bg-white px-4 py-4 shadow-[0_1px_8px_rgba(0,0,0,0.2)] transition focus-within:ring-2 focus-within:ring-offset-2 sm:flex-row sm:items-center sm:px-5"
+              style={
+                {
+                  borderColor: domainError ? STATUS_COLORS.deficit : "rgba(33,12,55,0.12)",
+                  "--tw-ring-color": ACCENT,
+                  "--tw-ring-offset-color": INK,
+                } as CSSProperties
+              }
+            >
+              <div className="flex min-w-0 flex-1 items-center gap-3 px-1 py-1">
+                <VerenaMarkIcon className="h-6 w-6" />
+                <label htmlFor="verena-cta-domain" className="sr-only">
+                  Website to scan
+                </label>
+                <input
+                  id="verena-cta-domain"
+                  name="domain"
+                  type="text"
+                  autoComplete="url"
+                  placeholder="yourwebsite.com"
+                  value={domain}
+                  onChange={(event) => {
+                    setDomain(event.target.value);
+                    if (domainError) setDomainError("");
+                  }}
+                  aria-invalid={domainError ? true : undefined}
+                  aria-describedby={domainError ? "verena-cta-domain-error" : undefined}
+                  className="w-full min-w-0 flex-1 bg-transparent text-left text-[16px] leading-6 text-[#210c37] outline-none placeholder:text-[#210c37]/50"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={status === "loading"}
+                aria-label={
+                  status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Analyze"
+                }
+                style={{ backgroundColor: ACCENT }}
+                className="flex w-full shrink-0 items-center justify-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-medium text-white transition duration-200 ease-out hover:brightness-110 active:scale-[0.96] active:duration-100 disabled:cursor-not-allowed disabled:hover:brightness-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 sm:w-auto"
+              >
+                <span key={status} className="hero-input-pop flex items-center justify-center">
+                  <HeroStatusIcon status={status} />
+                </span>
+                {status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Analyze"}
+              </button>
+            </form>
+            {domainError && (
+              <p
+                id="verena-cta-domain-error"
+                role="alert"
+                className="pl-1 text-center text-[13px] font-medium"
+                style={{ color: STATUS_COLORS.deficit }}
+              >
+                {domainError}
+              </p>
+            )}
+          </div>
+
+          <div className="relative mt-4 w-full max-w-[1100px] overflow-hidden rounded-[24px]">
+            <img
+              src={ctaExplorer}
+              alt="A woman with a backpack standing on a ridge, pointing toward distant mountains at sunset"
+              loading="lazy"
+              className="block h-auto w-full"
+            />
+            <div
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2"
+              style={{ background: `linear-gradient(to bottom, rgba(33,12,55,0) 0%, ${INK} 100%)` }}
+            />
+          </div>
         </div>
       </section>
 
