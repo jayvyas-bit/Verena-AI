@@ -3012,7 +3012,7 @@ export function VerenaHomepage() {
                   style={{
                     transitionDelay: `${Math.min(index, 6) * 70}ms`,
                     border: isActive ? `1px solid ${INK}40` : "1px solid rgba(33,12,55,0.08)",
-                    ...(isActive ? { backgroundColor: `${INK}0D` } : undefined),
+                    ...(isActive ? { backgroundColor: `${INK}26` } : undefined),
                   }}
                 >
                   <button
