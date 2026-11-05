@@ -2278,7 +2278,7 @@ export function VerenaHomepage() {
             return (
               <a
                 key={label}
-                ref={index === 0 ? mobileMenuFirstLinkRef : undefined}
+                ref={index === 0 ? (node: HTMLAnchorElement | null) => { mobileMenuFirstLinkRef.current = node; } : undefined}
                 href="#"
                 tabIndex={mobileMenuOpen ? 0 : -1}
                 onClick={closeMobileMenu}
@@ -2294,7 +2294,7 @@ export function VerenaHomepage() {
           return (
             <div key={label}>
               <button
-                ref={index === 0 ? mobileMenuFirstLinkRef : undefined}
+                ref={index === 0 ? (node: HTMLButtonElement | null) => { mobileMenuFirstLinkRef.current = node; } : undefined}
                 type="button"
                 tabIndex={mobileMenuOpen ? 0 : -1}
                 aria-expanded={expanded}
