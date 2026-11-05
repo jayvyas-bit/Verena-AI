@@ -2403,7 +2403,13 @@ export function VerenaHomepage() {
       {/* Nav */}
       <div ref={headerWrapRef} className="sticky top-0 z-30 bg-white/70 backdrop-blur-md backdrop-saturate-150">
         <header className="section-pad-x mx-auto flex h-16 max-w-[1536px] items-center justify-between gap-6 sm:h-20">
-          <img src={verenaLogo} alt="Verena" className="h-7 w-auto object-contain sm:h-8" />
+          <img
+            src={verenaLogo}
+            alt="Verena"
+            width={1690}
+            height={365}
+            className="h-7 w-auto object-contain sm:h-8"
+          />
 
           <nav className="hidden items-center gap-7 md:flex">
             <NavItem
@@ -3447,32 +3453,38 @@ export function VerenaHomepage() {
         <div
           className={`area-reveal mx-auto flex w-full max-w-[1200px] flex-col gap-5 ${faqVisible ? "is-shown" : ""}`}
         >
-          <div className="-mx-6 overflow-x-auto px-6 no-scrollbar">
-            <div role="tablist" aria-label="FAQ categories" className="flex w-max min-w-full flex-nowrap justify-center gap-2">
-              {FAQ_CATEGORIES.map((category) => {
-                const categoryId = toFaqId(`category-${category}`);
-                const active = category === activeFaqCategory;
-                return (
-                  <button
-                    key={category}
-                    type="button"
-                    role="tab"
-                    id={`faq-tab-${categoryId}`}
-                    aria-selected={active}
-                    aria-controls={`faq-panel-${categoryId}`}
-                    onClick={() => selectFaqCategory(category)}
-                    className={`shrink-0 rounded-full px-4 py-2.5 text-[14px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 ${
-                      active
-                        ? "text-white"
-                        : "border border-[rgba(33,12,55,0.12)] hover:bg-[rgba(33,12,55,0.05)]"
-                    }`}
-                    style={active ? { backgroundColor: INK } : undefined}
-                  >
-                    {category}
-                  </button>
-                );
-              })}
+          <div className="relative -mx-6 px-6 sm:mx-0 sm:px-0">
+            <div className="overflow-x-auto no-scrollbar">
+              <div role="tablist" aria-label="FAQ categories" className="flex w-max min-w-full flex-nowrap justify-center gap-2">
+                {FAQ_CATEGORIES.map((category) => {
+                  const categoryId = toFaqId(`category-${category}`);
+                  const active = category === activeFaqCategory;
+                  return (
+                    <button
+                      key={category}
+                      type="button"
+                      role="tab"
+                      id={`faq-tab-${categoryId}`}
+                      aria-selected={active}
+                      aria-controls={`faq-panel-${categoryId}`}
+                      onClick={() => selectFaqCategory(category)}
+                      className={`shrink-0 rounded-full px-4 py-2.5 text-[14px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 ${
+                        active
+                          ? "text-white"
+                          : "border border-[rgba(33,12,55,0.12)] hover:bg-[rgba(33,12,55,0.05)]"
+                      }`}
+                      style={active ? { backgroundColor: INK } : undefined}
+                    >
+                      {category}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-white to-transparent sm:hidden"
+            />
           </div>
         </div>
 
