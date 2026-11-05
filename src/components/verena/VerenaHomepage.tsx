@@ -5,7 +5,6 @@ import gradientBackdrop from "../../assets/homepage/image-19.png";
 import invictusMask from "../../assets/homepage/rectangle-34.png";
 import avatarPhoto from "../../assets/homepage/avatar.png";
 import ellipse92 from "../../assets/homepage/ellipse-92.svg";
-import ctaExplorer from "../../assets/homepage/cta-explorer.webp";
 import companyAirbnb from "../../assets/homepage/company-airbnb.svg";
 import companyBookingCom from "../../assets/homepage/company-booking-com.svg";
 import companyFivetran from "../../assets/homepage/company-fivetran.svg";
@@ -3355,19 +3354,6 @@ export function VerenaHomepage() {
 
       {/* Explorer CTA */}
       <section ref={ctaRef} className="relative overflow-hidden" style={{ backgroundColor: CREAM }}>
-        <img
-          src={ctaExplorer}
-          alt="A woman with a backpack standing in a wildflower meadow, pointing toward distant mountains at sunset"
-          loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover object-[32%_40%]"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background: `radial-gradient(55% 50% at 50% 18%, ${CREAM}eb 0%, ${CREAM}80 45%, transparent 75%)`,
-          }}
-        />
         <div
           className={`area-reveal section-pad-x relative mx-auto flex min-h-[640px] max-w-[1280px] flex-col items-center gap-8 pb-12 pt-12 text-center sm:min-h-[760px] sm:pb-28 sm:pt-6 ${ctaVisible ? "is-shown" : ""}`}
         >
