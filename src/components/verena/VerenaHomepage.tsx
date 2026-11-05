@@ -3270,8 +3270,11 @@ export function VerenaHomepage() {
         <div
           className={`area-reveal section-pad-x relative mx-auto flex min-h-[640px] max-w-[1280px] flex-col items-center gap-8 pb-20 pt-4 text-center sm:min-h-[760px] sm:pb-28 sm:pt-6 ${ctaVisible ? "is-shown" : ""}`}
         >
-          <div className="flex max-w-[640px] flex-col items-center gap-2">
-            <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
+          <div className="flex w-full flex-col items-center gap-2">
+            <h2
+              style={bricolage}
+              className="fluid-h2 font-semibold leading-tight tracking-[-0.01em] sm:whitespace-nowrap"
+            >
               Explore what your website is missing.
             </h2>
             <p className="max-w-[560px] text-[15px] leading-6 sm:text-[18px] sm:leading-[27px]">
