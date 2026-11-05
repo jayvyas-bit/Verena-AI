@@ -2926,7 +2926,7 @@ export function VerenaHomepage() {
                             src={gradientBackdrop}
                             alt=""
                             loading="lazy"
-                            className="absolute inset-0 h-full w-full object-contain"
+                            className="absolute inset-0 h-full w-full object-cover"
                           />
                           <div className="relative w-full max-w-[500px]">
                             <AreaDetailCard area={area} />
@@ -2944,7 +2944,7 @@ export function VerenaHomepage() {
             className="hidden min-h-[520px] items-stretch justify-center overflow-hidden rounded-[20px] p-4 sm:p-8 lg:relative lg:flex lg:sticky lg:top-24 lg:self-start"
             style={{ backgroundColor: CREAM }}
           >
-            <img src={gradientBackdrop} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-contain" />
+            <img src={gradientBackdrop} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
             <div className="relative grid w-full max-w-[500px]">
               {leavingArea !== null ? (
                 <div
