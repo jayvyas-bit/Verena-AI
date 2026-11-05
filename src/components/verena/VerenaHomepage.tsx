@@ -2918,7 +2918,7 @@ export function VerenaHomepage() {
           width={1236}
           height={818}
           loading="lazy"
-          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          className="pointer-events-none absolute left-1/2 top-1/2 h-[496px] w-full max-w-none -translate-x-1/2 -translate-y-1/2 sm:h-auto sm:w-auto sm:max-w-[100%]"
         />
         {AVATAR_ORBITS.map((orbit, i) => (
           <img
