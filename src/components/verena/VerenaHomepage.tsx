@@ -1382,7 +1382,7 @@ function AnalyzeWindowFrame({ children }: { children: ReactNode }) {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[300px] w-full flex-col gap-2.5 overflow-hidden rounded-2xl p-4"
+      className="flex h-[300px] w-full flex-col gap-2.5 overflow-hidden rounded-2xl p-3 sm:p-4"
       style={{ backgroundColor: "#faf9fb", border: "1px solid rgba(33,12,55,0.08)" }}
     >
       {children}
@@ -2807,12 +2807,12 @@ export function VerenaHomepage() {
               className={`area-reveal flex flex-col overflow-hidden rounded-2xl bg-white ${startedVisible ? "is-shown" : ""}`}
               style={{ transitionDelay: `${i * 90}ms` }}
             >
-              <div className="p-6 pb-0">
-                <div className="rounded-xl p-4" style={{ backgroundColor: "#f2f1f3" }}>
+              <div className="p-4 pb-0 sm:p-6 sm:pb-0">
+                <div className="rounded-xl p-3 sm:p-4" style={{ backgroundColor: "#f2f1f3" }}>
                   <AnalyzeMockup key={analyzeLoopKey} step={card.icon} />
                 </div>
               </div>
-              <div className="flex flex-col items-center gap-3 p-8 pt-6 text-center">
+              <div className="flex flex-col items-center gap-3 p-5 pt-4 text-center sm:p-8 sm:pt-6">
                 <span
                   className="flex h-11 w-11 items-center justify-center rounded-full"
                   style={{ backgroundColor: "rgba(33,12,55,0.06)", color: INK }}
