@@ -3504,28 +3504,30 @@ export function VerenaHomepage() {
               </div>
             </div>
 
-            {FOOTER_LINK_GROUPS.map((group) => (
-              <div key={group.title}>
-                <p
-                  style={{ ...bricolage, color: "rgba(250, 249, 246, 0.6)" }}
-                  className="text-xs font-semibold uppercase tracking-[0.1em]"
-                >
-                  {group.title}
-                </p>
-                <ul className="mt-1.5 flex flex-col text-sm">
-                  {group.links.map((link) => (
-                    <li key={link}>
-                      <a
-                        href="#"
-                        className="inline-block rounded-sm py-2 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37] sm:py-2.5"
-                      >
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:contents">
+              {FOOTER_LINK_GROUPS.map((group) => (
+                <div key={group.title}>
+                  <p
+                    style={{ ...bricolage, color: "rgba(250, 249, 246, 0.6)" }}
+                    className="text-xs font-semibold uppercase tracking-[0.1em]"
+                  >
+                    {group.title}
+                  </p>
+                  <ul className="mt-1.5 flex flex-col text-sm">
+                    {group.links.map((link) => (
+                      <li key={link}>
+                        <a
+                          href="#"
+                          className="inline-block rounded-sm py-2 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37] sm:py-2.5"
+                        >
+                          {link}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div
