@@ -2930,7 +2930,7 @@ export function VerenaHomepage() {
           humanOrbitSectionRef.current = el;
         }}
         style={{ backgroundColor: INK }}
-        className="section-pad-x section-pad-y-lg relative flex flex-col items-center justify-center gap-16 overflow-hidden lg:min-h-[1018px]"
+        className="section-pad-x section-pad-y-lg relative flex flex-col items-center justify-center gap-8 overflow-hidden sm:gap-16 lg:min-h-[1018px]"
       >
         <img
           src={ellipse92}
@@ -2967,7 +2967,7 @@ export function VerenaHomepage() {
         ))}
 
         <div
-          className={`area-reveal relative z-10 flex flex-col items-center gap-10 ${humanVisible ? "is-shown" : ""}`}
+          className={`area-reveal relative z-10 flex flex-col items-center gap-6 sm:gap-10 ${humanVisible ? "is-shown" : ""}`}
         >
           <div className="h-8 w-[136px] bg-white" style={{ WebkitMaskImage: `url("${invictusMask}")`, maskImage: `url("${invictusMask}")`, WebkitMaskSize: "contain", maskSize: "contain", WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat" }} />
           <div className="flex max-w-[960px] flex-col items-center gap-2 text-center text-white">
