@@ -3342,7 +3342,7 @@ export function VerenaHomepage() {
         <div className="relative mt-12 w-full">
           <img
             src={ctaExplorer}
-            alt="A woman with a backpack standing on a ridge, pointing toward distant mountains at sunset"
+            alt="A woman with a backpack standing in a wildflower meadow, pointing toward distant mountains at sunset"
             loading="lazy"
             className="block h-auto w-full"
           />
