@@ -3080,7 +3080,6 @@ export function VerenaHomepage() {
                     role="switch"
                     aria-checked={hasAddOn}
                     aria-label={`Add +Human review to ${plan.name}`}
-                    data-on={hasAddOn}
                     onClick={() => toggleHumanAddOn(plan.name)}
                     className={`flex w-full items-center justify-between gap-3 rounded-[10px] px-4 py-3 text-left transition duration-200 ease-out active:scale-[0.98] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
                       plan.featured
@@ -3096,6 +3095,7 @@ export function VerenaHomepage() {
                     </span>
                     <span
                       className={`t-toggle relative h-6 w-10 shrink-0 rounded-full ${touched ? "is-init" : ""}`}
+                      data-on={hasAddOn}
                       style={{
                         backgroundColor: hasAddOn
                           ? ACCENT
