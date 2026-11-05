@@ -2637,8 +2637,8 @@ export function VerenaHomepage() {
           </h2>
           <p className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
             No more piecing together information from different sources. Verena brings
-            <br />
-            your website review into one place.
+            <br className="hidden sm:block" />
+            {" "}your website review into one place.
           </p>
         </div>
         <div
