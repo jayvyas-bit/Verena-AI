@@ -2524,7 +2524,7 @@ export function VerenaHomepage() {
                 {domainError}
               </p>
             )}
-            <div className="flex items-center justify-center gap-6 pt-2 text-[15px] font-medium leading-6 sm:gap-8">
+            <div className="flex items-center justify-center gap-6 pt-2 text-[15px] font-medium leading-6 text-white sm:gap-8 sm:text-inherit">
               <span className="flex items-center gap-2">
                 <span
                   className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
