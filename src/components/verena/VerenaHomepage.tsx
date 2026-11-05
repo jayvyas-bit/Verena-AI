@@ -3208,21 +3208,6 @@ export function VerenaHomepage() {
             ))
           )}
         </div>
-
-        <div
-          className={`area-reveal mx-auto flex flex-col items-center gap-3 border-t border-[rgba(33,12,55,0.1)] pt-10 text-center ${faqVisible ? "is-shown" : ""}`}
-        >
-          <p className="text-[15px]" style={{ color: "rgba(33,12,55,0.7)" }}>
-            Still have questions?
-          </p>
-          <button
-            type="button"
-            style={{ backgroundColor: ACCENT }}
-            className="rounded-full px-5 py-3 text-[15px] font-medium text-white transition duration-200 ease-out hover:-translate-y-px hover:brightness-110 active:translate-y-0 active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
-          >
-            Talk to founder
-          </button>
-        </div>
       </section>
 
       </main>
