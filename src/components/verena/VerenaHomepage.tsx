@@ -1578,6 +1578,9 @@ const FLOW_DOT_STAGGER = 0.1;
 const FLOW_CENTER_BEGIN = 0.9;
 const FLOW_CENTER_DUR = 0.65;
 const FLOW_OUTPUT_START = 1.3;
+const FLOW_CYCLE_PAUSE = 1.5;
+const FLOW_CYCLE_DURATION =
+  (FLOW_OUTPUT_START + (FLOW_OUTPUTS.length - 1) * FLOW_DOT_STAGGER + FLOW_DOT_DUR + FLOW_CYCLE_PAUSE) * 1000;
 
 function ComplianceFlowDiagram({ active }: { active: boolean }) {
   const uid = useId();
@@ -1588,6 +1591,15 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
   const prefersReducedMotion =
     typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const animateEnabled = active && !prefersReducedMotion;
+  const [cycle, setCycle] = useState(0);
+
+  useEffect(() => {
+    if (!animateEnabled) return;
+    const interval = window.setInterval(() => {
+      setCycle((c) => c + 1);
+    }, FLOW_CYCLE_DURATION);
+    return () => window.clearInterval(interval);
+  }, [animateEnabled]);
 
   return (
     <div aria-hidden="true" className="mx-auto hidden w-full max-w-[1100px] md:block">
@@ -1623,7 +1635,7 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
                 strokeWidth="1.5"
               />
               {animateEnabled && (
-                <circle className="flow-motion" r="4.5" fill="#8aa0ff" filter={`url(#${glowId})`}>
+                <circle key={`${pathId}-${cycle}`} className="flow-motion" r="4.5" fill="#8aa0ff" filter={`url(#${glowId})`}>
                   <animateMotion
                     dur={`${FLOW_DOT_DUR}s`}
                     begin={`${i * FLOW_DOT_STAGGER}s`}
@@ -1675,7 +1687,7 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
                 strokeWidth="1.5"
               />
               {animateEnabled && (
-                <circle className="flow-motion" r="4.5" fill="#8aa0ff" filter={`url(#${glowId})`}>
+                <circle key={`${pathId}-${cycle}`} className="flow-motion" r="4.5" fill="#8aa0ff" filter={`url(#${glowId})`}>
                   <animateMotion
                     dur={`${FLOW_DOT_DUR}s`}
                     begin={`${FLOW_OUTPUT_START + i * FLOW_DOT_STAGGER}s`}
@@ -1737,7 +1749,7 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
           <g clipPath={`url(#${clipId})`}>
             <rect x="545" y="110" width="255" height="260" fill={`url(#${boxGradId})`} />
             {animateEnabled && (
-              <rect className="flow-motion" y="110" height="260" width="70" fill={`url(#${sweepGradId})`}>
+              <rect key={`sweep-${cycle}`} className="flow-motion" y="110" height="260" width="70" fill={`url(#${sweepGradId})`}>
                 <animate
                   attributeName="x"
                   values="490;800"
