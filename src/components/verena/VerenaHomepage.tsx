@@ -1799,6 +1799,59 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
   );
 }
 
+function FlowArrow() {
+  return (
+    <svg width="16" height="20" viewBox="0 0 16 20" fill="none" aria-hidden="true">
+      <path d="M8 0V16M8 16L2 10M8 16L14 10" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ComplianceFlowDiagramMobile() {
+  return (
+    <div aria-hidden="true" className="mx-auto flex w-full max-w-[360px] flex-col items-center gap-3 md:hidden">
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        {FLOW_INPUTS.map((label) => (
+          <span
+            key={label}
+            className="rounded-full px-3 py-1.5 text-[12px] font-medium text-white/80"
+            style={{ border: "1px solid rgba(255,255,255,0.18)" }}
+          >
+            {label}
+          </span>
+        ))}
+      </div>
+      <FlowArrow />
+      <div
+        className="flex flex-col items-center gap-1 rounded-2xl px-8 py-5 text-center"
+        style={{ background: `linear-gradient(135deg, #3f66ff, #121a52)`, boxShadow: "0 0 32px rgba(38,83,243,0.45)" }}
+      >
+        <span
+          className="text-[11px] font-bold uppercase tracking-[0.1em]"
+          style={{ color: "#9db4ff", fontFamily: "'Bricolage Grotesque', sans-serif" }}
+        >
+          One review
+        </span>
+        <span className="text-[17px] font-semibold text-white" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+          Six-area review
+        </span>
+      </div>
+      <FlowArrow />
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        {FLOW_OUTPUTS.map((label) => (
+          <span
+            key={label}
+            className="rounded-full px-3 py-1.5 text-[12px] font-medium text-white"
+            style={{ backgroundColor: "rgba(38,83,243,0.16)", border: "1px solid rgba(138,160,255,0.35)" }}
+          >
+            {label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function VerenaHomepage() {
   useDocumentHead({
     title: "Verena — AI Website Compliance Scans | Invictus AI",
@@ -2552,6 +2605,7 @@ export function VerenaHomepage() {
           className={`area-reveal relative z-10 mt-16 w-full ${statementVisible ? "is-shown" : ""}`}
           style={{ transitionDelay: statementVisible ? "150ms" : "0ms" }}
         >
+          <ComplianceFlowDiagramMobile />
           <ComplianceFlowDiagram active={statementVisible} />
         </div>
       </section>
