@@ -437,28 +437,16 @@ button:not(:disabled),
 .hero-scan-sweep {
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  will-change: transform, opacity;
-  animation: hero-scan-sweep 5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform;
+  animation: hero-scan-sweep 2.8s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
 }
 
 @keyframes hero-scan-sweep {
   0% {
     transform: translateX(-42%);
-    opacity: 0;
-  }
-  12% {
-    opacity: 1;
-  }
-  44% {
-    opacity: 1;
-  }
-  56% {
-    transform: translateX(42%);
-    opacity: 0;
   }
   100% {
     transform: translateX(42%);
-    opacity: 0;
   }
 }
 

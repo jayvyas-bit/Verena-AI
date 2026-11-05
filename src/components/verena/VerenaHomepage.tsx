@@ -2410,7 +2410,7 @@ export function VerenaHomepage() {
             But what might be{" "}
             <span
               className="relative inline-block overflow-hidden"
-              style={{ paddingBottom: "0.12em" }}
+              style={{ paddingBottom: "0.12em", verticalAlign: "-0.12em" }}
             >
               missing?
               <span
