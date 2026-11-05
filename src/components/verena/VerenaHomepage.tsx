@@ -32,7 +32,6 @@ const NAV_DROPDOWNS = {
   Product: [
     { label: "Overview", body: "What Verena checks and why it matters", icon: "overview" as const },
     { label: "+Human", body: "Optional attorney-supervised review for your findings", icon: "human" as const },
-    { label: "Pricing", body: "Credit-based plans for every team size", icon: "pricing" as const },
   ],
   Resources: [
     { label: "Trust Center", body: "How Verena handles your website's data", icon: "trust" as const },
