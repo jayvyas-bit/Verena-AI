@@ -2600,8 +2600,8 @@ export function VerenaHomepage() {
         >
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Website compliance shouldn't take
-            <br />
-            over your to-do list
+            <br className="hidden sm:block" />
+            {" "}over your to-do list
           </h2>
           <p className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
             No more piecing together information from different sources. Verena brings
