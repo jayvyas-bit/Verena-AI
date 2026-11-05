@@ -2163,6 +2163,7 @@ export function VerenaHomepage() {
   const [pricingRef, pricingVisible] = useReveal<HTMLElement>();
   const [faqRef, faqVisible] = useReveal<HTMLElement>();
   const [ctaRef, ctaVisible] = useReveal<HTMLElement>();
+  const [activeFaqCategory, setActiveFaqCategory] = useState<string>(FAQ_CATEGORIES[0]);
   const [openFaqIds, setOpenFaqIds] = useState<Set<string>>(() => new Set([FAQ_ITEMS[0].id]));
   const [faqQuery, setFaqQuery] = useState("");
 
@@ -2175,23 +2176,62 @@ export function VerenaHomepage() {
     });
   };
 
-  const scrollToFaqCategory = (categoryId: string) => {
-    const el = document.getElementById(categoryId);
-    if (!el) return;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  const selectFaqCategory = (category: string) => {
+    setActiveFaqCategory(category);
+    setFaqQuery("");
+    const firstItem = FAQ_ITEMS.find((item) => item.category === category);
+    setOpenFaqIds(firstItem ? new Set([firstItem.id]) : new Set());
   };
 
   const normalizedFaqQuery = faqQuery.trim().toLowerCase();
-  const filteredFaqItems = normalizedFaqQuery
+  const isFaqSearching = normalizedFaqQuery.length > 0;
+  const filteredFaqItems = isFaqSearching
     ? FAQ_ITEMS.filter(
         (item) =>
           item.q.toLowerCase().includes(normalizedFaqQuery) || item.a.toLowerCase().includes(normalizedFaqQuery),
       )
-    : FAQ_ITEMS;
-  const visibleFaqCategories = FAQ_CATEGORIES.filter((category) =>
-    filteredFaqItems.some((item) => item.category === category),
-  );
+    : FAQ_ITEMS.filter((item) => item.category === activeFaqCategory);
+  const visibleFaqCategories = isFaqSearching
+    ? FAQ_CATEGORIES.filter((category) => filteredFaqItems.some((item) => item.category === category))
+    : [activeFaqCategory];
+
+  const renderFaqAccordionItem = (item: (typeof FAQ_ITEMS)[number], index: number, delayIndex: number) => {
+    const isOpen = openFaqIds.has(item.id);
+    const triggerId = `${item.id}-trigger`;
+    const panelId = `${item.id}-panel`;
+    return (
+      <div
+        key={item.id}
+        id={item.id}
+        className={`area-reveal ${faqVisible ? "is-shown" : ""} ${index > 0 ? "border-t" : ""}`}
+        style={{
+          transitionDelay: `${Math.min(delayIndex, 6) * 70}ms`,
+          borderColor: "rgba(33,12,55,0.1)",
+        }}
+      >
+        <h3 className="m-0">
+          <button
+            type="button"
+            id={triggerId}
+            onClick={() => toggleFaq(item.id)}
+            aria-expanded={isOpen}
+            aria-controls={panelId}
+            className="flex w-full items-center justify-between gap-6 rounded-lg py-5 text-left transition-colors hover:bg-[rgba(33,12,55,0.03)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+          >
+            <span style={bricolage} className="text-[17px] font-medium sm:text-[19px]">
+              {item.q}
+            </span>
+            <ChevronIcon open={isOpen} />
+          </button>
+        </h3>
+        <div id={panelId} className={`area-accordion-body ${isOpen ? "is-open" : ""}`}>
+          <div className="overflow-hidden">
+            <p className="max-w-[560px] pb-5 pr-8 text-[16px] leading-6 opacity-70">{item.a}</p>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const [toolAutoplayPaused, setToolAutoplayPaused] = useState(false);
 
@@ -3162,24 +3202,35 @@ export function VerenaHomepage() {
             />
           </div>
 
-          {!normalizedFaqQuery && (
-            <nav aria-label="Jump to FAQ category" className="flex flex-wrap justify-center gap-2">
-              {FAQ_CATEGORIES.map((category) => (
+          <div role="tablist" aria-label="FAQ categories" className="flex flex-wrap justify-center gap-2">
+            {FAQ_CATEGORIES.map((category) => {
+              const categoryId = toFaqId(`category-${category}`);
+              const active = !isFaqSearching && category === activeFaqCategory;
+              return (
                 <button
                   key={category}
                   type="button"
-                  onClick={() => scrollToFaqCategory(toFaqId(`category-${category}`))}
-                  className="rounded-full border border-[rgba(33,12,55,0.12)] px-4 py-2.5 text-[14px] font-medium transition-colors hover:bg-[rgba(33,12,55,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+                  role="tab"
+                  id={`faq-tab-${categoryId}`}
+                  aria-selected={active}
+                  aria-controls={`faq-panel-${categoryId}`}
+                  onClick={() => selectFaqCategory(category)}
+                  className={`rounded-full px-4 py-2.5 text-[14px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 ${
+                    active
+                      ? "text-white"
+                      : "border border-[rgba(33,12,55,0.12)] hover:bg-[rgba(33,12,55,0.05)]"
+                  }`}
+                  style={active ? { backgroundColor: INK } : undefined}
                 >
                   {category}
                 </button>
-              ))}
-            </nav>
-          )}
+              );
+            })}
+          </div>
         </div>
 
-        <div className="mx-auto flex w-full max-w-[1200px] flex-col">
-          {visibleFaqCategories.length === 0 ? (
+        <div className={`mx-auto flex w-full flex-col ${isFaqSearching ? "max-w-[1200px]" : "max-w-[720px]"}`}>
+          {filteredFaqItems.length === 0 ? (
             <p className="py-10 text-center text-[15px]" style={{ color: "rgba(33,12,55,0.6)" }}>
               No questions match "{faqQuery}".{" "}
               <button
@@ -3190,12 +3241,11 @@ export function VerenaHomepage() {
                 Clear search
               </button>
             </p>
-          ) : (
+          ) : isFaqSearching ? (
             visibleFaqCategories.map((category, catIndex) => (
               <div
                 key={category}
-                id={toFaqId(`category-${category}`)}
-                className={`grid scroll-mt-28 gap-4 border-[rgba(33,12,55,0.12)] py-10 first:pt-0 sm:grid-cols-[200px_1fr] sm:gap-12 ${
+                className={`grid gap-4 border-[rgba(33,12,55,0.12)] py-10 first:pt-0 sm:grid-cols-[200px_1fr] sm:gap-12 ${
                   catIndex > 0 ? "border-t" : ""
                 }`}
               >
@@ -3208,46 +3258,21 @@ export function VerenaHomepage() {
                 <div className="flex flex-col">
                   {filteredFaqItems
                     .filter((item) => item.category === category)
-                    .map((item, index) => {
-                      const isOpen = openFaqIds.has(item.id);
-                      const triggerId = `${item.id}-trigger`;
-                      const panelId = `${item.id}-panel`;
-                      return (
-                        <div
-                          key={item.id}
-                          id={item.id}
-                          className={`area-reveal scroll-mt-28 ${faqVisible ? "is-shown" : ""} ${index > 0 ? "border-t" : ""}`}
-                          style={{
-                            transitionDelay: `${Math.min(catIndex * 2 + index, 6) * 70}ms`,
-                            borderColor: "rgba(33,12,55,0.1)",
-                          }}
-                        >
-                          <h3 className="m-0">
-                            <button
-                              type="button"
-                              id={triggerId}
-                              onClick={() => toggleFaq(item.id)}
-                              aria-expanded={isOpen}
-                              aria-controls={panelId}
-                              className="flex w-full items-center justify-between gap-6 rounded-lg py-5 text-left transition-colors hover:bg-[rgba(33,12,55,0.03)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
-                            >
-                              <span style={bricolage} className="text-[17px] font-medium sm:text-[19px]">
-                                {item.q}
-                              </span>
-                              <ChevronIcon open={isOpen} />
-                            </button>
-                          </h3>
-                          <div id={panelId} className={`area-accordion-body ${isOpen ? "is-open" : ""}`}>
-                            <div className="overflow-hidden">
-                              <p className="max-w-[560px] pb-5 pr-8 text-[16px] leading-6 opacity-70">{item.a}</p>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
+                    .map((item, index) =>
+                      renderFaqAccordionItem(item, index, Math.min(catIndex * 2 + index, 6)),
+                    )}
                 </div>
               </div>
             ))
+          ) : (
+            <div
+              id={`faq-panel-${toFaqId(`category-${activeFaqCategory}`)}`}
+              role="tabpanel"
+              aria-labelledby={`faq-tab-${toFaqId(`category-${activeFaqCategory}`)}`}
+              className="flex flex-col"
+            >
+              {filteredFaqItems.map((item, index) => renderFaqAccordionItem(item, index, index))}
+            </div>
           )}
         </div>
       </section>
