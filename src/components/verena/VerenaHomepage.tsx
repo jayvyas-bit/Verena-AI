@@ -2446,7 +2446,7 @@ export function VerenaHomepage() {
               </span>
             </span>
           </h1>
-          <p className="max-w-[860px] text-[1rem] leading-[calc(1.5_/_1)]">
+          <p className="max-w-[860px] text-[14px] leading-5 sm:text-[1rem] sm:leading-[calc(1.5_/_1)]">
             Privacy, accessibility, and other website requirements aren't always obvious. Verena
             uses AI to spot potential issues, show supporting evidence, and help you understand
             what to review next.
@@ -2605,7 +2605,7 @@ export function VerenaHomepage() {
             <br />
             over your to-do list
           </h2>
-          <p className="text-[16px] leading-6 sm:text-[18px] sm:leading-[27px]">
+          <p className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
             No more piecing together information from different sources. Verena brings
             <br />
             your website review into one place.
@@ -2635,7 +2635,7 @@ export function VerenaHomepage() {
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Getting started is simpler than you think
           </h2>
-          <p className="text-[16px] leading-6 sm:text-[18px] sm:leading-[27px]">
+          <p className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
             Set up your website, run an analysis, and explore the findings at your own pace.
           </p>
         </div>
@@ -2681,7 +2681,7 @@ export function VerenaHomepage() {
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             More than a website scan
           </h2>
-          <p className="text-[16px] leading-6 sm:text-[18px] sm:leading-[27px]">
+          <p className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
             Explore the tools that help you understand findings, make improvements, and keep track
             of your website
           </p>
@@ -2803,7 +2803,7 @@ export function VerenaHomepage() {
             </button>
           </div>
           <div className="flex w-full flex-wrap items-center justify-between gap-4">
-            <p key={activeTool} className="tool-caption-swap text-[16px] leading-6 sm:text-[18px] sm:leading-[27px]">
+            <p key={activeTool} className="tool-caption-swap text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
               {TOOL_CAPTIONS[activeTool]}
             </p>
             <div className="flex shrink-0 items-center gap-2">
@@ -2839,7 +2839,7 @@ export function VerenaHomepage() {
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Six areas. One website review.
           </h2>
-          <p className="text-[16px] leading-6 sm:text-[18px] sm:leading-[27px]">
+          <p className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
             From accessibility and privacy to cookies, policies, emails, and marketing claims
           </p>
         </div>
@@ -2958,7 +2958,7 @@ export function VerenaHomepage() {
             <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
               When AI isn't enough, there's +Human
             </h2>
-            <p className="text-[16px] leading-6 sm:text-[18px] sm:leading-[27px]">
+            <p className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
               Access optional professional support for questions that need more than an automated
               analysis
             </p>
@@ -2985,7 +2985,7 @@ export function VerenaHomepage() {
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Choose what works for you
           </h2>
-          <p className="text-[16px] leading-6 sm:text-[18px] sm:leading-[27px]">
+          <p className="text-[14px] leading-5 sm:text-[18px] sm:leading-[27px]">
             AI-enabled compliance review, priced by how many credits you need each month
           </p>
         </div>
