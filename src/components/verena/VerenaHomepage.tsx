@@ -3,7 +3,7 @@ import { useDocumentHead } from "../../lib/useDocumentHead";
 import verenaLogo from "../../assets/homepage/image-15.png";
 import gradientBackdrop from "../../assets/homepage/image-19.png";
 import invictusMask from "../../assets/homepage/rectangle-34.png";
-import avatarPhoto from "../../assets/homepage/avatar.png";
+import ctaExplorer from "../../assets/homepage/cta-explorer.webp";
 import ellipse92 from "../../assets/homepage/ellipse-92.svg";
 import companyAirbnb from "../../assets/homepage/company-airbnb.svg";
 import companyBookingCom from "../../assets/homepage/company-booking-com.svg";
@@ -292,6 +292,14 @@ const REVIEW_AREAS = [
 
 const AVATAR_ORBIT_DURATION = 34;
 const AVATAR_ORBIT_COUNT = 6;
+const AVATAR_PHOTOS = [
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=160&q=80",
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80",
+  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=160&q=80",
+  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=160&q=80",
+];
 const AVATAR_ORBITS = Array.from({ length: AVATAR_ORBIT_COUNT }, (_, i) => {
   const fraction = i / AVATAR_ORBIT_COUNT;
   const stackAngle = fraction * Math.PI * 2;
@@ -480,20 +488,13 @@ const SOCIAL_LINKS = [
   { icon: "linkedin" as const, label: "LinkedIn" },
 ];
 
-const TRUST_BADGES = [
-  { icon: "globe" as const, label: "ISO 27001" },
-  { icon: "badge-check" as const, label: "SOC 2 Type II" },
-  { icon: "eu-stars" as const, label: "GDPR Ready" },
-  { icon: "medical-cross" as const, label: "HIPAA Compliant" },
-];
-
 const bricolage = { fontFamily: "'Bricolage Grotesque', sans-serif" } as const;
 
 function FooterIcon({
   name,
   size = 15,
 }: {
-  name: "x" | "linkedin" | "globe" | "badge-check" | "eu-stars" | "medical-cross";
+  name: "x" | "linkedin";
   size?: number;
 }) {
   const common = {
@@ -518,41 +519,6 @@ function FooterIcon({
       return (
         <svg {...common} fill="currentColor" stroke="none">
           <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.56V9h3.56v11.45Z" />
-        </svg>
-      );
-    case "globe":
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M3 12h18" />
-          <path d="M12 3c2.5 2.5 2.5 15.5 0 18M12 3c-2.5 2.5-2.5 15.5 0 18" />
-        </svg>
-      );
-    case "badge-check":
-      return (
-        <svg {...common}>
-          <path d="M12 3l7 3v5.5c0 4.5-3 7.7-7 9.5-4-1.8-7-5-7-9.5V6l7-3Z" />
-          <path d="M8.7 12.3l2.2 2.2 4.4-4.6" />
-        </svg>
-      );
-    case "eu-stars":
-      return (
-        <svg {...common} fill="currentColor" stroke="none">
-          <circle cx="19" cy="12" r="1" />
-          <circle cx="16.95" cy="16.95" r="1" />
-          <circle cx="12" cy="19" r="1" />
-          <circle cx="7.05" cy="16.95" r="1" />
-          <circle cx="5" cy="12" r="1" />
-          <circle cx="7.05" cy="7.05" r="1" />
-          <circle cx="12" cy="5" r="1" />
-          <circle cx="16.95" cy="7.05" r="1" />
-        </svg>
-      );
-    case "medical-cross":
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M12 8v8M8 12h8" />
         </svg>
       );
   }
@@ -2728,7 +2694,7 @@ export function VerenaHomepage() {
                 >
                   <CheckIcon />
                 </span>
-                5,000 free credits
+                500 free credits
               </span>
             </div>
           </div>
@@ -3156,7 +3122,7 @@ export function VerenaHomepage() {
             ref={(el) => {
               avatarRefs.current[i] = el;
             }}
-            src={avatarPhoto}
+            src={AVATAR_PHOTOS[i % AVATAR_PHOTOS.length]}
             alt=""
             width={640}
             height={640}
@@ -3179,7 +3145,10 @@ export function VerenaHomepage() {
         <div
           className={`area-reveal relative z-10 flex flex-col items-center gap-6 sm:gap-10 ${humanVisible ? "is-shown" : ""}`}
         >
-          <div className="h-8 w-[136px] bg-white" style={{ WebkitMaskImage: `url("${invictusMask}")`, maskImage: `url("${invictusMask}")`, WebkitMaskSize: "contain", maskSize: "contain", WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat" }} />
+          <div className="flex flex-col items-center gap-2">
+            <div className="h-8 w-[136px] bg-white" style={{ WebkitMaskImage: `url("${invictusMask}")`, maskImage: `url("${invictusMask}")`, WebkitMaskSize: "contain", maskSize: "contain", WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat" }} />
+            <p className="text-[13px] leading-5 text-white opacity-60">Verena&apos;s parent company. +Human review is provided by Invictus Counsel, an independent law firm.</p>
+          </div>
           <div className="flex max-w-[960px] flex-col items-center gap-2 text-center text-white">
             <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
               When AI isn't enough, there's +Human
@@ -3325,7 +3294,7 @@ export function VerenaHomepage() {
       </section>
 
       {/* FAQ */}
-      <section ref={faqRef} className="section-pad-x section-pad-y flex flex-col gap-4 bg-white sm:gap-16">
+      <section ref={faqRef} className="section-pad-x section-pad-y flex flex-col gap-4 bg-white sm:gap-8">
         <div
           className={`area-reveal mx-auto flex max-w-[960px] flex-col items-center gap-2 text-center ${faqVisible ? "is-shown" : ""}`}
         >
@@ -3379,7 +3348,20 @@ export function VerenaHomepage() {
       </section>
 
       {/* Explorer CTA */}
-      <section ref={ctaRef} className="relative overflow-hidden" style={{ backgroundColor: CREAM }}>
+      <section ref={ctaRef} className="relative overflow-hidden">
+        <img
+          src={ctaExplorer}
+          alt="A woman with a backpack standing in a wildflower meadow, pointing toward distant mountains at sunset"
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover object-[32%_40%]"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: `radial-gradient(55% 50% at 50% 18%, ${CREAM}eb 0%, ${CREAM}80 45%, transparent 75%)`,
+          }}
+        />
         <div
           className={`area-reveal section-pad-x relative mx-auto flex min-h-[640px] max-w-[1280px] flex-col items-center gap-8 pb-12 pt-12 text-center sm:min-h-[760px] sm:pb-28 sm:pt-6 ${ctaVisible ? "is-shown" : ""}`}
         >
@@ -3497,19 +3479,6 @@ export function VerenaHomepage() {
                   >
                     <FooterIcon name={social.icon} size={15} />
                   </a>
-                ))}
-              </div>
-
-              <div className="mt-4 flex flex-wrap items-center gap-2 sm:mt-5">
-                {TRUST_BADGES.map((badge) => (
-                  <span
-                    key={badge.label}
-                    className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
-                    style={{ backgroundColor: "rgba(250, 249, 246, 0.07)", color: "rgba(250, 249, 246, 0.6)" }}
-                  >
-                    <FooterIcon name={badge.icon} size={12} />
-                    {badge.label}
-                  </span>
                 ))}
               </div>
             </div>
