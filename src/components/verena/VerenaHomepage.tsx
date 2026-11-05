@@ -2834,7 +2834,7 @@ export function VerenaHomepage() {
       {/* More than a website scan */}
       <section
         ref={scanRef}
-        className="section-pad-x section-pad-y scan-section-pad-mobile flex flex-col items-center gap-16 bg-white"
+        className="section-pad-x section-pad-y scan-section-pad-mobile flex flex-col items-center gap-8 bg-white sm:gap-16"
       >
         <div
           className={`area-reveal flex max-w-[960px] flex-col items-center gap-2 text-center ${scanVisible ? "is-shown" : ""}`}
@@ -3180,7 +3180,7 @@ export function VerenaHomepage() {
       <section
         ref={pricingRef}
         style={{ backgroundColor: CREAM }}
-        className="section-pad-x section-pad-y flex flex-col items-center gap-4 sm:gap-8"
+        className="section-pad-x section-pad-y flex flex-col items-center gap-8 sm:gap-16"
       >
         <div
           className={`area-reveal flex max-w-[960px] flex-col items-center gap-2 text-center ${pricingVisible ? "is-shown" : ""}`}
@@ -3435,7 +3435,7 @@ export function VerenaHomepage() {
       </section>
 
       {/* FAQ */}
-      <section ref={faqRef} className="section-pad-x section-pad-y flex flex-col gap-4 bg-white sm:gap-8">
+      <section ref={faqRef} className="section-pad-x section-pad-y flex flex-col gap-8 bg-white sm:gap-16">
         <div
           className={`area-reveal mx-auto flex max-w-[960px] flex-col items-center gap-2 text-center ${faqVisible ? "is-shown" : ""}`}
         >
