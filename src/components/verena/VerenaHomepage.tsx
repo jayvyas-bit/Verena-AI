@@ -2884,7 +2884,7 @@ export function VerenaHomepage() {
           </div>
           <div
             id="area-detail-panel"
-            className="relative flex min-h-[520px] items-center justify-center overflow-hidden rounded-[20px] p-8 lg:sticky lg:top-24 lg:self-start"
+            className="relative flex min-h-[520px] items-center justify-center overflow-hidden rounded-[20px] p-4 sm:p-8 lg:sticky lg:top-24 lg:self-start"
           >
             <img src={gradientBackdrop} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
             <div className="relative grid w-full max-w-[500px]">
