@@ -3371,7 +3371,7 @@ export function VerenaHomepage() {
           }}
         />
         <div
-          className={`area-reveal section-pad-x relative mx-auto flex min-h-[640px] max-w-[1280px] flex-col items-center gap-8 pb-20 pt-4 text-center sm:min-h-[760px] sm:pb-28 sm:pt-6 ${ctaVisible ? "is-shown" : ""}`}
+          className={`area-reveal section-pad-x relative mx-auto flex min-h-[640px] max-w-[1280px] flex-col items-center gap-8 pb-12 pt-12 text-center sm:min-h-[760px] sm:pb-28 sm:pt-6 ${ctaVisible ? "is-shown" : ""}`}
         >
           <div className="flex w-full flex-col items-center gap-2">
             <h2

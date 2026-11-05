@@ -622,14 +622,19 @@ button:not(:disabled),
 }
 
 @media (max-width: 640px) {
+  .section-pad-y {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+
   .section-pad-y-lg {
-    padding-top: 4.5rem;
-    padding-bottom: 4.5rem;
+    padding-top: 48px;
+    padding-bottom: 48px;
   }
 
   .section-pad-y-sm {
-    padding-top: 2.5rem;
-    padding-bottom: 2.5rem;
+    padding-top: 48px;
+    padding-bottom: 48px;
   }
 
   .scan-section-pad-mobile {
