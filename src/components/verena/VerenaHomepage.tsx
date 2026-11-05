@@ -2958,7 +2958,7 @@ export function VerenaHomepage() {
             >
               {TOOL_CAPTIONS[activeTool]}
             </p>
-            <div className="flex shrink-0 items-center gap-1">
+            <div className="flex shrink-0 items-center gap-0.5">
               {TOOL_TABS.map((tab) => {
                 const active = tab.id === activeTool;
                 return (
@@ -2968,7 +2968,7 @@ export function VerenaHomepage() {
                     aria-label={`Show ${tab.label}`}
                     aria-current={active}
                     onClick={() => setActiveTool(tab.id)}
-                    className="rounded-full p-2 transition duration-200 ease-out hover:scale-110 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+                    className="rounded-full p-1.5 transition duration-200 ease-out hover:scale-110 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
                   >
                     <span
                       className="block h-2 w-2 rounded-full transition-colors duration-300"
