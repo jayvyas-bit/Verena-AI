@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useId, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import { useDocumentHead } from "../../lib/useDocumentHead";
 import verenaLogo from "../../assets/homepage/image-15.png";
 import gradientBackdrop from "../../assets/homepage/image-19.png";
@@ -361,15 +361,6 @@ const PRICING_PLANS = [
 
 const SELF_SERVE_PLANS = PRICING_PLANS.slice(0, 3);
 const ENTERPRISE_PLAN = PRICING_PLANS[3];
-
-const PRICING_FEATURE_ROWS: { label: string; values: [string | true, string | true, string | true] }[] = [
-  { label: "Websites", values: ["1", "1", "Up to 10"] },
-  { label: "Credits / month", values: ["500", "5,000", "25,000"] },
-  { label: "Re-scan cadence", values: ["Manual", "Weekly", "Daily"] },
-  { label: "All six review areas", values: [true, true, true] },
-  { label: "Evidence for every finding", values: [true, true, true] },
-  { label: "Support", values: ["Community", "Email", "Priority"] },
-];
 
 function toFaqId(value: string) {
   return `faq-${value
@@ -2194,14 +2185,6 @@ export function VerenaHomepage() {
     timeouts.current.push(window.setTimeout(() => setAnnouncementVisible(false), 600));
   }
 
-  const [humanAddOns, setHumanAddOns] = useState<Record<string, boolean>>({});
-  const [toggleTouched, setToggleTouched] = useState<Record<string, boolean>>({});
-
-  function toggleHumanAddOn(name: string) {
-    setToggleTouched((prev) => ({ ...prev, [name]: true }));
-    setHumanAddOns((prev) => ({ ...prev, [name]: !prev[name] }));
-  }
-
   const [heroRef, heroVisible] = useReveal<HTMLElement>();
   const [trustedRef, trustedVisible] = useReveal<HTMLElement>();
   const [footerRef, footerVisible] = useReveal<HTMLElement>();
@@ -3200,222 +3183,66 @@ export function VerenaHomepage() {
         </div>
 
         <div className="flex w-full flex-col items-center gap-6">
-          {/* Comparison grid: desktop */}
-          <div
-            className="relative hidden w-full max-w-[1200px] overflow-hidden rounded-[20px] border border-[rgba(33,12,55,0.12)] bg-white lg:grid"
-            style={{ gridTemplateColumns: "220px repeat(3, 1fr)" }}
-          >
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute z-0"
-              style={{ gridColumn: "4 / 5", gridRow: "1 / -1", backgroundColor: "rgba(38,83,243,0.035)" }}
-            />
-
-            <div className="z-10" />
-            {SELF_SERVE_PLANS.map((plan, planIndex) => {
-              const hasAddOn = Boolean(humanAddOns[plan.name]);
-              const touched = Boolean(toggleTouched[plan.name]);
-              const totalPrice = plan.price + (hasAddOn ? plan.addOnPrice : 0);
-              return (
-                <div
-                  key={`${plan.name}-header`}
-                  style={plan.featured ? { backgroundColor: INK, transitionDelay: `${planIndex * 80}ms` } : { transitionDelay: `${planIndex * 80}ms` }}
-                  className={`area-reveal z-10 flex flex-col gap-3 p-6 ${plan.featured ? "text-white" : ""} ${pricingVisible ? "is-shown" : ""}`}
-                >
-                  {plan.featured ? (
-                    <span className="w-fit rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-white">
-                      Recommended
-                    </span>
-                  ) : (
-                    <span className="h-[22px]" aria-hidden="true" />
-                  )}
-                  <div className="flex flex-col gap-1">
-                    <h3 style={bricolage} className="text-[20px] font-semibold tracking-[-0.01em]">
-                      {plan.name}
-                    </h3>
-                    <p className={`text-[13px] leading-5 ${plan.featured ? "opacity-70" : "opacity-60"}`}>
-                      {plan.description}
-                    </p>
-                  </div>
-                  <div className="flex items-end gap-1" aria-live="polite">
-                    <span style={bricolage} className="text-[30px] font-semibold leading-none">
-                      ${totalPrice}
-                    </span>
-                    {plan.period && (
-                      <span className={`pb-0.5 text-[14px] ${plan.featured ? "opacity-70" : "opacity-60"}`}>
-                        {plan.period}
-                      </span>
-                    )}
-                  </div>
-                  <p className={`text-[12px] font-medium ${plan.featured ? "opacity-80" : "opacity-70"}`}>
-                    {plan.credits}
+          {/* Compact plan cards — full feature comparison lives on the dedicated pricing page */}
+          <div className="grid w-full max-w-[920px] grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
+            {SELF_SERVE_PLANS.map((plan, planIndex) => (
+              <div
+                key={plan.name}
+                style={plan.featured ? { backgroundColor: INK, transitionDelay: `${planIndex * 80}ms` } : { transitionDelay: `${planIndex * 80}ms` }}
+                className={`area-reveal flex flex-col gap-4 rounded-[20px] border border-[rgba(33,12,55,0.12)] p-6 ${
+                  plan.featured ? "text-white" : ""
+                } ${pricingVisible ? "is-shown" : ""}`}
+              >
+                {plan.featured ? (
+                  <span className="w-fit rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-white">
+                    Recommended
+                  </span>
+                ) : (
+                  <span className="h-[22px]" aria-hidden="true" />
+                )}
+                <div className="flex flex-col gap-1">
+                  <h3 style={bricolage} className="text-[20px] font-semibold tracking-[-0.01em]">
+                    {plan.name}
+                  </h3>
+                  <p className={`text-[13px] leading-5 ${plan.featured ? "opacity-70" : "opacity-60"}`}>
+                    {plan.description}
                   </p>
-
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={hasAddOn}
-                    aria-label={`Add +Human review to ${plan.name}`}
-                    onClick={() => toggleHumanAddOn(plan.name)}
-                    className={`mt-1 flex w-full items-center justify-between gap-3 rounded-[10px] px-3 py-2.5 text-left transition duration-200 ease-out active:scale-[0.98] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
-                      plan.featured
-                        ? "bg-white/10 hover:bg-white/15 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
-                        : "bg-[rgba(33,12,55,0.04)] hover:bg-[rgba(33,12,55,0.07)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
-                    }`}
-                  >
-                    <span className="flex flex-col gap-0.5">
-                      <span className="text-[12px] font-medium">+Human review</span>
-                      <span className={`text-[10px] ${plan.featured ? "opacity-70" : "opacity-60"}`}>
-                        +${plan.addOnPrice}/mo · attorney-supervised
-                      </span>
-                    </span>
-                    <span
-                      className={`t-toggle relative h-6 w-10 shrink-0 rounded-full ${touched ? "is-init" : ""}`}
-                      data-on={hasAddOn}
-                      style={{
-                        backgroundColor: hasAddOn
-                          ? ACCENT
-                          : plan.featured
-                            ? "rgba(244,235,255,0.25)"
-                            : "rgba(33,12,55,0.15)",
-                      }}
-                    >
-                      <span className="t-toggle-thumb absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm" />
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    style={plan.featured ? { backgroundColor: ACCENT, color: "#fff" } : undefined}
-                    className={`rounded-full px-5 py-3 text-[14px] font-medium transition duration-200 ease-out active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
-                      plan.featured
-                        ? "hover:-translate-y-px hover:brightness-110 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
-                        : "border border-[rgba(33,12,55,0.55)] hover:-translate-y-px hover:border-[rgba(33,12,55,0.75)] hover:bg-[rgba(33,12,55,0.04)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
-                    }`}
-                  >
-                    {hasAddOn ? `${plan.cta} with +Human` : plan.cta}
-                  </button>
                 </div>
-              );
-            })}
-
-            {PRICING_FEATURE_ROWS.map((row) => (
-              <Fragment key={row.label}>
-                <div className="z-10 flex items-center border-t border-[rgba(33,12,55,0.08)] px-6 py-3.5 text-[13px] font-medium opacity-70">
-                  {row.label}
+                <div className="flex items-end gap-1">
+                  <span style={bricolage} className="text-[30px] font-semibold leading-none">
+                    ${plan.price}
+                  </span>
+                  {plan.period && (
+                    <span className={`pb-0.5 text-[14px] ${plan.featured ? "opacity-70" : "opacity-60"}`}>
+                      {plan.period}
+                    </span>
+                  )}
                 </div>
-                {row.values.map((value, colIndex) => (
-                  <div
-                    key={`${row.label}-${colIndex}`}
-                    className="z-10 flex items-center justify-center border-t border-[rgba(33,12,55,0.08)] px-4 py-3.5 text-[13px]"
-                  >
-                    {value === true ? <CheckIcon /> : <span className="opacity-80">{value}</span>}
-                  </div>
-                ))}
-              </Fragment>
+                <p className={`text-[12px] font-medium ${plan.featured ? "opacity-80" : "opacity-70"}`}>
+                  {plan.credits}
+                </p>
+
+                <button
+                  type="button"
+                  style={plan.featured ? { backgroundColor: ACCENT, color: "#fff" } : undefined}
+                  className={`mt-auto rounded-full px-5 py-3 text-[14px] font-medium transition duration-200 ease-out active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                    plan.featured
+                      ? "hover:-translate-y-px hover:brightness-110 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
+                      : "border border-[rgba(33,12,55,0.55)] hover:-translate-y-px hover:border-[rgba(33,12,55,0.75)] hover:bg-[rgba(33,12,55,0.04)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
+                  }`}
+                >
+                  {plan.cta}
+                </button>
+              </div>
             ))}
           </div>
 
-          {/* Comparison list: mobile */}
-          <div className="flex w-full flex-col gap-4 lg:hidden">
-            {SELF_SERVE_PLANS.map((plan, planIndex) => {
-              const hasAddOn = Boolean(humanAddOns[plan.name]);
-              const touched = Boolean(toggleTouched[plan.name]);
-              const totalPrice = plan.price + (hasAddOn ? plan.addOnPrice : 0);
-              return (
-                <div
-                  key={plan.name}
-                  style={plan.featured ? { backgroundColor: INK, transitionDelay: `${planIndex * 80}ms` } : { transitionDelay: `${planIndex * 80}ms` }}
-                  className={`area-reveal flex flex-col gap-4 rounded-[20px] border border-[rgba(33,12,55,0.12)] p-6 ${
-                    plan.featured ? "text-white" : ""
-                  } ${pricingVisible ? "is-shown" : ""}`}
-                >
-                  {plan.featured ? (
-                    <span className="w-fit rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-white">
-                      Recommended
-                    </span>
-                  ) : null}
-                  <div className="flex flex-col gap-1">
-                    <h3 style={bricolage} className="text-[20px] font-semibold tracking-[-0.01em]">
-                      {plan.name}
-                    </h3>
-                    <p className={`text-[14px] leading-5 ${plan.featured ? "opacity-70" : "opacity-60"}`}>
-                      {plan.description}
-                    </p>
-                  </div>
-                  <div className="flex items-end gap-1" aria-live="polite">
-                    <span style={bricolage} className="text-[30px] font-semibold leading-none">
-                      ${totalPrice}
-                    </span>
-                    {plan.period && (
-                      <span className={`pb-0.5 text-[14px] ${plan.featured ? "opacity-70" : "opacity-60"}`}>
-                        {plan.period}
-                      </span>
-                    )}
-                    <span className={`pb-0.5 text-[13px] font-medium ${plan.featured ? "opacity-80" : "opacity-70"}`}>
-                      · {plan.credits}
-                    </span>
-                  </div>
-
-                  <dl className="flex flex-col gap-2 border-t border-current/10 pt-4">
-                    {PRICING_FEATURE_ROWS.map((row) => (
-                      <div key={row.label} className="flex items-center justify-between gap-4 text-[13px]">
-                        <dt className={plan.featured ? "opacity-70" : "opacity-60"}>{row.label}</dt>
-                        <dd className="flex items-center font-medium">
-                          {row.values[planIndex] === true ? <CheckIcon /> : row.values[planIndex]}
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
-
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={hasAddOn}
-                    aria-label={`Add +Human review to ${plan.name}`}
-                    onClick={() => toggleHumanAddOn(plan.name)}
-                    className={`flex w-full items-center justify-between gap-3 rounded-[10px] px-4 py-3 text-left transition duration-200 ease-out active:scale-[0.98] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
-                      plan.featured
-                        ? "bg-white/10 hover:bg-white/15 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
-                        : "bg-[rgba(33,12,55,0.04)] hover:bg-[rgba(33,12,55,0.07)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
-                    }`}
-                  >
-                    <span className="flex flex-col gap-0.5">
-                      <span className="text-[13px] font-medium">+Human review</span>
-                      <span className={`text-[11px] ${plan.featured ? "opacity-70" : "opacity-60"}`}>
-                        +${plan.addOnPrice}/mo · attorney-supervised
-                      </span>
-                    </span>
-                    <span
-                      className={`t-toggle relative h-6 w-10 shrink-0 rounded-full ${touched ? "is-init" : ""}`}
-                      data-on={hasAddOn}
-                      style={{
-                        backgroundColor: hasAddOn
-                          ? ACCENT
-                          : plan.featured
-                            ? "rgba(244,235,255,0.25)"
-                            : "rgba(33,12,55,0.15)",
-                      }}
-                    >
-                      <span className="t-toggle-thumb absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm" />
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    style={plan.featured ? { backgroundColor: ACCENT, color: "#fff" } : undefined}
-                    className={`rounded-full px-5 py-3 text-[15px] font-medium transition duration-200 ease-out active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
-                      plan.featured
-                        ? "hover:-translate-y-px hover:brightness-110 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
-                        : "border border-[rgba(33,12,55,0.55)] hover:-translate-y-px hover:border-[rgba(33,12,55,0.75)] hover:bg-[rgba(33,12,55,0.04)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
-                    }`}
-                  >
-                    {hasAddOn ? `${plan.cta} with +Human` : plan.cta}
-                  </button>
-                </div>
-              );
-            })}
-          </div>
+          <a
+            href="#"
+            className="text-[14px] font-medium underline decoration-[rgba(33,12,55,0.3)] underline-offset-4 transition hover:decoration-[rgba(33,12,55,0.7)]"
+          >
+            See full pricing comparison
+          </a>
 
           {/* Enterprise: contact bar instead of a fourth self-serve tier */}
           <div className="flex w-full max-w-[1200px] flex-col items-center justify-between gap-4 rounded-[16px] border border-[rgba(33,12,55,0.12)] bg-[rgba(33,12,55,0.03)] p-6 sm:flex-row">
