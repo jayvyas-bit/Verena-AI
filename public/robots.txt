@@ -2,5 +2,8 @@ User-agent: *
 Allow: /
 Disallow: /redesign
 Disallow: /option-2
+Disallow: /option-3
+Disallow: /option-4
+Disallow: /v2
 
 Sitemap: https://verena.ai/sitemap.xml
