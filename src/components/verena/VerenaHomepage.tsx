@@ -3272,22 +3272,68 @@ export function VerenaHomepage() {
             ship.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <button
-              type="button"
-              onClick={() => {
-                heroRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-                window.setTimeout(() => placeholderInputRef.current?.focus(), 450);
-              }}
-              style={{ backgroundColor: INK }}
-              className="rounded-lg px-5 py-3 text-[15px] font-medium text-white transition duration-200 ease-out hover:brightness-110 active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+          <div className="flex w-full max-w-[560px] flex-col items-center gap-3">
+            <form
+              onSubmit={handleSubmit}
+              noValidate
+              className="flex w-full flex-col gap-3 rounded-2xl border-0 bg-white px-4 py-4 text-left shadow-[0_1px_8px_rgba(45,0,15,0.08)] transition focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-[#faf9f6] sm:flex-row sm:items-center sm:border sm:px-6 sm:py-4"
+              style={
+                {
+                  borderColor: domainError ? STATUS_COLORS.deficit : "rgba(33,12,55,0.12)",
+                  "--tw-ring-color": ACCENT,
+                } as CSSProperties
+              }
             >
-              Start free scan
-            </button>
+              <div className="flex min-w-0 items-center gap-3 rounded-xl border border-[rgba(33,12,55,0.14)] bg-[#faf9fc] px-3 py-3 sm:flex-1 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                <VerenaMarkIcon className="h-6 w-6" />
+                <label htmlFor="verena-cta-domain" className="sr-only">
+                  Website to scan
+                </label>
+                <input
+                  id="verena-cta-domain"
+                  name="domain"
+                  type="text"
+                  autoComplete="url"
+                  placeholder="yourcompany.com"
+                  value={domain}
+                  onChange={(event) => {
+                    setDomain(event.target.value);
+                    if (domainError) setDomainError("");
+                  }}
+                  aria-invalid={domainError ? true : undefined}
+                  aria-describedby={domainError ? "verena-cta-domain-error" : undefined}
+                  className="w-full min-w-0 flex-1 bg-transparent text-left text-[16px] leading-6 outline-none placeholder:text-[#210c37]/70"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={status === "loading"}
+                aria-label={
+                  status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Analyze"
+                }
+                style={{ backgroundColor: ACCENT }}
+                className="flex w-full shrink-0 items-center justify-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-medium text-white transition duration-200 ease-out hover:brightness-110 active:scale-[0.96] active:duration-100 disabled:cursor-not-allowed disabled:hover:brightness-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:w-auto"
+              >
+                <span key={status} className="hero-input-pop flex items-center justify-center">
+                  <HeroStatusIcon status={status} />
+                </span>
+                {status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Analyze"}
+              </button>
+            </form>
+            {domainError && (
+              <p
+                id="verena-cta-domain-error"
+                role="alert"
+                className="text-left text-[13px] font-medium"
+                style={{ color: STATUS_COLORS.deficit }}
+              >
+                {domainError}
+              </p>
+            )}
             <button
               type="button"
-              style={{ borderColor: "rgba(33,12,55,0.14)", color: INK, backgroundColor: "#fff" }}
-              className="rounded-lg border px-5 py-3 text-[15px] font-medium shadow-[0_2px_4px_rgba(33,12,55,0.08),0_1px_1px_rgba(33,12,55,0.04)] transition duration-200 ease-out hover:bg-[rgba(33,12,55,0.03)] active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+              className="text-[14px] font-medium underline decoration-[rgba(33,12,55,0.3)] underline-offset-4 transition hover:decoration-[rgba(33,12,55,0.6)]"
+              style={{ color: "rgba(33,12,55,0.65)" }}
             >
               Talk to founder
             </button>
