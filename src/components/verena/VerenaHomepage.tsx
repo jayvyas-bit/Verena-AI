@@ -2464,11 +2464,11 @@ export function VerenaHomepage() {
             height={743}
             className="absolute inset-0 h-full w-full object-cover"
           />
-          <div className="absolute left-1/2 top-1/2 flex w-[92%] max-w-[800px] -translate-x-1/2 -translate-y-1/2 flex-col items-stretch gap-2">
+          <div className="relative mx-auto flex w-[92%] max-w-[800px] flex-col items-stretch gap-2 py-9 sm:absolute sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:py-0">
             <form
               onSubmit={handleSubmit}
               noValidate
-              className="flex flex-col gap-3 rounded-2xl border bg-white px-4 py-4 shadow-[0_1px_8px_rgba(45,0,15,0.08)] transition focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-white sm:flex-row sm:items-center sm:px-6 sm:py-4"
+              className="flex flex-col gap-3 rounded-2xl border-0 bg-white px-4 py-4 shadow-[0_1px_8px_rgba(45,0,15,0.08)] transition focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-white sm:flex-row sm:items-center sm:border sm:px-6 sm:py-4"
               style={
                 {
                   borderColor: domainError ? STATUS_COLORS.deficit : "rgba(33,12,55,0.12)",
@@ -2476,7 +2476,7 @@ export function VerenaHomepage() {
                 } as CSSProperties
               }
             >
-              <div className="flex min-w-0 flex-1 items-center gap-3">
+              <div className="flex min-w-0 items-center gap-3 rounded-xl border border-[rgba(33,12,55,0.14)] bg-[#faf9fc] px-3 py-3 sm:flex-1 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
                 <VerenaMarkIcon className="h-6 w-6" />
                 <label htmlFor="verena-homepage-domain" className="sr-only">
                   Website to scan

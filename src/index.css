@@ -633,6 +633,12 @@ button:not(:disabled),
   height: clamp(320px, 20vw + 220px, 450px);
 }
 
+@media (max-width: 640px) {
+  .hero-demo-box {
+    height: auto;
+  }
+}
+
 :root {
   --demo-loop-dur: 7s;
   --demo-loop-ease: var(--ease-smooth-out);
