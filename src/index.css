@@ -574,6 +574,11 @@ button:not(:disabled),
 }
 
 @media (max-width: 640px) {
+  .section-pad-y-lg.hero-pad-y-mobile {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+
   .fluid-h1 {
     font-size: 24px;
   }
