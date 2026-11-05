@@ -778,7 +778,7 @@ function PlusMinusIcon({ open }: { open: boolean }) {
         d="M12 5v14"
         style={{
           opacity: open ? 0 : 1,
-          transition: "opacity 200ms ease-in-out",
+          transition: "opacity 250ms ease-in-out",
         }}
       />
     </svg>
@@ -859,7 +859,7 @@ function useInViewport<T extends HTMLElement>(threshold = 0.3) {
   return [ref, inView] as const;
 }
 
-const STAGE_LEAVE_DURATION_MS = 320;
+const STAGE_LEAVE_DURATION_MS = 350;
 
 function useStageTransition<T>(active: T) {
   const [leaving, setLeaving] = useState<T | null>(null);
@@ -980,8 +980,10 @@ function NavItem({
           height="11"
           viewBox="0 0 16 16"
           fill="none"
-          className="transition-transform duration-200"
-          style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+          style={{
+            transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform var(--dropdown-open-dur) var(--dropdown-ease)",
+          }}
           aria-hidden="true"
         >
           <path
@@ -2057,6 +2059,11 @@ export function VerenaHomepage() {
   }, []);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (placeholderInputRef.current) placeholderInputRef.current.placeholder = PLACEHOLDER_EXAMPLES[0];
+      return;
+    }
+
     const TYPE_SPEED = 11;
     const DELETE_SPEED = 11;
     const HOLD_DURATION = 2500;
@@ -2760,11 +2767,9 @@ export function VerenaHomepage() {
             ))}
           </div>
         </div>
-        <div
-          className="flex items-center justify-center px-6 sm:absolute sm:left-1/2 sm:top-1/2 sm:h-[120px] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:px-20 sm:bg-[linear-gradient(270deg,rgba(255,255,255,0.95)_0%,rgb(255,255,255)_30%,rgb(255,255,255)_70%,rgba(255,255,255,0.95)_100%)]"
-        >
+        <div className="flex items-center justify-center px-6 sm:absolute sm:left-1/2 sm:top-1/2 sm:h-[120px] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:px-20 sm:bg-white">
           <p className="whitespace-nowrap text-[15px] font-medium leading-[27px] sm:text-[20px]">
-            Trusted by 1000+ website owner
+            Trusted by 1000+ website owners
           </p>
         </div>
       </section>

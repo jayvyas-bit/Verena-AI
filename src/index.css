@@ -115,7 +115,7 @@ button:not(:disabled),
 .t-mobile-drawer {
   opacity: 0;
   pointer-events: none;
-  transform: scale(0.98);
+  transform: scale(0.96);
   transition: opacity var(--drawer-open-dur) var(--drawer-ease), transform var(--drawer-open-dur) var(--drawer-ease);
   will-change: opacity, transform;
 }
@@ -224,13 +224,13 @@ button:not(:disabled),
 }
 
 .stage-leaving {
-  animation: stage-leave 320ms ease-in-out both;
+  animation: stage-leave 350ms var(--ease-smooth-out) both;
   pointer-events: none;
   will-change: opacity, filter;
 }
 
 .stage-entering {
-  animation: stage-enter 400ms var(--ease-smooth-out) both;
+  animation: stage-enter 350ms var(--ease-smooth-out) both;
   will-change: opacity, filter;
 }
 
@@ -348,7 +348,7 @@ button:not(:disabled),
 .area-accordion-body {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 350ms var(--ease-smooth-out);
+  transition: grid-template-rows 250ms var(--ease-smooth-out);
 }
 
 .area-accordion-body.is-open {
@@ -495,7 +495,7 @@ button:not(:disabled),
     translate 900ms var(--orbit-ease, var(--ease-smooth-out)),
     rotate 900ms var(--orbit-ease, var(--ease-smooth-out)),
     scale 900ms var(--orbit-ease, var(--ease-smooth-out)),
-    opacity 600ms ease;
+    opacity 600ms var(--orbit-ease, var(--ease-smooth-out));
   transition-delay: var(--orbit-stagger, 0ms);
   will-change: translate, scale, opacity;
 }
@@ -520,7 +520,7 @@ button:not(:disabled),
     calc(var(--orbit-ry) * sin(var(--orbit-angle)));
   rotate: 0deg;
   scale: var(--orbit-depth, 1);
-  transition: opacity 600ms ease;
+  transition: opacity 600ms var(--orbit-ease, var(--ease-smooth-out));
 }
 
 @keyframes human-orbit-angle {
