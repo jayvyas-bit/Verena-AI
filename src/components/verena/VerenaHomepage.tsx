@@ -3314,8 +3314,8 @@ export function VerenaHomepage() {
         <div
           className={`area-reveal mx-auto flex w-full max-w-[1200px] flex-col gap-5 ${faqVisible ? "is-shown" : ""}`}
         >
-          <div className="-mx-6 overflow-x-auto px-6 sm:mx-0 sm:overflow-visible sm:px-0 no-scrollbar">
-            <div role="tablist" aria-label="FAQ categories" className="flex flex-nowrap justify-start gap-2 sm:flex-wrap sm:justify-center">
+          <div className="-mx-6 overflow-x-auto px-6 no-scrollbar">
+            <div role="tablist" aria-label="FAQ categories" className="flex w-max min-w-full flex-nowrap justify-center gap-2">
               {FAQ_CATEGORIES.map((category) => {
                 const categoryId = toFaqId(`category-${category}`);
                 const active = category === activeFaqCategory;
