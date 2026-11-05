@@ -2399,7 +2399,7 @@ export function VerenaHomepage() {
       {/* Hero */}
       <section
         ref={heroRef}
-        className="section-pad-x section-pad-y-lg hero-pad-y-mobile flex flex-col items-center gap-16 text-center"
+        className="section-pad-x section-pad-y-lg hero-pad-y-mobile flex flex-col items-center gap-8 text-center sm:gap-16"
       >
         <div
           className={`area-reveal flex max-w-[860px] flex-col items-center gap-2 ${heroVisible ? "is-shown" : ""}`}
