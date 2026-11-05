@@ -21,6 +21,12 @@ const INK = "#210c37";
 const ACCENT = "#2653F3";
 const CREAM = "#faf9f6";
 
+const STATUS_COLORS = {
+  deficit: "#e4572e",
+  warning: "#eab308",
+  verified: "#16a34a",
+} as const;
+
 const NAV_DROPDOWNS = {
   Product: [
     { label: "Overview", body: "What Verena checks and why it matters", icon: "overview" as const },
@@ -123,7 +129,7 @@ const REVIEW_AREAS = [
     title: "Accessibility",
     body: "Spot potential barriers that make your website harder for people to use.",
     status: "3 issues found",
-    statusColor: "#e4572e",
+    statusColor: STATUS_COLORS.deficit,
     icon: "accessibility" as const,
     auditLabel: "WCAG 2.2 AA Audit",
     score: 88,
@@ -150,7 +156,7 @@ const REVIEW_AREAS = [
     title: "Privacy Policy",
     body: "Check whether your policy clearly explains how personal information is collected and used.",
     status: "Needs review",
-    statusColor: "#eab308",
+    statusColor: STATUS_COLORS.warning,
     icon: "privacy" as const,
     auditLabel: "GDPR / CCPA Review",
     score: 74,
@@ -177,7 +183,7 @@ const REVIEW_AREAS = [
     title: "Cookies & Trackers",
     body: "See which tracking tools may be running and where consent needs attention.",
     status: "2 trackers flagged",
-    statusColor: "#e4572e",
+    statusColor: STATUS_COLORS.deficit,
     icon: "cookies" as const,
     auditLabel: "Cookie Consent Scan",
     score: 61,
@@ -204,7 +210,7 @@ const REVIEW_AREAS = [
     title: "Terms of Service",
     body: "Find potential gaps or unclear wording in your website's terms.",
     status: "No issues found",
-    statusColor: "#16a34a",
+    statusColor: STATUS_COLORS.verified,
     icon: "document" as const,
     auditLabel: "Terms Coverage Check",
     score: 96,
@@ -231,7 +237,7 @@ const REVIEW_AREAS = [
     title: "Commercial Email",
     body: "Review supported email-related requirements, including relevant disclosures and consent practices.",
     status: "1 issue found",
-    statusColor: "#eab308",
+    statusColor: STATUS_COLORS.warning,
     icon: "email" as const,
     auditLabel: "CAN-SPAM Review",
     score: 82,
@@ -258,7 +264,7 @@ const REVIEW_AREAS = [
     title: "Marketing Claims",
     body: "Spot promotional claims that may need stronger evidence or clearer wording.",
     status: "No issues found",
-    statusColor: "#16a34a",
+    statusColor: STATUS_COLORS.verified,
     icon: "megaphone" as const,
     auditLabel: "FTC Claims Review",
     score: 94,
@@ -869,6 +875,34 @@ function useInViewport<T extends HTMLElement>(threshold = 0.3) {
   return [ref, inView] as const;
 }
 
+const STAGE_LEAVE_DURATION_MS = 320;
+
+function useStageTransition<T>(active: T) {
+  const [leaving, setLeaving] = useState<T | null>(null);
+  const prevRef = useRef(active);
+  const timeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const prev = prevRef.current;
+    if (prev === active) return;
+    prevRef.current = active;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    setLeaving(prev);
+    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    timeoutRef.current = window.setTimeout(() => setLeaving(null), STAGE_LEAVE_DURATION_MS);
+  }, [active]);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  return leaving;
+}
+
 function NavMenuIcon({ open }: { open: boolean }) {
   const common = {
     width: 20,
@@ -957,12 +991,17 @@ function NavItem({
       className="relative"
       onMouseEnter={() => setOpenDropdown(dropdownKey!)}
       onMouseLeave={() => setOpenDropdown(null)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          setOpenDropdown(null);
+        }
+      }}
     >
       <button
         ref={triggerRef}
         type="button"
         className="flex items-center gap-1 rounded-sm text-sm font-medium transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
-        aria-haspopup="menu"
+        aria-haspopup="true"
         aria-expanded={isOpen}
         onClick={() => setOpenDropdown(isOpen ? null : dropdownKey!)}
       >
@@ -991,7 +1030,6 @@ function NavItem({
           panelState === "open" ? "is-open" : panelState === "closing" ? "is-closing" : ""
         }`}
         data-origin="top-center"
-        role="menu"
         aria-hidden={panelState !== "open"}
       >
         <div className="grid grid-cols-[1.3fr_1fr] overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-[rgba(33,12,55,0.08)]">
@@ -1000,7 +1038,6 @@ function NavItem({
               <a
                 key={item.label}
                 href="#"
-                role="menuitem"
                 tabIndex={itemTabIndex}
                 className="flex items-start gap-3 rounded-xl p-3 text-left transition hover:bg-[rgba(33,12,55,0.04)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
               >
@@ -1059,17 +1096,17 @@ function NavItem({
 }
 
 const MOCKUP_FINDINGS = [
-  { title: "Accessibility", detail: "Image missing alt text — 3 instances found", severity: "#e4572e" },
-  { title: "Privacy Policy", detail: "Data-sharing clause needs clearer wording", severity: "#eab308" },
-  { title: "Cookies & Trackers", detail: "2 trackers load before consent is given", severity: "#e4572e" },
-  { title: "Terms of Service", detail: "No issues found in this section", severity: "#16a34a" },
+  { title: "Accessibility", detail: "Image missing alt text — 3 instances found", severity: STATUS_COLORS.deficit },
+  { title: "Privacy Policy", detail: "Data-sharing clause needs clearer wording", severity: STATUS_COLORS.warning },
+  { title: "Cookies & Trackers", detail: "2 trackers load before consent is given", severity: STATUS_COLORS.deficit },
+  { title: "Terms of Service", detail: "No issues found in this section", severity: STATUS_COLORS.verified },
 ];
 
 const MOCKUP_RECHECKS = [
-  { title: "Accessibility", checked: "2 days ago", status: "Passing", statusColor: "#16a34a", trend: "+4%" },
-  { title: "Privacy Policy", checked: "2 days ago", status: "1 new issue", statusColor: "#e4572e", trend: "-2%" },
-  { title: "Cookies & Trackers", checked: "5 days ago", status: "Passing", statusColor: "#16a34a", trend: "+1%" },
-  { title: "Marketing Claims", checked: "5 days ago", status: "Passing", statusColor: "#16a34a", trend: "0%" },
+  { title: "Accessibility", checked: "2 days ago", status: "Passing", statusColor: STATUS_COLORS.verified, trend: "+4%" },
+  { title: "Privacy Policy", checked: "2 days ago", status: "1 new issue", statusColor: STATUS_COLORS.deficit, trend: "-2%" },
+  { title: "Cookies & Trackers", checked: "5 days ago", status: "Passing", statusColor: STATUS_COLORS.verified, trend: "+1%" },
+  { title: "Marketing Claims", checked: "5 days ago", status: "Passing", statusColor: STATUS_COLORS.verified, trend: "0%" },
 ];
 
 function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"] }) {
@@ -1080,7 +1117,7 @@ function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"] }) {
           <p style={bricolage} className="text-[13px] font-semibold sm:text-[15px]">acme.com — Full Report</p>
           <span
             className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium"
-            style={{ backgroundColor: "rgba(22,163,74,0.1)", color: "#16a34a" }}
+            style={{ backgroundColor: "rgba(22,163,74,0.1)", color: STATUS_COLORS.verified }}
           >
             Analysis complete
           </span>
@@ -1119,15 +1156,15 @@ function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"] }) {
           style={{ border: "1px solid rgba(33,12,55,0.08)" }}
         >
           We{" "}
-          <span className="rounded px-1 line-through" style={{ backgroundColor: "rgba(228,87,46,0.12)", color: "#e4572e" }}>
+          <span className="rounded px-1 line-through" style={{ backgroundColor: "rgba(228,87,46,0.12)", color: STATUS_COLORS.deficit }}>
             may share
           </span>{" "}
-          <span className="rounded px-1" style={{ backgroundColor: "rgba(22,163,74,0.12)", color: "#16a34a" }}>
+          <span className="rounded px-1" style={{ backgroundColor: "rgba(22,163,74,0.12)", color: STATUS_COLORS.verified }}>
             do not share
           </span>{" "}
           your personal information with third-party advertisers without your consent. Information is only
           used to{" "}
-          <span className="rounded px-1" style={{ backgroundColor: "rgba(22,163,74,0.12)", color: "#16a34a" }}>
+          <span className="rounded px-1" style={{ backgroundColor: "rgba(22,163,74,0.12)", color: STATUS_COLORS.verified }}>
             provide and improve the service you requested
           </span>
           .
@@ -1207,9 +1244,9 @@ function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"] }) {
 }
 
 const SEVERITY_META = {
-  deficit: { label: "DEFICIT", color: "#e4572e" },
-  warning: { label: "WARNING", color: "#eab308" },
-  verified: { label: "VERIFIED", color: "#16a34a" },
+  deficit: { label: "DEFICIT", color: STATUS_COLORS.deficit },
+  warning: { label: "WARNING", color: STATUS_COLORS.warning },
+  verified: { label: "VERIFIED", color: STATUS_COLORS.verified },
 } as const;
 
 function SeverityTag({ severity }: { severity: keyof typeof SEVERITY_META }) {
@@ -1285,7 +1322,7 @@ function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
           </span>
         </div>
       ) : (
-        <p className="text-[12px] font-medium" style={{ color: "#16a34a" }}>
+        <p className="text-[12px] font-medium" style={{ color: STATUS_COLORS.verified }}>
           No action needed — this area passed review.
         </p>
       )}
@@ -1296,8 +1333,9 @@ function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
 function AnalyzeWindowFrame({ children }: { children: ReactNode }) {
   return (
     <div
+      aria-hidden="true"
       className="flex h-[300px] w-full flex-col gap-2.5 overflow-hidden rounded-2xl p-4"
-      style={{ backgroundColor: "#faf9fb", border: "1px solid #ebe6ee" }}
+      style={{ backgroundColor: "#faf9fb", border: "1px solid rgba(33,12,55,0.08)" }}
     >
       {children}
     </div>
@@ -1456,7 +1494,7 @@ function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" }) {
                     className="demo-check absolute inset-0 flex items-center justify-center rounded-full"
                     style={{
                       backgroundColor: "rgba(22,163,74,0.12)",
-                      color: "#16a34a",
+                      color: STATUS_COLORS.verified,
                       animationDelay: `${0.4 + i * 0.4}s`,
                     }}
                   >
@@ -1500,7 +1538,7 @@ function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" }) {
             key={area.title}
             className="demo-bar h-1.5 flex-1 rounded-full"
             style={{
-              backgroundColor: area.statusColor === "#e4572e" ? "#e4572e" : "#16a34a",
+              backgroundColor: area.statusColor,
               animationDelay: `${i * 0.08}s`,
             }}
           />
@@ -1784,51 +1822,41 @@ export function VerenaHomepage() {
   const [activeTool, setActiveTool] = useState<(typeof TOOL_TABS)[number]["id"]>(
     TOOL_TABS[0].id,
   );
-  const [leavingTool, setLeavingTool] = useState<(typeof TOOL_TABS)[number]["id"] | null>(null);
-  const prevActiveToolRef = useRef(TOOL_TABS[0].id);
-  const toolLeaveTimeoutRef = useRef<number | null>(null);
+  const leavingTool = useStageTransition(activeTool);
+  const toolTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
-  useEffect(() => {
-    const prev = prevActiveToolRef.current;
-    if (prev === activeTool) return;
-    prevActiveToolRef.current = activeTool;
+  const focusToolTab = (index: number) => {
+    const wrapped = (index + TOOL_TABS.length) % TOOL_TABS.length;
+    setActiveTool(TOOL_TABS[wrapped].id);
+    toolTabRefs.current[wrapped]?.focus();
+  };
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    setLeavingTool(prev);
-    if (toolLeaveTimeoutRef.current) window.clearTimeout(toolLeaveTimeoutRef.current);
-    toolLeaveTimeoutRef.current = window.setTimeout(() => setLeavingTool(null), 320);
-  }, [activeTool]);
-
-  useEffect(() => {
-    return () => {
-      if (toolLeaveTimeoutRef.current) window.clearTimeout(toolLeaveTimeoutRef.current);
-    };
-  }, []);
+  const handleToolTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    switch (event.key) {
+      case "ArrowRight":
+        event.preventDefault();
+        focusToolTab(index + 1);
+        break;
+      case "ArrowLeft":
+        event.preventDefault();
+        focusToolTab(index - 1);
+        break;
+      case "Home":
+        event.preventDefault();
+        focusToolTab(0);
+        break;
+      case "End":
+        event.preventDefault();
+        focusToolTab(TOOL_TABS.length - 1);
+        break;
+      default:
+        break;
+    }
+  };
 
   const [activeArea, setActiveArea] = useState(0);
-  const [leavingArea, setLeavingArea] = useState<number | null>(null);
-  const prevActiveAreaRef = useRef(0);
-  const leaveTimeoutRef = useRef<number | null>(null);
+  const leavingArea = useStageTransition(activeArea);
   const areaRowRefs = useRef<(HTMLButtonElement | null)[]>([]);
-
-  useEffect(() => {
-    const prev = prevActiveAreaRef.current;
-    if (prev === activeArea) return;
-    prevActiveAreaRef.current = activeArea;
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    setLeavingArea(prev);
-    if (leaveTimeoutRef.current) window.clearTimeout(leaveTimeoutRef.current);
-    leaveTimeoutRef.current = window.setTimeout(() => setLeavingArea(null), 420);
-  }, [activeArea]);
-
-  useEffect(() => {
-    return () => {
-      if (leaveTimeoutRef.current) window.clearTimeout(leaveTimeoutRef.current);
-    };
-  }, []);
 
   useEffect(() => {
     let rafId = 0;
@@ -1875,7 +1903,7 @@ export function VerenaHomepage() {
   const [domain, setDomain] = useState("");
   const [domainError, setDomainError] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
-  const [placeholderText, setPlaceholderText] = useState("");
+  const placeholderInputRef = useRef<HTMLInputElement | null>(null);
   const timeouts = useRef<number[]>([]);
 
   useEffect(() => {
@@ -1895,11 +1923,15 @@ export function VerenaHomepage() {
     let phase: "typing" | "holding" | "deleting" | "paused" = "typing";
     let timeoutId: number;
 
+    function setPlaceholder(text: string) {
+      if (placeholderInputRef.current) placeholderInputRef.current.placeholder = text;
+    }
+
     function tick() {
       const phrase = PLACEHOLDER_EXAMPLES[phraseIndex];
       if (phase === "typing") {
         charIndex += 1;
-        setPlaceholderText(phrase.slice(0, charIndex));
+        setPlaceholder(phrase.slice(0, charIndex));
         phase = charIndex >= phrase.length ? "holding" : "typing";
         timeoutId = window.setTimeout(tick, phase === "holding" ? HOLD_DURATION : TYPE_SPEED);
         return;
@@ -1911,7 +1943,7 @@ export function VerenaHomepage() {
       }
       if (phase === "deleting") {
         charIndex -= 1;
-        setPlaceholderText(phrase.slice(0, charIndex));
+        setPlaceholder(phrase.slice(0, charIndex));
         phase = charIndex <= 0 ? "paused" : "deleting";
         timeoutId = window.setTimeout(tick, phase === "paused" ? PAUSE_DURATION : DELETE_SPEED);
         return;
@@ -1948,8 +1980,47 @@ export function VerenaHomepage() {
 
   const [openDropdown, setOpenDropdown] = useState<NavDropdownKey | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobilePanelState, setMobilePanelState] = useState<"closed" | "open" | "closing">("closed");
+  const mobileMenuToggleRef = useRef<HTMLButtonElement | null>(null);
+  const mobileMenuFirstLinkRef = useRef<HTMLAnchorElement | null>(null);
   const [announcementVisible, setAnnouncementVisible] = useState(true);
   const [announcementClosing, setAnnouncementClosing] = useState(false);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      setMobilePanelState("open");
+    } else {
+      setMobilePanelState((prev) => (prev === "open" ? "closing" : "closed"));
+    }
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (mobilePanelState !== "closing") return;
+    const timer = window.setTimeout(() => setMobilePanelState("closed"), 350);
+    return () => window.clearTimeout(timer);
+  }, [mobilePanelState]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    mobileMenuFirstLinkRef.current?.focus();
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setMobileMenuOpen(false);
+        mobileMenuToggleRef.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [mobileMenuOpen]);
 
   function closeAnnouncement() {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2085,6 +2156,13 @@ export function VerenaHomepage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(STRUCTURED_DATA) }}
       />
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:shadow-lg focus:outline-none focus:ring-2"
+        style={{ color: INK }}
+      >
+        Skip to content
+      </a>
       {/* Announcement bar */}
       {announcementVisible && (
         <div
@@ -2156,39 +2234,51 @@ export function VerenaHomepage() {
               Talk to founder
             </button>
             <button
+              ref={mobileMenuToggleRef}
               type="button"
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileMenuOpen}
               aria-controls="verena-homepage-mobile-nav"
               onClick={() => setMobileMenuOpen((open) => !open)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg transition duration-200 ease-out hover:bg-[rgba(33,12,55,0.05)] hover:scale-105 active:scale-90 active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 md:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-lg transition duration-200 ease-out hover:bg-[rgba(33,12,55,0.05)] hover:scale-110 active:scale-90 active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 md:hidden"
             >
               <NavMenuIcon open={mobileMenuOpen} />
             </button>
           </div>
         </header>
 
-        {mobileMenuOpen && (
-          <nav
-            id="verena-homepage-mobile-nav"
-            className="flex flex-col gap-1 border-t bg-white/90 px-6 py-4 text-sm font-medium backdrop-blur-md md:hidden"
-            style={{ borderColor: "rgba(33,12,55,0.1)" }}
-          >
-            {["Product", "Pricing", "Resources", "Contact us"].map((label) => (
-              <a
-                key={label}
-                href="#"
-                onClick={() => setMobileMenuOpen(false)}
-                className="rounded-lg px-3 py-2.5 transition hover:bg-[rgba(33,12,55,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
-              >
-                {label}
-              </a>
-            ))}
-          </nav>
-        )}
       </div>
 
-      <div>
+      <div
+        aria-hidden="true"
+        onClick={() => setMobileMenuOpen(false)}
+        className={`t-mobile-backdrop fixed inset-0 z-40 md:hidden ${
+          mobilePanelState === "open" ? "is-open" : ""
+        }`}
+      />
+      <nav
+        id="verena-homepage-mobile-nav"
+        aria-hidden={!mobileMenuOpen}
+        aria-label="Mobile"
+        className={`t-mobile-drawer fixed inset-y-0 right-0 z-50 flex w-[min(320px,85vw)] flex-col gap-1 bg-white px-6 pb-6 pt-24 text-sm font-medium shadow-2xl md:hidden ${
+          mobilePanelState === "open" ? "is-open" : mobilePanelState === "closing" ? "is-closing" : ""
+        }`}
+      >
+        {["Product", "Pricing", "Resources", "Contact us"].map((label, index) => (
+          <a
+            key={label}
+            ref={index === 0 ? mobileMenuFirstLinkRef : undefined}
+            href="#"
+            tabIndex={mobileMenuOpen ? 0 : -1}
+            onClick={() => setMobileMenuOpen(false)}
+            className="rounded-lg px-3 py-2.5 transition hover:bg-[rgba(33,12,55,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
+
+      <main id="main-content">
       {/* Hero */}
       <section
         ref={heroRef}
@@ -2202,7 +2292,7 @@ export function VerenaHomepage() {
             <br />
             But what might be{" "}
             <span
-              className="relative inline overflow-hidden"
+              className="relative inline-block overflow-hidden"
               style={{ paddingBottom: "0.12em" }}
             >
               missing?
@@ -2264,7 +2354,7 @@ export function VerenaHomepage() {
               className="flex flex-col gap-3 rounded-2xl border bg-white px-4 py-4 shadow-[0_1px_8px_rgba(45,0,15,0.08)] transition focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-white sm:flex-row sm:items-center sm:px-6 sm:py-4"
               style={
                 {
-                  borderColor: domainError ? "#e4572e" : "rgba(33,12,55,0.12)",
+                  borderColor: domainError ? STATUS_COLORS.deficit : "rgba(33,12,55,0.12)",
                   "--tw-ring-color": ACCENT,
                 } as CSSProperties
               }
@@ -2275,6 +2365,7 @@ export function VerenaHomepage() {
                   Website to scan
                 </label>
                 <input
+                  ref={placeholderInputRef}
                   id="verena-homepage-domain"
                   name="domain"
                   type="text"
@@ -2284,7 +2375,6 @@ export function VerenaHomepage() {
                     setDomain(event.target.value);
                     if (domainError) setDomainError("");
                   }}
-                  placeholder={placeholderText}
                   aria-invalid={domainError ? true : undefined}
                   aria-describedby={domainError ? "verena-homepage-domain-error" : undefined}
                   className="w-full min-w-0 flex-1 bg-transparent text-left text-[16px] leading-6 outline-none placeholder:text-[#210c37]/70"
@@ -2294,7 +2384,7 @@ export function VerenaHomepage() {
                 type="submit"
                 disabled={status === "loading"}
                 aria-label={
-                  status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Submit"
+                  status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Analyze"
                 }
                 style={{ backgroundColor: ACCENT }}
                 className="flex w-full shrink-0 items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium text-white transition duration-200 ease-out hover:brightness-110 active:scale-[0.96] active:duration-100 disabled:cursor-not-allowed disabled:hover:brightness-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:w-auto"
@@ -2310,7 +2400,7 @@ export function VerenaHomepage() {
                 id="verena-homepage-domain-error"
                 role="alert"
                 className="pl-1 text-left text-[13px] font-medium"
-                style={{ color: "#e4572e" }}
+                style={{ color: STATUS_COLORS.deficit }}
               >
                 {domainError}
               </p>
@@ -2470,17 +2560,22 @@ export function VerenaHomepage() {
           style={{ transitionDelay: "100ms" }}
         >
           <div role="tablist" aria-label="Verena tools" className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 sm:gap-x-12">
-            {TOOL_TABS.map((tab) => {
+            {TOOL_TABS.map((tab, index) => {
               const active = tab.id === activeTool;
               return (
                 <button
                   key={tab.id}
+                  ref={(el) => {
+                    toolTabRefs.current[index] = el;
+                  }}
                   id={`verena-scan-tab-${tab.id}`}
                   type="button"
                   role="tab"
                   aria-selected={active}
                   aria-controls="verena-scan-tabpanel"
+                  tabIndex={active ? 0 : -1}
                   onClick={() => setActiveTool(tab.id)}
+                  onKeyDown={(event) => handleToolTabKeyDown(event, index)}
                   style={bricolage}
                   className={`relative flex items-center gap-2 whitespace-nowrap rounded-sm pb-[9px] text-[15px] font-medium transition-opacity duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:text-[18px] ${
                     active ? "opacity-100" : "opacity-60 hover:opacity-85"
@@ -2524,7 +2619,10 @@ export function VerenaHomepage() {
               loading="lazy"
               className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="relative flex aspect-[4/5] w-[92%] max-w-[1080px] flex-col overflow-hidden rounded-t-2xl border-8 border-b-0 border-white/24 bg-white shadow-2xl sm:aspect-[1080/450]">
+            <div
+              aria-hidden="true"
+              className="relative flex aspect-[4/5] w-[92%] max-w-[1080px] flex-col overflow-hidden rounded-t-2xl border-8 border-b-0 border-white/24 bg-white shadow-2xl sm:aspect-[1080/450]"
+            >
               <div
                 className="flex items-center gap-4 border-b px-5 py-3"
                 style={{ borderColor: "rgba(33,12,55,0.08)", backgroundColor: "#f5f3f0" }}
@@ -2544,11 +2642,11 @@ export function VerenaHomepage() {
               <div className="flex-1 overflow-hidden p-5 sm:p-7">
                 <div className="grid h-full">
                   {leavingTool !== null ? (
-                    <div aria-hidden="true" className="tool-stage-leaving" style={{ gridArea: "1 / 1" }}>
+                    <div aria-hidden="true" className="stage-leaving" style={{ gridArea: "1 / 1" }}>
                       <ToolMockupBody tool={leavingTool} />
                     </div>
                   ) : null}
-                  <div key={activeTool} className="tool-stage-entering" style={{ gridArea: "1 / 1" }}>
+                  <div key={activeTool} className="stage-entering" style={{ gridArea: "1 / 1" }}>
                     <ToolMockupBody tool={activeTool} />
                   </div>
                 </div>
@@ -2559,7 +2657,7 @@ export function VerenaHomepage() {
               onClick={() => setToolAutoplayPaused((prev) => !prev)}
               aria-label={toolAutoplayPaused ? "Resume autoplay" : "Pause autoplay"}
               aria-pressed={toolAutoplayPaused}
-              className="absolute bottom-4 right-4 flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition duration-200 ease-out hover:scale-110 hover:bg-white/25 active:scale-95 active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+              className="absolute bottom-4 right-4 flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition duration-200 ease-out hover:scale-110 hover:bg-white/25 active:scale-90 active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
             >
               {toolAutoplayPaused ? (
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -2587,7 +2685,7 @@ export function VerenaHomepage() {
                     aria-label={`Show ${tab.label}`}
                     aria-current={active}
                     onClick={() => setActiveTool(tab.id)}
-                    className="rounded-full p-1 transition-transform duration-200 ease-out hover:scale-125 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+                    className="rounded-full p-1 transition duration-200 ease-out hover:scale-110 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
                   >
                     <span
                       className="block h-2 w-2 rounded-full transition-colors duration-300"
@@ -2618,7 +2716,7 @@ export function VerenaHomepage() {
           </p>
         </div>
         <div className="grid w-full max-w-[1536px] gap-10 lg:grid-cols-2 lg:gap-6">
-          <div className="flex flex-col">
+          <div className="flex flex-col" role="group" aria-label="Review areas" aria-controls="area-detail-panel">
             {REVIEW_AREAS.map((area, index) => {
               const isActive = activeArea === index;
               return (
@@ -2631,27 +2729,26 @@ export function VerenaHomepage() {
                   type="button"
                   onClick={() => setActiveArea(index)}
                   aria-pressed={isActive}
-                  className={`area-reveal flex w-full items-start gap-4 py-7 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 ${
+                  className={`area-reveal flex w-full items-start gap-4 rounded-2xl px-5 py-7 text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 ${
                     index > 0 ? "border-t" : ""
                   } ${areasVisible ? "is-shown" : ""}`}
                   style={{
                     borderColor: "rgba(33,12,55,0.08)",
-                    borderLeft: `3px solid ${isActive ? area.statusColor : "transparent"}`,
-                    paddingLeft: isActive ? "17px" : "20px",
+                    backgroundColor: isActive ? "rgba(33,12,55,0.05)" : "transparent",
                     transitionDelay: `${index * 70}ms`,
                   }}
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-3">
                       <span
-                        style={{ ...bricolage, opacity: isActive ? 1 : 0.45 }}
+                        style={{ ...bricolage, opacity: isActive ? 1 : 0.6 }}
                         className="text-[22px] font-semibold tracking-[-0.01em] transition-opacity sm:text-[26px]"
                       >
                         {area.title}
                       </span>
                       <span
-                        className="shrink-0 text-[13px] font-medium"
-                        style={{ color: area.statusColor, opacity: isActive ? 1 : 0.45 }}
+                        className="shrink-0 text-[13px] font-medium transition-colors"
+                        style={isActive ? { color: area.statusColor } : { color: INK, opacity: 0.6 }}
                       >
                         {area.status}
                       </span>
@@ -2665,6 +2762,7 @@ export function VerenaHomepage() {
             })}
           </div>
           <div
+            id="area-detail-panel"
             className={`area-reveal relative flex min-h-[520px] items-center justify-center overflow-hidden rounded-[20px] p-8 lg:sticky lg:top-24 lg:self-start ${areasVisible ? "is-shown" : ""}`}
             style={{ transitionDelay: "80ms" }}
           >
@@ -2673,13 +2771,13 @@ export function VerenaHomepage() {
               {leavingArea !== null ? (
                 <div
                   aria-hidden="true"
-                  className="area-card-stage-leaving"
+                  className="stage-leaving"
                   style={{ gridArea: "1 / 1" }}
                 >
                   <AreaDetailCard area={REVIEW_AREAS[leavingArea]} />
                 </div>
               ) : null}
-              <div key={activeArea} className="area-card-stage-entering" style={{ gridArea: "1 / 1" }}>
+              <div key={activeArea} className="stage-entering" style={{ gridArea: "1 / 1" }}>
                 <AreaDetailCard area={REVIEW_AREAS[activeArea]} />
               </div>
             </div>
@@ -2744,8 +2842,8 @@ export function VerenaHomepage() {
         </div>
         <button
           type="button"
-          style={{ transitionDelay: "120ms" } as CSSProperties}
-          className={`area-reveal relative z-10 rounded-full bg-[#2653F3] px-6 py-3 text-[16px] font-medium text-white transition duration-200 ease-out hover:-translate-y-px hover:bg-[#1c3fd6] active:translate-y-0 active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37] ${humanVisible ? "is-shown" : ""}`}
+          style={{ backgroundColor: ACCENT, transitionDelay: "120ms" } as CSSProperties}
+          className={`area-reveal relative z-10 rounded-full px-6 py-3 text-[16px] font-medium text-white transition duration-200 ease-out hover:-translate-y-px hover:brightness-110 active:translate-y-0 active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37] ${humanVisible ? "is-shown" : ""}`}
         >
           Explore +Human
         </button>
@@ -3005,7 +3103,7 @@ export function VerenaHomepage() {
         </div>
       </section>
 
-      </div>
+      </main>
 
       {/* Footer */}
       <footer
