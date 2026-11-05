@@ -1775,15 +1775,19 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
           </g>
           <rect x="545" y="110" width="255" height="260" rx="20" fill="none" stroke="rgba(255,255,255,0.18)" />
         </g>
-        <circle cx="672" cy="195" r="17" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.3)" />
-        <path
-          d="M 664 192 L 672 200 L 680 192"
-          fill="none"
-          stroke="#fff"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <circle cx="672" cy="195" r="17" fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.3)" />
+        <foreignObject x="661" y="184" width="22" height="22">
+          <div
+            xmlns="http://www.w3.org/1999/xhtml"
+            style={{ width: "22px", height: "22px", overflow: "hidden", borderRadius: "9999px" }}
+          >
+            <img
+              src={verenaLogo}
+              alt=""
+              style={{ height: "102%", width: "474%", maxWidth: "none", marginLeft: "-23%", marginTop: "-2%" }}
+            />
+          </div>
+        </foreignObject>
         <text
           x="672"
           y="245"
