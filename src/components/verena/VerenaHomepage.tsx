@@ -1487,7 +1487,7 @@ function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" }) {
             website you'd like me to start with?
           </p>
         </div>
-        <div className="demo-pop flex w-full justify-end" style={{ animationDelay: "0.3s" }}>
+        <div className="demo-pop flex w-full justify-end" style={{ animationDelay: "0.15s" }}>
           <span
             className="w-fit rounded-[14px] px-3.5 py-2 text-[12px] font-medium"
             style={{ backgroundColor: ACCENT, color: "#fff" }}
@@ -1500,7 +1500,7 @@ function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" }) {
           style={{
             border: "1px solid rgba(33,12,55,0.08)",
             backgroundColor: "rgba(33,12,55,0.02)",
-            animationDelay: "0.6s",
+            animationDelay: "0.3s",
           }}
         >
           <span
@@ -1563,7 +1563,7 @@ function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" }) {
                     style={{
                       backgroundColor: "rgba(22,163,74,0.12)",
                       color: STATUS_COLORS.verified,
-                      animationDelay: `${0.4 + i * 0.4}s`,
+                      animationDelay: `${0.2 + i * 0.18}s`,
                     }}
                   >
                     <CheckIcon />
@@ -1607,14 +1607,14 @@ function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" }) {
             className="demo-bar h-1.5 flex-1 rounded-full"
             style={{
               backgroundColor: area.statusColor,
-              animationDelay: `${i * 0.08}s`,
+              animationDelay: `${i * 0.05}s`,
             }}
           />
         ))}
       </div>
       <div
         className="demo-pop flex items-center justify-between rounded-[10px] px-3 py-2"
-        style={{ border: "1px solid rgba(33,12,55,0.08)", animationDelay: "0.3s" }}
+        style={{ border: "1px solid rgba(33,12,55,0.08)", animationDelay: "0.15s" }}
       >
         <p className="text-[12px] font-medium">Cookie compliance</p>
         <span
@@ -1626,7 +1626,7 @@ function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" }) {
       </div>
       <div
         className="demo-pop flex items-center justify-between rounded-[10px] px-3 py-2"
-        style={{ border: "1px solid rgba(33,12,55,0.08)", animationDelay: "0.6s" }}
+        style={{ border: "1px solid rgba(33,12,55,0.08)", animationDelay: "0.3s" }}
       >
         <p className="text-[12px] font-medium">ADA / Web accessibility</p>
         <span
@@ -3208,15 +3208,18 @@ export function VerenaHomepage() {
                 } ${pricingVisible ? "is-shown" : ""}`}
               >
                 <div className="flex flex-col gap-1 lg:w-[190px] lg:shrink-0">
-                  <p style={bricolage} className="text-[20px] font-semibold tracking-[-0.01em]">
+                  <h3 style={bricolage} className="text-[20px] font-semibold tracking-[-0.01em]">
                     {plan.name}
-                  </p>
+                  </h3>
                   <p className={`text-[14px] leading-5 ${plan.featured ? "opacity-70" : "opacity-60"}`}>
                     {plan.description}
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-1 lg:w-[150px] lg:shrink-0">
+                <div
+                  className="flex flex-col gap-1 lg:w-[150px] lg:shrink-0"
+                  aria-live="polite"
+                >
                   <div className="flex items-end gap-1">
                     <span style={bricolage} className="text-[30px] font-semibold leading-none">
                       ${totalPrice}
@@ -3285,7 +3288,7 @@ export function VerenaHomepage() {
                     className={`rounded-full px-5 py-3 text-[15px] font-medium transition duration-200 ease-out active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
                       plan.featured
                         ? "hover:-translate-y-px hover:brightness-110 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
-                        : "border border-[rgba(33,12,55,0.3)] hover:-translate-y-px hover:border-[rgba(33,12,55,0.5)] hover:bg-[rgba(33,12,55,0.04)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
+                        : "border border-[rgba(33,12,55,0.55)] hover:-translate-y-px hover:border-[rgba(33,12,55,0.75)] hover:bg-[rgba(33,12,55,0.04)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
                     }`}
                   >
                     {hasAddOn ? `${plan.cta} with +Human` : plan.cta}
