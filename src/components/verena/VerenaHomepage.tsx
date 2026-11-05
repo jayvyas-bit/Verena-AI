@@ -90,6 +90,8 @@ function isLikelyWebsite(value: string): boolean {
   );
 }
 
+const ANALYZE_LOOP_MS = 14000;
+
 const ANALYZE_CARDS = [
   {
     title: "Add your website",
@@ -2063,6 +2065,8 @@ export function VerenaHomepage() {
   const [footerRef, footerVisible] = useReveal<HTMLElement>();
   const [statementRef, statementVisible] = useReveal<HTMLElement>();
   const [startedRef, startedVisible] = useReveal<HTMLElement>();
+  const [startedInViewRef, startedInView] = useInViewport<HTMLElement>(0.2);
+  const [analyzeLoopKey, setAnalyzeLoopKey] = useState(0);
   const [scanRef, scanVisible] = useReveal<HTMLElement>();
   const [humanRef, humanVisible] = useReveal<HTMLElement>();
   const [humanOrbitSectionRef, humanOrbitInView] = useInViewport<HTMLElement>(0.25);
@@ -2120,6 +2124,15 @@ export function VerenaHomepage() {
       orbitRafs.current.forEach((id) => window.cancelAnimationFrame(id));
     };
   }, []);
+
+  useEffect(() => {
+    if (!startedInView) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const intervalId = window.setInterval(() => {
+      setAnalyzeLoopKey((key) => key + 1);
+    }, ANALYZE_LOOP_MS);
+    return () => window.clearInterval(intervalId);
+  }, [startedInView]);
 
   const [pricingRef, pricingVisible] = useReveal<HTMLElement>();
   const [faqRef, faqVisible] = useReveal<HTMLElement>();
@@ -2588,7 +2601,10 @@ export function VerenaHomepage() {
 
       {/* Getting started / Analyze steps */}
       <section
-        ref={startedRef}
+        ref={(el) => {
+          startedRef.current = el;
+          startedInViewRef.current = el;
+        }}
         style={{ backgroundColor: CREAM }}
         className="section-pad-x section-pad-y flex flex-col gap-16"
       >
@@ -2611,7 +2627,7 @@ export function VerenaHomepage() {
             >
               <div className="p-6 pb-0">
                 <div className="rounded-xl p-4" style={{ backgroundColor: "#f2f1f3" }}>
-                  <AnalyzeMockup step={card.icon} />
+                  <AnalyzeMockup key={analyzeLoopKey} step={card.icon} />
                 </div>
               </div>
               <div className="flex flex-col items-center gap-3 p-8 pt-6 text-center">
