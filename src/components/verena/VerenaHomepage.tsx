@@ -74,7 +74,7 @@ const COMPANY_LOGOS: Array<{ src: string; alt: string; width: number }> = [
 const MARQUEE_LOGOS = [...COMPANY_LOGOS, ...COMPANY_LOGOS];
 
 const LOGO_EDGE_FADE_MASK =
-  "linear-gradient(to right, transparent 0%, black 64px, black calc(100% - 64px), transparent 100%)";
+  "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)";
 
 const PLACEHOLDER_EXAMPLES = [
   "Which website should Verena review?",
@@ -1111,12 +1111,12 @@ function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"] }) {
           {MOCKUP_FINDINGS.map((f) => (
             <div
               key={f.title}
-              className="flex items-center gap-3 rounded-[10px] px-3 py-2.5"
+              className="flex items-start gap-3 rounded-[10px] px-3 py-2.5"
               style={{ border: "1px solid rgba(33,12,55,0.08)" }}
             >
-              <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: f.severity }} />
+              <span className="mt-1 h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: f.severity }} />
               <p className="w-[86px] shrink-0 text-[12px] font-medium sm:w-[140px] sm:text-[13px]">{f.title}</p>
-              <p className="flex-1 truncate text-[12px] opacity-60 sm:text-[13px]">{f.detail}</p>
+              <p className="flex-1 break-words text-[12px] opacity-60 sm:text-[13px]">{f.detail}</p>
             </div>
           ))}
         </div>
@@ -1179,14 +1179,14 @@ function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"] }) {
           </span>
         </div>
         <div className="flex-1 overflow-hidden rounded-[10px] p-4 font-mono text-[11px] leading-6 sm:text-[12.5px]" style={{ backgroundColor: INK, color: "rgba(250,249,246,0.85)" }}>
-          <p style={{ color: "rgba(250,249,246,0.4)" }}>{"<form onSubmit={handleSubmit}>"}</p>
-          <p className="rounded px-1" style={{ backgroundColor: "rgba(228,87,46,0.18)" }}>
+          <p className="whitespace-pre-wrap break-words" style={{ color: "rgba(250,249,246,0.4)" }}>{"<form onSubmit={handleSubmit}>"}</p>
+          <p className="whitespace-pre-wrap break-words rounded px-1" style={{ backgroundColor: "rgba(228,87,46,0.18)" }}>
             {"-  <input type=\"email\" placeholder=\"Email\" />"}
           </p>
-          <p className="rounded px-1" style={{ backgroundColor: "rgba(22,163,74,0.18)" }}>
+          <p className="whitespace-pre-wrap break-words rounded px-1" style={{ backgroundColor: "rgba(22,163,74,0.18)" }}>
             {"+  <input type=\"email\" placeholder=\"Email\" aria-label=\"Email address\" required />"}
           </p>
-          <p style={{ color: "rgba(250,249,246,0.4)" }}>{"</form>"}</p>
+          <p className="whitespace-pre-wrap break-words" style={{ color: "rgba(250,249,246,0.4)" }}>{"</form>"}</p>
         </div>
       </div>
     );
@@ -1969,8 +1969,20 @@ export function VerenaHomepage() {
   const [mobileAccordionOpen, setMobileAccordionOpen] = useState<NavDropdownKey | null>(null);
   const mobileMenuToggleRef = useRef<HTMLButtonElement | null>(null);
   const mobileMenuFirstLinkRef = useRef<HTMLAnchorElement | HTMLButtonElement | null>(null);
+  const headerWrapRef = useRef<HTMLDivElement | null>(null);
+  const [mobileNavTop, setMobileNavTop] = useState(80);
   const [announcementVisible, setAnnouncementVisible] = useState(true);
   const [announcementClosing, setAnnouncementClosing] = useState(false);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    function updateMobileNavTop() {
+      setMobileNavTop(headerWrapRef.current?.getBoundingClientRect().bottom ?? 80);
+    }
+    updateMobileNavTop();
+    window.addEventListener("resize", updateMobileNavTop);
+    return () => window.removeEventListener("resize", updateMobileNavTop);
+  }, [mobileMenuOpen, announcementVisible]);
 
   useEffect(() => {
     if (mobileMenuOpen) {
@@ -2205,7 +2217,7 @@ export function VerenaHomepage() {
       )}
 
       {/* Nav */}
-      <div className="sticky top-0 z-30 bg-white/70 backdrop-blur-md backdrop-saturate-150">
+      <div ref={headerWrapRef} className="sticky top-0 z-30 bg-white/70 backdrop-blur-md backdrop-saturate-150">
         <header className="section-pad-x mx-auto flex h-20 max-w-[1536px] items-center justify-between gap-6">
           <img src={verenaLogo} alt="Verena" className="h-[2rem] w-auto object-contain" />
 
@@ -2266,7 +2278,8 @@ export function VerenaHomepage() {
         id="verena-homepage-mobile-nav"
         aria-hidden={!mobileMenuOpen}
         aria-label="Mobile"
-        className={`t-mobile-drawer fixed inset-x-0 top-20 bottom-0 z-20 flex flex-col gap-1 overflow-y-auto bg-white px-6 pb-6 pt-6 text-sm font-medium md:hidden ${
+        style={{ top: mobileNavTop }}
+        className={`t-mobile-drawer fixed inset-x-0 bottom-0 z-20 flex flex-col gap-1 overflow-y-auto bg-white px-6 pb-6 pt-6 text-sm font-medium md:hidden ${
           mobilePanelState === "open" ? "is-open" : mobilePanelState === "closing" ? "is-closing" : ""
         }`}
       >
