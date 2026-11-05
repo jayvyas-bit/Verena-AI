@@ -904,27 +904,12 @@ function useStageTransition<T>(active: T) {
 }
 
 function NavMenuIcon({ open }: { open: boolean }) {
-  const common = {
-    width: 20,
-    height: 20,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.7,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-  };
-  if (open) {
-    return (
-      <svg {...common} aria-hidden="true">
-        <path d="M6 6l12 12M18 6L6 18" />
-      </svg>
-    );
-  }
   return (
-    <svg {...common} aria-hidden="true">
-      <path d="M4 7h16M4 12h16M4 17h16" />
-    </svg>
+    <span className={`t-menu-icon ${open ? "is-open" : ""}`} aria-hidden="true">
+      <span className="t-menu-icon-bar" />
+      <span className="t-menu-icon-bar" />
+      <span className="t-menu-icon-bar" />
+    </span>
   );
 }
 
@@ -1032,7 +1017,7 @@ function NavItem({
         data-origin="top-center"
         aria-hidden={panelState !== "open"}
       >
-        <div className="grid grid-cols-[1.3fr_1fr] overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-[rgba(33,12,55,0.08)]">
+        <div className="grid grid-cols-[1.3fr_1fr] overflow-hidden rounded-2xl bg-white shadow-[0_4px_12px_rgba(33,12,55,0.06),0_16px_32px_-8px_rgba(33,12,55,0.14)] ring-1 ring-[rgba(33,12,55,0.08)]">
           <div className="p-3">
             {items.map((item) => (
               <a
@@ -1263,7 +1248,7 @@ function SeverityTag({ severity }: { severity: keyof typeof SEVERITY_META }) {
 
 function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
   return (
-    <div className="flex w-full max-w-[500px] flex-col gap-4 rounded-2xl bg-white p-6 shadow-xl">
+    <div className="flex w-full max-w-[500px] flex-col gap-4 rounded-2xl bg-white p-6 shadow-[0_4px_12px_rgba(33,12,55,0.06),0_16px_32px_-8px_rgba(33,12,55,0.14)]">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <div
@@ -1981,8 +1966,9 @@ export function VerenaHomepage() {
   const [openDropdown, setOpenDropdown] = useState<NavDropdownKey | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobilePanelState, setMobilePanelState] = useState<"closed" | "open" | "closing">("closed");
+  const [mobileAccordionOpen, setMobileAccordionOpen] = useState<NavDropdownKey | null>(null);
   const mobileMenuToggleRef = useRef<HTMLButtonElement | null>(null);
-  const mobileMenuFirstLinkRef = useRef<HTMLAnchorElement | null>(null);
+  const mobileMenuFirstLinkRef = useRef<HTMLAnchorElement | HTMLButtonElement | null>(null);
   const [announcementVisible, setAnnouncementVisible] = useState(true);
   const [announcementClosing, setAnnouncementClosing] = useState(false);
 
@@ -2002,10 +1988,16 @@ export function VerenaHomepage() {
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
-    const original = document.body.style.overflow;
+    const scrollbarGap = window.innerWidth - document.documentElement.clientWidth;
+    const originalOverflow = document.body.style.overflow;
+    const originalPaddingRight = document.body.style.paddingRight;
     document.body.style.overflow = "hidden";
+    if (scrollbarGap > 0) {
+      document.body.style.paddingRight = `${scrollbarGap}px`;
+    }
     return () => {
-      document.body.style.overflow = original;
+      document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
     };
   }, [mobileMenuOpen]);
 
@@ -2014,12 +2006,26 @@ export function VerenaHomepage() {
     mobileMenuFirstLinkRef.current?.focus();
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setMobileMenuOpen(false);
-        mobileMenuToggleRef.current?.focus();
+        closeMobileMenu();
       }
     }
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
+  }, [mobileMenuOpen]);
+
+  function closeMobileMenu() {
+    const active = document.activeElement as HTMLElement | null;
+    if (active?.closest("#verena-homepage-mobile-nav")) {
+      active.blur();
+    }
+    mobileMenuToggleRef.current?.focus();
+    setMobileMenuOpen(false);
+  }
+
+  useEffect(() => {
+    if (!mobileMenuOpen) {
+      setMobileAccordionOpen(null);
+    }
   }, [mobileMenuOpen]);
 
   function closeAnnouncement() {
@@ -2046,7 +2052,6 @@ export function VerenaHomepage() {
   const [statementRef, statementVisible] = useReveal<HTMLElement>();
   const [startedRef, startedVisible] = useReveal<HTMLElement>();
   const [scanRef, scanVisible] = useReveal<HTMLElement>();
-  const [areasSectionRef, areasVisible] = useReveal<HTMLElement>();
   const [humanRef, humanVisible] = useReveal<HTMLElement>();
   const [humanOrbitSectionRef, humanOrbitInView] = useInViewport<HTMLElement>(0.25);
   const avatarRefs = useRef<(HTMLImageElement | null)[]>([]);
@@ -2166,33 +2171,35 @@ export function VerenaHomepage() {
       {/* Announcement bar */}
       {announcementVisible && (
         <div
-          style={{ backgroundColor: INK, height: announcementClosing ? "0px" : "40px" }}
-          className={`t-announcement-bar overflow-hidden ${announcementClosing ? "is-closing" : ""}`}
+          style={{ backgroundColor: INK }}
+          className={`t-announcement-bar ${announcementClosing ? "is-closing" : ""}`}
         >
-          <div className="t-announcement-content relative flex h-10 items-center justify-center px-10 text-center">
-            <p className="text-[12px] leading-[27px] text-white [font-weight:300]">
-              We're in Beta! Explore Verena early and help shape what's next.
-            </p>
-            <button
-              type="button"
-              aria-label="Dismiss announcement"
-              onClick={closeAnnouncement}
-              className="absolute right-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-sm text-white transition duration-200 ease-out hover:scale-110 hover:bg-[rgba(255,255,255,0.12)] active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37]"
-            >
-              <svg
-                width={14}
-                height={14}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={1.7}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
+          <div className="t-announcement-row overflow-hidden">
+            <div className="t-announcement-content relative flex min-h-10 items-center justify-center px-10 py-2 text-center">
+              <p className="text-[12px] leading-[18px] text-white [font-weight:300]">
+                We're in Beta! Explore Verena early and help shape what's next.
+              </p>
+              <button
+                type="button"
+                aria-label="Dismiss announcement"
+                onClick={closeAnnouncement}
+                className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-sm text-white transition duration-200 ease-out hover:scale-110 hover:bg-[rgba(255,255,255,0.12)] active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37]"
               >
-                <path d="M6 6l12 12M18 6L6 18" />
-              </svg>
-            </button>
+                <svg
+                  width={14}
+                  height={14}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.7}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -2229,7 +2236,7 @@ export function VerenaHomepage() {
             <button
               type="button"
               style={{ backgroundColor: ACCENT }}
-              className="rounded-full px-5 py-3 text-sm font-medium text-white transition duration-200 ease-out hover:-translate-y-px hover:brightness-110 active:translate-y-0 active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+              className="hidden shrink-0 whitespace-nowrap rounded-full px-5 py-3 text-sm font-medium text-white transition duration-200 ease-out hover:-translate-y-px hover:brightness-110 active:translate-y-0 active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:inline-flex"
             >
               Talk to founder
             </button>
@@ -2239,8 +2246,14 @@ export function VerenaHomepage() {
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileMenuOpen}
               aria-controls="verena-homepage-mobile-nav"
-              onClick={() => setMobileMenuOpen((open) => !open)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg transition duration-200 ease-out hover:bg-[rgba(33,12,55,0.05)] hover:scale-110 active:scale-90 active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 md:hidden"
+              onClick={() => {
+                if (mobileMenuOpen) {
+                  closeMobileMenu();
+                } else {
+                  setMobileMenuOpen(true);
+                }
+              }}
+              className="flex h-11 w-11 items-center justify-center rounded-lg transition duration-200 ease-out hover:bg-[rgba(33,12,55,0.05)] hover:scale-110 active:scale-90 active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 md:hidden"
             >
               <NavMenuIcon open={mobileMenuOpen} />
             </button>
@@ -2249,33 +2262,101 @@ export function VerenaHomepage() {
 
       </div>
 
-      <div
-        aria-hidden="true"
-        onClick={() => setMobileMenuOpen(false)}
-        className={`t-mobile-backdrop fixed inset-0 z-40 md:hidden ${
-          mobilePanelState === "open" ? "is-open" : ""
-        }`}
-      />
       <nav
         id="verena-homepage-mobile-nav"
         aria-hidden={!mobileMenuOpen}
         aria-label="Mobile"
-        className={`t-mobile-drawer fixed inset-y-0 right-0 z-50 flex w-[min(320px,85vw)] flex-col gap-1 bg-white px-6 pb-6 pt-24 text-sm font-medium shadow-2xl md:hidden ${
+        className={`t-mobile-drawer fixed inset-x-0 top-20 bottom-0 z-20 flex flex-col gap-1 overflow-y-auto bg-white px-6 pb-6 pt-6 text-sm font-medium md:hidden ${
           mobilePanelState === "open" ? "is-open" : mobilePanelState === "closing" ? "is-closing" : ""
         }`}
       >
-        {["Product", "Pricing", "Resources", "Contact us"].map((label, index) => (
-          <a
-            key={label}
-            ref={index === 0 ? mobileMenuFirstLinkRef : undefined}
-            href="#"
-            tabIndex={mobileMenuOpen ? 0 : -1}
-            onClick={() => setMobileMenuOpen(false)}
-            className="rounded-lg px-3 py-2.5 transition hover:bg-[rgba(33,12,55,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
-          >
-            {label}
-          </a>
-        ))}
+        {(["Product", "Pricing", "Resources", "Contact us"] as const).map((label, index) => {
+          const dropdownKey: NavDropdownKey | undefined =
+            label === "Product" || label === "Resources" ? label : undefined;
+
+          if (!dropdownKey) {
+            return (
+              <a
+                key={label}
+                ref={index === 0 ? mobileMenuFirstLinkRef : undefined}
+                href="#"
+                tabIndex={mobileMenuOpen ? 0 : -1}
+                onClick={closeMobileMenu}
+                className="rounded-lg px-3 py-2.5 transition hover:bg-[rgba(33,12,55,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+              >
+                {label}
+              </a>
+            );
+          }
+
+          const expanded = mobileAccordionOpen === dropdownKey;
+
+          return (
+            <div key={label}>
+              <button
+                ref={index === 0 ? mobileMenuFirstLinkRef : undefined}
+                type="button"
+                tabIndex={mobileMenuOpen ? 0 : -1}
+                aria-expanded={expanded}
+                onClick={() => setMobileAccordionOpen(expanded ? null : dropdownKey)}
+                className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left transition hover:bg-[rgba(33,12,55,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+              >
+                {label}
+                <svg
+                  width="11"
+                  height="11"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  className="transition-transform duration-200"
+                  style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)" }}
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M3 6l5 5 5-5"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              <div className={`t-mobile-accordion-panel ${expanded ? "is-open" : ""}`}>
+                <div className="t-mobile-accordion-row">
+                  <div className="flex flex-col gap-0.5 py-1 pl-3">
+                    {NAV_DROPDOWNS[dropdownKey].map((item) => (
+                      <a
+                        key={item.label}
+                        href="#"
+                        tabIndex={mobileMenuOpen && expanded ? 0 : -1}
+                        onClick={closeMobileMenu}
+                        className="flex min-h-11 items-center rounded-lg px-3 text-[14px] text-[rgba(33,12,55,0.65)] transition hover:bg-[rgba(33,12,55,0.05)] hover:text-[#210c37] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+                      >
+                        {item.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+        <a
+          href="#"
+          tabIndex={mobileMenuOpen ? 0 : -1}
+          onClick={closeMobileMenu}
+          className="mt-2 rounded-lg px-3 py-2.5 transition hover:bg-[rgba(33,12,55,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:hidden"
+        >
+          Log in
+        </a>
+        <button
+          type="button"
+          tabIndex={mobileMenuOpen ? 0 : -1}
+          onClick={closeMobileMenu}
+          style={{ backgroundColor: ACCENT }}
+          className="mt-3 rounded-full px-5 py-3 text-center text-[15px] font-medium text-white transition duration-200 ease-out hover:brightness-110 active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:hidden"
+        >
+          Talk to founder
+        </button>
       </nav>
 
       <main id="main-content">
@@ -2290,7 +2371,7 @@ export function VerenaHomepage() {
           <h1 style={bricolage} className="fluid-h1 font-bold leading-[1.1] tracking-[-0.01em]">
             Your website looks ready.
             <br />
-            But what might be{" "}
+            But what might be{" "}
             <span
               className="relative inline-block overflow-hidden"
               style={{ paddingBottom: "0.12em" }}
@@ -2387,7 +2468,7 @@ export function VerenaHomepage() {
                   status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Analyze"
                 }
                 style={{ backgroundColor: ACCENT }}
-                className="flex w-full shrink-0 items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium text-white transition duration-200 ease-out hover:brightness-110 active:scale-[0.96] active:duration-100 disabled:cursor-not-allowed disabled:hover:brightness-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:w-auto"
+                className="flex w-full shrink-0 items-center justify-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-medium text-white transition duration-200 ease-out hover:brightness-110 active:scale-[0.96] active:duration-100 disabled:cursor-not-allowed disabled:hover:brightness-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:w-auto"
               >
                 <span key={status} className="hero-input-pop flex items-center justify-center">
                   <HeroStatusIcon status={status} />
@@ -2471,7 +2552,7 @@ export function VerenaHomepage() {
         className="section-pad-x section-pad-y-lg relative flex flex-col items-center overflow-hidden text-center text-white"
       >
         <div
-          className={`area-reveal relative z-10 flex max-w-[794px] flex-col items-center gap-2 ${statementVisible ? "is-shown" : ""}`}
+          className={`area-reveal relative z-10 flex max-w-[960px] flex-col items-center gap-2 ${statementVisible ? "is-shown" : ""}`}
         >
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Website compliance shouldn't take
@@ -2499,7 +2580,7 @@ export function VerenaHomepage() {
         className="section-pad-x section-pad-y flex flex-col gap-16"
       >
         <div
-          className={`area-reveal mx-auto flex w-full max-w-[700px] flex-col items-center gap-2 text-center ${startedVisible ? "is-shown" : ""}`}
+          className={`area-reveal mx-auto flex w-full max-w-[960px] flex-col items-center gap-2 text-center ${startedVisible ? "is-shown" : ""}`}
         >
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Getting started is simpler than you think
@@ -2545,7 +2626,7 @@ export function VerenaHomepage() {
         className="section-pad-x section-pad-y flex flex-col items-center gap-16 bg-white"
       >
         <div
-          className={`area-reveal flex max-w-[595px] flex-col items-center gap-2 text-center ${scanVisible ? "is-shown" : ""}`}
+          className={`area-reveal flex max-w-[960px] flex-col items-center gap-2 text-center ${scanVisible ? "is-shown" : ""}`}
         >
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             More than a website scan
@@ -2559,7 +2640,7 @@ export function VerenaHomepage() {
           className={`area-reveal flex w-full max-w-[1536px] flex-col gap-10 ${scanVisible ? "is-shown" : ""}`}
           style={{ transitionDelay: "100ms" }}
         >
-          <div role="tablist" aria-label="Verena tools" className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 sm:gap-x-12">
+          <div role="tablist" aria-label="Verena tools" className="grid grid-cols-2 justify-items-center gap-x-4 gap-y-4 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-12">
             {TOOL_TABS.map((tab, index) => {
               const active = tab.id === activeTool;
               return (
@@ -2621,7 +2702,7 @@ export function VerenaHomepage() {
             />
             <div
               aria-hidden="true"
-              className="relative flex aspect-[4/5] w-[92%] max-w-[1080px] flex-col overflow-hidden rounded-t-2xl border-8 border-b-0 border-white/24 bg-white shadow-2xl sm:aspect-[1080/450]"
+              className="relative flex aspect-[4/5] w-[92%] max-w-[1080px] flex-col overflow-hidden rounded-t-2xl border-8 border-b-0 border-white/24 bg-white shadow-[0_8px_16px_rgba(33,12,55,0.08),0_32px_64px_-16px_rgba(33,12,55,0.2)] sm:aspect-[1080/450]"
             >
               <div
                 className="flex items-center gap-4 border-b px-5 py-3"
@@ -2657,7 +2738,7 @@ export function VerenaHomepage() {
               onClick={() => setToolAutoplayPaused((prev) => !prev)}
               aria-label={toolAutoplayPaused ? "Resume autoplay" : "Pause autoplay"}
               aria-pressed={toolAutoplayPaused}
-              className="absolute bottom-4 right-4 flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition duration-200 ease-out hover:scale-110 hover:bg-white/25 active:scale-90 active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+              className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition duration-200 ease-out hover:scale-110 hover:bg-white/25 active:scale-90 active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
             >
               {toolAutoplayPaused ? (
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -2685,7 +2766,7 @@ export function VerenaHomepage() {
                     aria-label={`Show ${tab.label}`}
                     aria-current={active}
                     onClick={() => setActiveTool(tab.id)}
-                    className="rounded-full p-1 transition duration-200 ease-out hover:scale-110 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+                    className="rounded-full p-[18px] transition duration-200 ease-out hover:scale-110 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
                   >
                     <span
                       className="block h-2 w-2 rounded-full transition-colors duration-300"
@@ -2701,13 +2782,10 @@ export function VerenaHomepage() {
 
       {/* Six areas */}
       <section
-        ref={areasSectionRef}
         style={{ backgroundColor: CREAM }}
         className="section-pad-x section-pad-y flex flex-col items-center gap-16"
       >
-        <div
-          className={`area-reveal flex max-w-[696px] flex-col items-center gap-2 text-center ${areasVisible ? "is-shown" : ""}`}
-        >
+        <div className="flex max-w-[960px] flex-col items-center gap-2 text-center">
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Six areas. One website review.
           </h2>
@@ -2729,13 +2807,12 @@ export function VerenaHomepage() {
                   type="button"
                   onClick={() => setActiveArea(index)}
                   aria-pressed={isActive}
-                  className={`area-reveal flex w-full items-start gap-4 rounded-2xl px-5 py-7 text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 ${
+                  className={`flex w-full items-start gap-4 rounded-2xl px-5 py-7 text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 ${
                     index > 0 ? "border-t" : ""
-                  } ${areasVisible ? "is-shown" : ""}`}
+                  }`}
                   style={{
                     borderColor: "rgba(33,12,55,0.08)",
                     backgroundColor: isActive ? "rgba(33,12,55,0.05)" : "transparent",
-                    transitionDelay: `${index * 70}ms`,
                   }}
                 >
                   <div className="min-w-0 flex-1">
@@ -2763,8 +2840,7 @@ export function VerenaHomepage() {
           </div>
           <div
             id="area-detail-panel"
-            className={`area-reveal relative flex min-h-[520px] items-center justify-center overflow-hidden rounded-[20px] p-8 lg:sticky lg:top-24 lg:self-start ${areasVisible ? "is-shown" : ""}`}
-            style={{ transitionDelay: "80ms" }}
+            className="relative flex min-h-[520px] items-center justify-center overflow-hidden rounded-[20px] p-8 lg:sticky lg:top-24 lg:self-start"
           >
             <img src={gradientBackdrop} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
             <div className="relative grid w-full max-w-[500px]">
@@ -2810,8 +2886,10 @@ export function VerenaHomepage() {
             }}
             src={avatarPhoto}
             alt=""
+            width={640}
+            height={640}
             loading="lazy"
-            className="human-orbit-avatar absolute left-1/2 top-1/2 -ml-6 -mt-6 size-12 rounded-full border-2 border-[rgba(244,235,255,0.25)] object-cover sm:-ml-9 sm:-mt-9 sm:size-[72px]"
+            className="human-orbit-avatar absolute left-1/2 top-1/2 -ml-6 -mt-6 hidden size-12 rounded-full border-2 border-[rgba(244,235,255,0.25)] object-cover lg:-ml-9 lg:-mt-9 lg:block lg:size-[72px]"
             style={
               {
                 "--orbit-duration": `${AVATAR_ORBIT_DURATION}s`,
@@ -2830,7 +2908,7 @@ export function VerenaHomepage() {
           className={`area-reveal relative z-10 flex flex-col items-center gap-10 ${humanVisible ? "is-shown" : ""}`}
         >
           <div className="h-8 w-[136px] bg-white" style={{ WebkitMaskImage: `url("${invictusMask}")`, maskImage: `url("${invictusMask}")`, WebkitMaskSize: "contain", maskSize: "contain", WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat" }} />
-          <div className="flex max-w-[861px] flex-col items-center gap-2 text-center text-white">
+          <div className="flex max-w-[960px] flex-col items-center gap-2 text-center text-white">
             <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
               When AI isn't enough, there's +Human
             </h2>
@@ -2856,7 +2934,7 @@ export function VerenaHomepage() {
         className="section-pad-x section-pad-y flex flex-col items-center gap-16"
       >
         <div
-          className={`area-reveal flex max-w-[636px] flex-col items-center gap-2 text-center ${pricingVisible ? "is-shown" : ""}`}
+          className={`area-reveal flex max-w-[960px] flex-col items-center gap-2 text-center ${pricingVisible ? "is-shown" : ""}`}
         >
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Choose what works for you
@@ -2955,7 +3033,7 @@ export function VerenaHomepage() {
                   <button
                     type="button"
                     style={plan.featured ? { backgroundColor: ACCENT, color: "#fff" } : undefined}
-                    className={`rounded-full px-5 py-3 text-sm font-medium transition duration-200 ease-out active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                    className={`rounded-full px-5 py-3 text-[15px] font-medium transition duration-200 ease-out active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
                       plan.featured
                         ? "hover:-translate-y-px hover:brightness-110 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
                         : "border border-[rgba(33,12,55,0.3)] hover:-translate-y-px hover:border-[rgba(33,12,55,0.5)] hover:bg-[rgba(33,12,55,0.04)] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
@@ -2974,7 +3052,7 @@ export function VerenaHomepage() {
       {/* FAQ */}
       <section ref={faqRef} className="section-pad-x section-pad-y flex flex-col gap-16 bg-white">
         <div
-          className={`area-reveal mx-auto flex max-w-[560px] flex-col items-center gap-2 text-center ${faqVisible ? "is-shown" : ""}`}
+          className={`area-reveal mx-auto flex max-w-[960px] flex-col items-center gap-2 text-center ${faqVisible ? "is-shown" : ""}`}
         >
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             Good questions deserve clear answers.
@@ -2990,11 +3068,13 @@ export function VerenaHomepage() {
             </span>
             <input
               type="search"
+              id="faq-search"
+              name="faq-search"
               value={faqQuery}
               onChange={(event) => setFaqQuery(event.target.value)}
               placeholder="Search questions"
               aria-label="Search frequently asked questions"
-              className="w-full rounded-full border border-[rgba(33,12,55,0.14)] bg-[rgba(33,12,55,0.02)] py-3 pl-11 pr-4 text-[15px] outline-none transition-colors placeholder:text-[rgba(33,12,55,0.45)] focus-visible:border-[#210c37] focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-[rgba(33,12,55,0.15)]"
+              className="w-full rounded-full border border-[rgba(33,12,55,0.14)] bg-[rgba(33,12,55,0.02)] py-3 pl-11 pr-4 text-[16px] outline-none transition-colors placeholder:text-[rgba(33,12,55,0.45)] focus-visible:border-[#210c37] focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-[rgba(33,12,55,0.15)]"
             />
           </div>
 
@@ -3005,7 +3085,7 @@ export function VerenaHomepage() {
                   key={category}
                   type="button"
                   onClick={() => scrollToFaqCategory(toFaqId(`category-${category}`))}
-                  className="rounded-full border border-[rgba(33,12,55,0.12)] px-4 py-1.5 text-[13px] font-medium transition-colors hover:bg-[rgba(33,12,55,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+                  className="rounded-full border border-[rgba(33,12,55,0.12)] px-4 py-2.5 text-[14px] font-medium transition-colors hover:bg-[rgba(33,12,55,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
                 >
                   {category}
                 </button>
@@ -3075,7 +3155,7 @@ export function VerenaHomepage() {
                           </h3>
                           <div id={panelId} className={`area-accordion-body ${isOpen ? "is-open" : ""}`}>
                             <div className="overflow-hidden">
-                              <p className="max-w-[560px] pb-5 pr-8 text-[15px] leading-6 opacity-70">{item.a}</p>
+                              <p className="max-w-[560px] pb-5 pr-8 text-[16px] leading-6 opacity-70">{item.a}</p>
                             </div>
                           </div>
                         </div>
@@ -3096,7 +3176,7 @@ export function VerenaHomepage() {
           <button
             type="button"
             style={{ backgroundColor: ACCENT }}
-            className="rounded-full px-5 py-3 text-sm font-medium text-white transition duration-200 ease-out hover:-translate-y-px hover:brightness-110 active:translate-y-0 active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+            className="rounded-full px-5 py-3 text-[15px] font-medium text-white transition duration-200 ease-out hover:-translate-y-px hover:brightness-110 active:translate-y-0 active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
           >
             Talk to founder
           </button>
@@ -3119,6 +3199,8 @@ export function VerenaHomepage() {
               <img
                 src={verenaLogo}
                 alt="Verena"
+                width={1690}
+                height={365}
                 loading="lazy"
                 className="h-7 w-auto object-contain brightness-0 invert"
               />
@@ -3135,7 +3217,7 @@ export function VerenaHomepage() {
                     key={social.icon}
                     href="#"
                     aria-label={social.label}
-                    className="flex h-9 w-9 items-center justify-center rounded-full transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-[rgba(250,249,246,0.14)] hover:text-white active:translate-y-0 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37]"
+                    className="flex h-11 w-11 items-center justify-center rounded-full transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-[rgba(250,249,246,0.14)] hover:text-white active:translate-y-0 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37]"
                     style={{ backgroundColor: "rgba(250, 249, 246, 0.07)" }}
                   >
                     <FooterIcon name={social.icon} size={15} />
@@ -3165,12 +3247,12 @@ export function VerenaHomepage() {
                 >
                   {group.title}
                 </p>
-                <ul className="mt-4 flex flex-col gap-2.5 text-sm">
+                <ul className="mt-1.5 flex flex-col text-sm">
                   {group.links.map((link) => (
                     <li key={link}>
                       <a
                         href="#"
-                        className="rounded-sm transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37]"
+                        className="inline-block rounded-sm py-2.5 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37]"
                       >
                         {link}
                       </a>
