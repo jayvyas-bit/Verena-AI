@@ -91,7 +91,7 @@ function isLikelyWebsite(value: string): boolean {
   );
 }
 
-const ANALYZE_LOOP_MS = 14000;
+const ANALYZE_LOOP_MS = 7000;
 
 const ANALYZE_CARDS = [
   {

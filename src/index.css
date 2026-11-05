@@ -640,7 +640,7 @@ button:not(:disabled),
 }
 
 :root {
-  --demo-loop-dur: 7s;
+  --demo-loop-dur: 3.5s;
   --demo-loop-ease: var(--ease-smooth-out);
 }
 
