@@ -1778,7 +1778,6 @@ function ComplianceFlowDiagram({ active }: { active: boolean }) {
         <circle cx="672" cy="221" r="17" fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.3)" />
         <foreignObject x="661" y="210" width="22" height="22">
           <div
-            xmlns="http://www.w3.org/1999/xhtml"
             style={{ width: "22px", height: "22px", overflow: "hidden", borderRadius: "9999px" }}
           >
             <img
