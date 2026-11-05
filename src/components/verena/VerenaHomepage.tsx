@@ -5,7 +5,7 @@ import gradientBackdrop from "../../assets/homepage/image-19.png";
 import invictusMask from "../../assets/homepage/rectangle-34.png";
 import avatarPhoto from "../../assets/homepage/avatar.png";
 import ellipse92 from "../../assets/homepage/ellipse-92.svg";
-import ctaExplorer from "../../assets/homepage/cta-explorer.png";
+import ctaExplorer from "../../assets/homepage/cta-explorer.webp";
 import companyAirbnb from "../../assets/homepage/company-airbnb.svg";
 import companyBookingCom from "../../assets/homepage/company-booking-com.svg";
 import companyFivetran from "../../assets/homepage/company-fivetran.svg";
