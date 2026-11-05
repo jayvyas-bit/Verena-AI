@@ -2325,7 +2325,7 @@ export function VerenaHomepage() {
           >
             <span
               style={bricolage}
-              className={`text-[16px] font-medium transition-opacity sm:text-[18px] ${isOpen ? "opacity-100" : "opacity-65"}`}
+              className={`text-[16px] font-medium transition-opacity ${isOpen ? "opacity-100" : "opacity-65"}`}
             >
               {item.q}
             </span>
@@ -2334,7 +2334,7 @@ export function VerenaHomepage() {
         </h3>
         <div id={panelId} className={`area-accordion-body ${isOpen ? "is-open" : ""}`}>
           <div className="overflow-hidden">
-            <p className="px-6 pb-6 text-[15px] leading-6 opacity-70">{item.a}</p>
+            <p className="px-6 pb-6 text-[14px] leading-6 opacity-70">{item.a}</p>
           </div>
         </div>
       </div>
