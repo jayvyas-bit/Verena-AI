@@ -585,6 +585,20 @@ button:not(:disabled),
   font-size: clamp(2.25rem, 1rem + 4vw, 3.5rem);
 }
 
+@media (max-width: 640px) {
+  .fluid-h1 {
+    font-size: clamp(2rem, 1.6rem + 2.5vw, 2.5rem);
+  }
+
+  .fluid-h2 {
+    font-size: clamp(1.5rem, 1.1rem + 2.5vw, 1.875rem);
+  }
+
+  .fluid-h2-lg {
+    font-size: clamp(1.75rem, 1.2rem + 2.5vw, 2.25rem);
+  }
+}
+
 /* Fluid section rhythm: replaces the py-20/sm:py-28-style breakpoint jump
    with a smooth ramp so spacing scales across tablet and desktop widths too. */
 .section-pad-y {
