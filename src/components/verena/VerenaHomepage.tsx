@@ -3230,12 +3230,12 @@ export function VerenaHomepage() {
       {/* Footer */}
       <footer
         ref={footerRef}
-        className="section-pad-x relative overflow-hidden pt-[clamp(5rem,4rem+2.5vw,7rem)]"
+        className="section-pad-x relative overflow-hidden pt-12 sm:pt-[clamp(5rem,4rem+2.5vw,7rem)]"
         style={{ backgroundColor: INK, color: "rgba(250, 249, 246, 0.7)" }}
       >
         <div className="mx-auto max-w-[1280px]">
           <div
-            className={`area-reveal grid gap-10 sm:grid-cols-2 lg:grid-cols-6 ${footerVisible ? "is-shown" : ""}`}
+            className={`area-reveal grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-6 ${footerVisible ? "is-shown" : ""}`}
           >
             <div className="lg:col-span-2">
               <img
@@ -3244,7 +3244,7 @@ export function VerenaHomepage() {
                 width={1690}
                 height={365}
                 loading="lazy"
-                className="h-7 w-auto object-contain brightness-0 invert"
+                className="h-9 w-auto object-contain brightness-0 invert sm:h-7"
               />
               <p className="mt-3 max-w-[280px] text-sm leading-[21px]">A product of Invictus AI.</p>
               <p className="mt-3 text-xs leading-[18px]" style={{ color: "rgba(250, 249, 246, 0.6)" }}>
@@ -3253,7 +3253,7 @@ export function VerenaHomepage() {
                 San Francisco, CA 94104
               </p>
 
-              <div className="mt-5 flex items-center gap-2.5">
+              <div className="mt-4 flex items-center gap-2.5 sm:mt-5">
                 {SOCIAL_LINKS.map((social) => (
                   <a
                     key={social.icon}
@@ -3267,7 +3267,7 @@ export function VerenaHomepage() {
                 ))}
               </div>
 
-              <div className="mt-5 flex flex-wrap items-center gap-2">
+              <div className="mt-4 flex flex-wrap items-center gap-2 sm:mt-5">
                 {TRUST_BADGES.map((badge) => (
                   <span
                     key={badge.label}
@@ -3294,7 +3294,7 @@ export function VerenaHomepage() {
                     <li key={link}>
                       <a
                         href="#"
-                        className="inline-block rounded-sm py-2.5 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37]"
+                        className="inline-block rounded-sm py-2 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#210c37] sm:py-2.5"
                       >
                         {link}
                       </a>
@@ -3306,7 +3306,7 @@ export function VerenaHomepage() {
           </div>
 
           <div
-            className={`area-reveal mt-10 flex flex-col gap-3 border-t pt-6 text-xs sm:flex-row sm:items-center sm:justify-between ${footerVisible ? "is-shown" : ""}`}
+            className={`area-reveal mt-8 flex flex-col gap-3 border-t pt-5 text-xs sm:mt-10 sm:flex-row sm:items-center sm:justify-between sm:pt-6 ${footerVisible ? "is-shown" : ""}`}
             style={{
               borderColor: "rgba(250, 249, 246, 0.12)",
               color: "rgba(250, 249, 246, 0.6)",
