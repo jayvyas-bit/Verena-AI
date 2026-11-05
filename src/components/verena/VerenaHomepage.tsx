@@ -2720,7 +2720,7 @@ export function VerenaHomepage() {
           className={`area-reveal flex w-full max-w-[1536px] flex-col gap-10 ${scanVisible ? "is-shown" : ""}`}
           style={{ transitionDelay: "100ms" }}
         >
-          <div role="tablist" aria-label="Verena tools" className="grid grid-cols-2 justify-items-center gap-x-4 gap-y-4 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-12">
+          <div role="tablist" aria-label="Verena tools" className="grid grid-cols-2 gap-x-6 gap-y-5 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-12">
             {TOOL_TABS.map((tab, index) => {
               const active = tab.id === activeTool;
               return (
@@ -2738,7 +2738,7 @@ export function VerenaHomepage() {
                   onClick={() => setActiveTool(tab.id)}
                   onKeyDown={(event) => handleToolTabKeyDown(event, index)}
                   style={bricolage}
-                  className={`relative flex items-center gap-2 whitespace-nowrap rounded-sm pb-[9px] text-[15px] font-medium transition-opacity duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:text-[18px] ${
+                  className={`relative flex items-center justify-center gap-2 whitespace-nowrap rounded-sm pb-[9px] text-[15px] font-medium transition-opacity duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:w-auto sm:justify-start sm:text-[18px] ${
                     active ? "opacity-100" : "opacity-60 hover:opacity-85"
                   }`}
                 >
