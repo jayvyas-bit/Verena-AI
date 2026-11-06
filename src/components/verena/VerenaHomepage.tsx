@@ -2261,6 +2261,7 @@ export function VerenaHomepage() {
   const [pricingRef, pricingVisible] = useReveal<HTMLElement>();
   const [faqRef, faqVisible] = useReveal<HTMLElement>();
   const [ctaRef, ctaVisible] = useReveal<HTMLElement>();
+  const [ctaImageLoaded, setCtaImageLoaded] = useState(false);
   const [activeFaqCategory, setActiveFaqCategory] = useState<string>(FAQ_CATEGORIES[0]);
   const [openFaqId, setOpenFaqId] = useState<string | null>(FAQ_ITEMS[0].id);
 
@@ -2663,6 +2664,21 @@ export function VerenaHomepage() {
               >
                 {domainError}
               </p>
+            )}
+            {status !== "idle" && (
+              <div
+                aria-hidden="true"
+                className="mx-auto h-1.5 w-full max-w-[280px] overflow-hidden rounded-full bg-white/95 shadow-[0_1px_2px_rgba(33,12,55,0.08)]"
+              >
+                <div
+                  key={status}
+                  className="demo-progress-fill h-full rounded-full"
+                  style={{
+                    width: status === "success" ? "100%" : "85%",
+                    backgroundColor: status === "success" ? STATUS_COLORS.verified : ACCENT,
+                  }}
+                />
+              </div>
             )}
             <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2 sm:gap-3">
               <span
@@ -3329,12 +3345,14 @@ export function VerenaHomepage() {
       </section>
 
       {/* Explorer CTA */}
-      <section ref={ctaRef} className="relative overflow-hidden">
+      <section ref={ctaRef} className="relative overflow-hidden" style={{ backgroundColor: "#dcc3a0" }}>
         <img
           src={ctaExplorer}
           alt="A woman with a backpack standing in a wildflower meadow, pointing toward distant mountains at sunset"
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover object-[32%_40%]"
+          onLoad={() => setCtaImageLoaded(true)}
+          className="absolute inset-0 h-full w-full object-cover object-[32%_40%] transition-opacity duration-500 ease-out"
+          style={{ opacity: ctaImageLoaded ? 1 : 0 }}
         />
         <div
           aria-hidden="true"
