@@ -1,5 +1,4 @@
 import { useEffect, useRef, type CSSProperties } from "react";
-import invictusMask from "../../../assets/homepage/rectangle-34.png";
 import ellipse92 from "../../../assets/homepage/ellipse-92.svg";
 import {
   ACCENT,
@@ -115,10 +114,6 @@ export function HumanSection() {
       <div
         className={`area-reveal relative z-10 flex flex-col items-center gap-6 sm:gap-10 ${humanVisible ? "is-shown" : ""}`}
       >
-        <div className="flex flex-col items-center gap-2">
-          <div className="h-8 w-[136px] bg-white" style={{ WebkitMaskImage: `url("${invictusMask}")`, maskImage: `url("${invictusMask}")`, WebkitMaskSize: "contain", maskSize: "contain", WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat" }} />
-          <p className="text-[13px] leading-5 text-white opacity-60">Verena&apos;s parent company. +Human review is provided by Invictus Counsel, an independent law firm.</p>
-        </div>
         <div className="flex max-w-[960px] flex-col items-center gap-2 text-center text-white">
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
             When AI isn't enough, there's +Human

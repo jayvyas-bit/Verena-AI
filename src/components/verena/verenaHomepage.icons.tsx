@@ -349,7 +349,7 @@ export function StepIcon({ name }: { name: "website" | "scan" | "findings" }) {
 
 export function VerenaMarkIcon({ className }: { className?: string }) {
   return (
-    <div className={`shrink-0 overflow-hidden ${className ?? ""}`}>
+    <div className={`shrink-0 overflow-hidden ${className ?? ""}`} aria-hidden="true">
       <img
         src={verenaLogo}
         alt=""

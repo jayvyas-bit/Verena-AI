@@ -48,7 +48,7 @@ export function NavItem({
     return (
       <a
         href="#"
-        className="rounded-sm text-sm font-medium transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+        className="inline-flex items-center rounded-sm py-2 text-sm font-medium transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
       >
         {label}
       </a>
@@ -72,7 +72,7 @@ export function NavItem({
       <button
         ref={triggerRef}
         type="button"
-        className="flex items-center gap-1 rounded-sm text-sm font-medium transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+        className="flex items-center gap-1 rounded-sm py-2 text-sm font-medium transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
         aria-haspopup="true"
         aria-expanded={isOpen}
         onClick={() => setOpenDropdown(isOpen ? null : dropdownKey!)}

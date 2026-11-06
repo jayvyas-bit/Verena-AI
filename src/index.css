@@ -224,6 +224,8 @@ button:not(:disabled),
 }
 
 .stage-leaving {
+  position: absolute;
+  inset: 0;
   animation: stage-leave 350ms var(--ease-smooth-out) both;
   pointer-events: none;
   will-change: opacity, filter;

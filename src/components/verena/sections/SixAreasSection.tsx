@@ -59,7 +59,7 @@ export function SixAreasSection() {
                     <div className="flex items-center justify-between gap-3">
                       <span
                         style={{ ...bricolage, opacity: isActive ? 1 : 0.7 }}
-                        className="text-[22px] font-semibold tracking-[-0.01em] transition-opacity sm:text-[26px]"
+                        className="text-[18px] font-semibold tracking-[-0.01em] transition-opacity sm:text-[26px]"
                       >
                         {area.title}
                       </span>
@@ -71,15 +71,15 @@ export function SixAreasSection() {
                       </span>
                     </div>
                     {isActive ? (
-                      <p className="mt-2 max-w-[520px] text-[16px] leading-6 opacity-70">{area.body}</p>
+                      <p className="mt-2 max-w-[520px] text-[14px] leading-5 opacity-70 sm:text-[16px] sm:leading-6">{area.body}</p>
                     ) : null}
                   </div>
                 </button>
                 <div className="lg:hidden">
                   <div className={`area-accordion-body ${isActive ? "is-open" : ""}`}>
-                    <div className="overflow-hidden">
+                    <div className="overflow-hidden px-5 pb-6">
                       <div
-                        className="relative mb-6 flex min-h-[420px] items-stretch justify-center overflow-hidden rounded-[20px] p-4"
+                        className="relative flex min-h-[420px] items-stretch justify-center overflow-hidden rounded-[20px] p-4"
                         style={{ backgroundColor: CREAM }}
                       >
                         <img

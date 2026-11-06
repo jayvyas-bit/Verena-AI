@@ -30,7 +30,7 @@ export function PricingSection() {
               <div
                 key={plan.name}
                 style={plan.featured ? { backgroundColor: INK, transitionDelay: `${planIndex * 80}ms` } : { transitionDelay: `${planIndex * 80}ms` }}
-                className={`area-reveal flex flex-col gap-4 rounded-[20px] p-6 ${
+                className={`area-reveal flex flex-col gap-3 rounded-[20px] p-5 sm:gap-4 sm:p-6 ${
                   plan.featured
                     ? "border border-transparent text-white"
                     : isGhost

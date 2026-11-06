@@ -250,7 +250,10 @@ export function FindingIcon({ severity }: { severity: keyof typeof SEVERITY_META
 
 export function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
   return (
-    <div className="flex h-full w-full max-w-[500px] flex-col gap-4 rounded-2xl bg-white p-6 shadow-[0_4px_12px_rgba(33,12,55,0.06),0_16px_32px_-8px_rgba(33,12,55,0.14)]">
+    <div
+      className="flex h-full w-full max-w-[500px] flex-col gap-4 rounded-2xl bg-white p-6 shadow-[0_4px_12px_rgba(33,12,55,0.06),0_16px_32px_-8px_rgba(33,12,55,0.14)]"
+      style={{ color: INK }}
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <div
@@ -785,6 +788,7 @@ export function ComplianceFlowDiagram({ active }: { active: boolean }) {
         <foreignObject x="661" y="210" width="22" height="22">
           <div
             style={{ width: "22px", height: "22px", overflow: "hidden", borderRadius: "9999px" }}
+            aria-hidden="true"
           >
             <img
               src={verenaLogo}
