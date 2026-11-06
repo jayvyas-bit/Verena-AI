@@ -2829,11 +2829,11 @@ export function VerenaHomepage() {
           className={`area-reveal flex max-w-[960px] flex-col items-center gap-2 text-center ${scanVisible ? "is-shown" : ""}`}
         >
           <h2 style={bricolage} className="fluid-h2 font-semibold leading-tight tracking-[-0.01em]">
-            More than a website scan
+            Go from finding issues to shipping fixes
           </h2>
           <p className="text-[14px] leading-5 sm:text-[16px] sm:leading-6">
-            Explore the tools that help you understand findings, make improvements, and keep track
-            of your website
+            Reports, AI-drafted fixes, developer-ready code, and ongoing monitoring, all in one
+            place
           </p>
         </div>
         <div
@@ -3185,56 +3185,65 @@ export function VerenaHomepage() {
         <div className="flex w-full flex-col items-center gap-6">
           {/* Compact plan cards — full feature comparison lives on the dedicated pricing page */}
           <div className="grid w-full max-w-[920px] grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
-            {SELF_SERVE_PLANS.map((plan, planIndex) => (
-              <div
-                key={plan.name}
-                style={plan.featured ? { backgroundColor: INK, transitionDelay: `${planIndex * 80}ms` } : { transitionDelay: `${planIndex * 80}ms` }}
-                className={`area-reveal flex flex-col gap-4 rounded-[20px] border border-[rgba(33,12,55,0.12)] p-6 ${
-                  plan.featured ? "text-white" : "bg-white"
-                } ${pricingVisible ? "is-shown" : ""}`}
-              >
-                {plan.featured ? (
-                  <span className="w-fit rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-white">
-                    Recommended
-                  </span>
-                ) : (
-                  <span className="h-[22px]" aria-hidden="true" />
-                )}
-                <div className="flex flex-col gap-1">
-                  <h3 style={bricolage} className="text-[20px] font-semibold tracking-[-0.01em]">
-                    {plan.name}
-                  </h3>
-                  <p className={`text-[13px] leading-5 ${plan.featured ? "opacity-70" : "opacity-60"}`}>
-                    {plan.description}
-                  </p>
-                </div>
-                <div className="flex items-end gap-1">
-                  <span style={bricolage} className="text-[30px] font-semibold leading-none">
-                    ${plan.price}
-                  </span>
-                  {plan.period && (
-                    <span className={`pb-0.5 text-[14px] ${plan.featured ? "opacity-70" : "opacity-60"}`}>
-                      {plan.period}
-                    </span>
-                  )}
-                </div>
-                <p className={`text-[12px] font-medium ${plan.featured ? "opacity-80" : "opacity-70"}`}>
-                  {plan.credits}
-                </p>
-
-                <button
-                  type="button"
-                  style={plan.featured ? { backgroundColor: ACCENT, color: "#fff" } : undefined}
-                  className={`mt-auto rounded-full px-5 py-3 text-[14px] font-medium transition duration-200 ease-out active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+            {SELF_SERVE_PLANS.map((plan, planIndex) => {
+              const isGhost = !plan.featured && plan.name === "Free";
+              return (
+                <div
+                  key={plan.name}
+                  style={plan.featured ? { backgroundColor: INK, transitionDelay: `${planIndex * 80}ms` } : { transitionDelay: `${planIndex * 80}ms` }}
+                  className={`area-reveal flex flex-col gap-4 rounded-[20px] p-6 ${
                     plan.featured
-                      ? "hover:-translate-y-px hover:brightness-110 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
-                      : "border border-[rgba(33,12,55,0.55)] hover:-translate-y-px hover:border-[#2653F3] hover:bg-[#2653F3] hover:text-white focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
-                  }`}
+                      ? "border border-transparent text-white"
+                      : isGhost
+                        ? "border border-dashed border-[rgba(33,12,55,0.22)] bg-[rgba(33,12,55,0.02)]"
+                        : "border border-[rgba(33,12,55,0.12)] bg-white"
+                  } ${pricingVisible ? "is-shown" : ""}`}
                 >
-                  {plan.cta}
-                </button>
-              </div>
-            ))}
+                  {plan.featured ? (
+                    <span className="w-fit rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-white">
+                      Recommended
+                    </span>
+                  ) : (
+                    <span className="h-[22px]" aria-hidden="true" />
+                  )}
+                  <div className="flex flex-col gap-1">
+                    <h3 style={bricolage} className="text-[20px] font-semibold tracking-[-0.01em]">
+                      {plan.name}
+                    </h3>
+                    <p className={`text-[13px] leading-5 ${plan.featured ? "opacity-70" : "opacity-60"}`}>
+                      {plan.description}
+                    </p>
+                  </div>
+                  <div className="flex items-end gap-1">
+                    <span style={bricolage} className="text-[30px] font-semibold leading-none">
+                      ${plan.price}
+                    </span>
+                    {plan.period && (
+                      <span className={`pb-0.5 text-[14px] ${plan.featured ? "opacity-70" : "opacity-60"}`}>
+                        {plan.period}
+                      </span>
+                    )}
+                  </div>
+                  <p className={`text-[12px] font-medium ${plan.featured ? "opacity-80" : "opacity-70"}`}>
+                    {plan.credits}
+                  </p>
+
+                  <button
+                    type="button"
+                    style={plan.featured ? { backgroundColor: ACCENT, color: "#fff" } : undefined}
+                    className={`mt-auto rounded-full px-5 py-3 text-[14px] font-medium transition duration-200 ease-out active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                      plan.featured
+                        ? "hover:-translate-y-px hover:brightness-110 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
+                        : isGhost
+                          ? "text-[#210c37] underline decoration-[rgba(33,12,55,0.35)] underline-offset-4 hover:decoration-[#2653F3] hover:text-[#2653F3] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
+                          : "border border-[rgba(33,12,55,0.55)] hover:-translate-y-px hover:border-[#2653F3] hover:bg-[#2653F3] hover:text-white focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
+                    }`}
+                  >
+                    {plan.cta}
+                  </button>
+                </div>
+              );
+            })}
           </div>
 
           <a
