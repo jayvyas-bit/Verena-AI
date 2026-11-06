@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import { useDocumentHead } from "../../lib/useDocumentHead";
-import verenaLogo from "../../assets/homepage/image-15.png";
-import gradientBackdrop from "../../assets/homepage/image-19.png";
+import verenaLogo from "../../assets/homepage/image-15.webp";
+import gradientBackdrop from "../../assets/homepage/image-19.webp";
 import invictusMask from "../../assets/homepage/rectangle-34.png";
 import ctaExplorer from "../../assets/homepage/cta-explorer.webp";
 import ellipse92 from "../../assets/homepage/ellipse-92.svg";
@@ -22,9 +22,9 @@ const ACCENT = "#2653F3";
 const CREAM = "#faf9f6";
 
 const STATUS_COLORS = {
-  deficit: "#e4572e",
-  warning: "#eab308",
-  verified: "#16a34a",
+  deficit: "#c2410c",
+  warning: "#b45309",
+  verified: "#15803d",
 } as const;
 
 const NAV_DROPDOWNS = {
@@ -418,7 +418,7 @@ const FAQ_ITEMS_RAW = [
   {
     category: "+Human and your relationship",
     q: "Who am I actually working with?",
-    a: "Verena is developed and operated by Invictus AI Corporation, a software company. Invictus AI is not a law firm. When you add +Human, your engagement is with Invictus Counsel, a law firm, under the Legal Services Agreement you sign. Your +Human Supervisor works there. The two relationships are separate and the documents say which is which.",
+    a: "Verena is developed and operated by Invictus AI, a software company. Invictus AI is not a law firm. When you add +Human, your engagement is with Invictus Counsel, a law firm, under the Legal Services Agreement you sign. Your +Human Supervisor works there. The two relationships are separate and the documents say which is which.",
   },
   {
     category: "+Human and your relationship",
@@ -456,6 +456,8 @@ const STRUCTURED_DATA = {
       name: "Verena",
       applicationCategory: "BusinessApplication",
       operatingSystem: "Web",
+      url: "https://verena.ai/",
+      image: "https://verena.ai/og-image.png",
       description:
         "AI website compliance scans for accessibility, privacy, cookies, and terms of service, with optional attorney review through +Human.",
       offers: PRICING_PLANS.map((plan) => ({
@@ -878,22 +880,8 @@ function NavItem({
   setOpenDropdown: (key: NavDropdownKey | null) => void;
 }) {
   const items = dropdownKey ? NAV_DROPDOWNS[dropdownKey] : undefined;
-
-  if (!items) {
-    return (
-      <a
-        href="#"
-        className="rounded-sm text-sm font-medium transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
-      >
-        {label}
-      </a>
-    );
-  }
-
   const isOpen = openDropdown === dropdownKey;
   const triggerRef = useRef<HTMLButtonElement | null>(null);
-  const featured = NAV_FEATURED[dropdownKey!];
-
   const [panelState, setPanelState] = useState<"closed" | "open" | "closing">("closed");
 
   useEffect(() => {
@@ -922,6 +910,18 @@ function NavItem({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [isOpen, setOpenDropdown]);
 
+  if (!items) {
+    return (
+      <a
+        href="#"
+        className="rounded-sm text-sm font-medium transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+      >
+        {label}
+      </a>
+    );
+  }
+
+  const featured = NAV_FEATURED[dropdownKey!];
   const itemTabIndex = panelState === "open" ? 0 : -1;
 
   return (
@@ -2388,8 +2388,8 @@ export function VerenaHomepage() {
           <img
             src={verenaLogo}
             alt="Verena"
-            width={1690}
-            height={365}
+            width={843}
+            height={182}
             className="h-7 w-auto object-contain sm:h-8"
           />
 
@@ -3457,8 +3457,8 @@ export function VerenaHomepage() {
               <img
                 src={verenaLogo}
                 alt="Verena"
-                width={1690}
-                height={365}
+                width={843}
+                height={182}
                 loading="lazy"
                 className="h-9 w-auto object-contain brightness-0 invert sm:h-7"
               />
