@@ -3024,7 +3024,7 @@ export function VerenaHomepage() {
                   >
                     <div
                       className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
-                      style={{ backgroundColor: `${area.statusColor}14`, color: area.statusColor }}
+                      style={{ backgroundColor: isActive ? `${area.statusColor}08` : `${area.statusColor}14`, color: area.statusColor }}
                     >
                       <AreaIcon name={area.icon} size={18} />
                     </div>
@@ -3038,7 +3038,7 @@ export function VerenaHomepage() {
                         </span>
                         <span
                           className="shrink-0 rounded-full px-2.5 py-1 text-[12px] font-semibold"
-                          style={{ backgroundColor: `${area.statusColor}14`, color: area.statusColor }}
+                          style={{ backgroundColor: isActive ? `${area.statusColor}08` : `${area.statusColor}14`, color: area.statusColor }}
                         >
                           {area.status}
                         </span>
@@ -3228,7 +3228,7 @@ export function VerenaHomepage() {
                   className={`mt-auto rounded-full px-5 py-3 text-[14px] font-medium transition duration-200 ease-out active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
                     plan.featured
                       ? "hover:-translate-y-px hover:brightness-110 focus-visible:ring-white focus-visible:ring-offset-[#210c37]"
-                      : "border border-[rgba(33,12,55,0.55)] hover:-translate-y-px hover:border-[#2653F3] hover:text-[#2653F3] focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
+                      : "border border-[rgba(33,12,55,0.55)] hover:-translate-y-px hover:border-[#2653F3] hover:bg-[#2653F3] hover:text-white focus-visible:ring-[#210c37] focus-visible:ring-offset-white"
                   }`}
                 >
                   {plan.cta}
@@ -3258,7 +3258,7 @@ export function VerenaHomepage() {
               </span>
               <button
                 type="button"
-                className="rounded-full border border-[rgba(33,12,55,0.55)] px-5 py-2.5 text-[14px] font-medium transition duration-200 ease-out hover:-translate-y-px hover:border-[#2653F3] hover:text-[#2653F3] active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                className="rounded-full border border-[rgba(33,12,55,0.55)] px-5 py-2.5 text-[14px] font-medium transition duration-200 ease-out hover:-translate-y-px hover:border-[#2653F3] hover:bg-[#2653F3] hover:text-white active:scale-[0.96] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
               >
                 {ENTERPRISE_PLAN.cta}
               </button>
