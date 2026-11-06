@@ -8,15 +8,19 @@ export function GettingStartedSection() {
   const [startedRef, startedVisible] = useReveal<HTMLElement>();
   const [startedInViewRef, startedInView] = useInViewport<HTMLElement>(0.2);
   const [analyzeLoopKey, setAnalyzeLoopKey] = useState(0);
+  const [analyzeLoopPaused, setAnalyzeLoopPaused] = useState(false);
+  const reducedMotion =
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   useEffect(() => {
     if (!startedInView) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (analyzeLoopPaused) return;
+    if (reducedMotion) return;
     const intervalId = window.setInterval(() => {
       setAnalyzeLoopKey((key) => key + 1);
     }, ANALYZE_LOOP_MS);
     return () => window.clearInterval(intervalId);
-  }, [startedInView]);
+  }, [startedInView, analyzeLoopPaused, reducedMotion]);
 
   return (
     <section
@@ -36,6 +40,28 @@ export function GettingStartedSection() {
         <p className="text-[14px] leading-5 sm:text-[16px] sm:leading-6">
           Set up your website, run an analysis, and explore the findings at your own pace.
         </p>
+        {reducedMotion ? null : (
+          <button
+            type="button"
+            onClick={() => setAnalyzeLoopPaused((prev) => !prev)}
+            aria-label={analyzeLoopPaused ? "Resume automatic preview" : "Pause automatic preview"}
+            aria-pressed={analyzeLoopPaused}
+            className="mt-2 flex items-center gap-2 rounded-full px-3.5 py-2 text-[13px] font-medium transition duration-200 ease-out hover:scale-[1.03] active:scale-95 active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+            style={{ backgroundColor: "rgba(33,12,55,0.06)", color: INK }}
+          >
+            {analyzeLoopPaused ? (
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M7 5v14l12-7z" />
+              </svg>
+            ) : (
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <rect x="6" y="5" width="4" height="14" rx="1" />
+                <rect x="14" y="5" width="4" height="14" rx="1" />
+              </svg>
+            )}
+            {analyzeLoopPaused ? "Resume preview" : "Pause preview"}
+          </button>
+        )}
       </div>
       <div className="mx-auto grid w-full max-w-[1536px] gap-8 sm:grid-cols-3">
         {ANALYZE_CARDS.map((card, i) => (
@@ -45,7 +71,10 @@ export function GettingStartedSection() {
             style={{ transitionDelay: `${i * 90}ms` }}
           >
             <div className="p-4 pb-0 sm:p-6 sm:pb-0">
-              <div className="rounded-xl p-3 sm:p-4" style={{ backgroundColor: "#f2f1f3" }}>
+              <div
+                className="rounded-xl p-3 transition-transform duration-300 ease-out hover:scale-[1.015] sm:p-4"
+                style={{ backgroundColor: "#f2f1f3" }}
+              >
                 <AnalyzeMockup key={analyzeLoopKey} step={card.icon} />
               </div>
             </div>

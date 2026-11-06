@@ -1,4 +1,4 @@
-import { useId, type ReactNode } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 import verenaLogo from "../../assets/homepage/image-15.webp";
 import {
   ACCENT,
@@ -205,21 +205,45 @@ export function FindingIcon({ severity }: { severity: keyof typeof SEVERITY_META
   );
 }
 
-function AreaVisual({ visual }: { visual: NonNullable<(typeof REVIEW_AREAS)[number]["visual"]> }) {
+function MiniCheck({ color = STATUS_COLORS.verified }: { color?: string }) {
+  return (
+    <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center" style={{ color }}>
+      <CheckIcon />
+    </span>
+  );
+}
+
+function AreaVisual({
+  visual,
+  applied,
+}: {
+  visual: NonNullable<(typeof REVIEW_AREAS)[number]["visual"]>;
+  applied: boolean;
+}) {
   const frameStyle = { border: "1px solid rgba(33,12,55,0.08)" };
 
   if (visual.kind === "contrast") {
     return (
       <div className="flex items-center gap-4 rounded-[12px] px-3 py-2.5" style={frameStyle}>
-        {[visual.current, visual.suggested].map((swatch) => (
-          <div key={swatch.label} className="flex flex-1 items-center gap-2.5">
-            <span className="h-7 w-7 shrink-0 rounded-[6px]" style={{ backgroundColor: swatch.hex }} aria-hidden="true" />
-            <div className="min-w-0">
-              <p className="text-[11px] opacity-60">{swatch.label}</p>
-              <p className="text-[12px] font-medium tabular-nums">{swatch.ratio}</p>
+        {[visual.current, visual.suggested].map((swatch) => {
+          const isSuggested = swatch === visual.suggested;
+          return (
+            <div
+              key={swatch.label}
+              className={`flex flex-1 items-center gap-2 rounded-[8px] px-1.5 py-1 transition-all duration-300 ${
+                applied && !isSuggested ? "opacity-40" : ""
+              }`}
+              style={applied && isSuggested ? { boxShadow: `inset 0 0 0 1.5px ${STATUS_COLORS.verified}` } : undefined}
+            >
+              <span className="h-7 w-7 shrink-0 rounded-[6px]" style={{ backgroundColor: swatch.hex }} aria-hidden="true" />
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] opacity-60">{swatch.label}</p>
+                <p className="text-[12px] font-medium tabular-nums">{swatch.ratio}</p>
+              </div>
+              {applied && isSuggested ? <MiniCheck /> : null}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   }
@@ -227,8 +251,16 @@ function AreaVisual({ visual }: { visual: NonNullable<(typeof REVIEW_AREAS)[numb
   if (visual.kind === "diff") {
     return (
       <div className="flex flex-col gap-1.5 rounded-[12px] px-3 py-2.5 text-[12px] leading-snug" style={frameStyle}>
-        <p className="line-through opacity-40">{visual.before}</p>
-        <p style={{ color: STATUS_COLORS.verified }}>{visual.after}</p>
+        <p
+          className="overflow-hidden line-through opacity-40 transition-all duration-300"
+          style={applied ? { maxHeight: 0, opacity: 0 } : { maxHeight: 40 }}
+        >
+          {visual.before}
+        </p>
+        <p className="flex items-center gap-1.5" style={{ color: STATUS_COLORS.verified }}>
+          {visual.after}
+          {applied ? <MiniCheck /> : null}
+        </p>
       </div>
     );
   }
@@ -236,20 +268,23 @@ function AreaVisual({ visual }: { visual: NonNullable<(typeof REVIEW_AREAS)[numb
   if (visual.kind === "trackers") {
     return (
       <div className="flex flex-col gap-2 rounded-[12px] px-3 py-2.5" style={frameStyle}>
-        {visual.items.map((item) => (
-          <div key={item.name} className="flex items-center justify-between gap-2">
-            <div className="min-w-0">
-              <p className="truncate text-[12px] font-medium">{item.name}</p>
-              <p className="text-[11px] opacity-60">{item.category}</p>
+        {visual.items.map((item) => {
+          const consented = item.consented || applied;
+          return (
+            <div key={item.name} className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="truncate text-[12px] font-medium">{item.name}</p>
+                <p className="text-[11px] opacity-60">{item.category}</p>
+              </div>
+              <span
+                className="shrink-0 text-[11px] font-semibold tracking-wide transition-colors duration-300"
+                style={{ color: consented ? STATUS_COLORS.verified : STATUS_COLORS.deficit }}
+              >
+                {consented ? "Allowed" : "Blocked"}
+              </span>
             </div>
-            <span
-              className="shrink-0 text-[11px] font-semibold tracking-wide"
-              style={{ color: item.consented ? STATUS_COLORS.verified : STATUS_COLORS.deficit }}
-            >
-              {item.consented ? "Allowed" : "Blocked"}
-            </span>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   }
@@ -262,7 +297,13 @@ function AreaVisual({ visual }: { visual: NonNullable<(typeof REVIEW_AREAS)[numb
           {visual.from}
         </p>
         <p className="truncate font-medium">{visual.subject}</p>
-        <p className="opacity-60">{visual.footer}</p>
+        <p
+          className="flex items-center gap-1.5 transition-colors duration-300"
+          style={{ color: applied ? STATUS_COLORS.verified : undefined }}
+        >
+          <span className={applied ? "" : "opacity-60"}>{applied ? visual.footerFixed : visual.footer}</span>
+          {applied ? <MiniCheck /> : null}
+        </p>
       </div>
     );
   }
@@ -281,6 +322,8 @@ function AreaVisual({ visual }: { visual: NonNullable<(typeof REVIEW_AREAS)[numb
 }
 
 export function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
+  const [applied, setApplied] = useState(false);
+
   return (
     <div
       className="flex h-full w-full max-w-[500px] flex-col gap-3 rounded-2xl bg-white p-4 shadow-[0_4px_12px_rgba(33,12,55,0.06),0_16px_32px_-8px_rgba(33,12,55,0.14)] sm:gap-4 sm:p-6"
@@ -296,7 +339,7 @@ export function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }
         <ScoreNumeral score={area.score} color={area.statusColor} />
       </div>
 
-      {area.visual ? <AreaVisual visual={area.visual} /> : null}
+      {area.visual ? <AreaVisual visual={area.visual} applied={applied} /> : null}
 
       <div className="flex flex-1 flex-col">
         {area.findings.map((finding, index) => (
@@ -320,17 +363,22 @@ export function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }
       {area.remediation ? (
         <div className="flex items-center justify-between gap-3 pt-3" style={{ borderTop: "1px solid rgba(33,12,55,0.08)" }}>
           <p className="min-w-0 flex-1 text-[12px] leading-snug opacity-70">
-            <span className="font-semibold opacity-100" style={{ color: ACCENT }}>
-              Suggested fix —{" "}
+            <span
+              className="font-semibold opacity-100 transition-colors duration-300"
+              style={{ color: applied ? STATUS_COLORS.verified : ACCENT }}
+            >
+              {applied ? "Fix applied — " : "Suggested fix — "}
             </span>
             {area.remediation.label}
           </p>
           <button
             type="button"
-            className="shrink-0 rounded-[8px] px-2.5 py-1.5 text-[12px] font-medium"
-            style={{ backgroundColor: ACCENT, color: "#fff" }}
+            aria-pressed={applied}
+            onClick={() => setApplied((prev) => !prev)}
+            className="shrink-0 rounded-[8px] px-2.5 py-1.5 text-[12px] font-medium transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+            style={{ backgroundColor: applied ? STATUS_COLORS.verified : ACCENT, color: "#fff" }}
           >
-            {area.remediation.cta} →
+            {applied ? "Applied ✓" : `${area.remediation.cta} →`}
           </button>
         </div>
       ) : (
@@ -359,6 +407,91 @@ export function AnalyzeWindowFrame({ children }: { children: ReactNode }) {
   );
 }
 
+const RISK_PILL_STYLES: Record<string, { bg: string; fg: string; label: string }> = {
+  [STATUS_COLORS.deficit]: { bg: "#fde9e7", fg: "#b42318", label: "Exposed" },
+  [STATUS_COLORS.warning]: { bg: "#fef3e2", fg: "#b45309", label: "Needs review" },
+  [STATUS_COLORS.verified]: { bg: "#e2f3e8", fg: "#17673a", label: "Verified" },
+};
+
+function AnalyzeScanStep() {
+  const total = REVIEW_AREAS.length;
+  const activeIndex = total - 2;
+  const [revealed, setRevealed] = useState(0);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setRevealed(activeIndex);
+      return;
+    }
+    const timers = Array.from({ length: activeIndex }, (_, i) =>
+      window.setTimeout(() => setRevealed((r) => Math.max(r, i + 1)), (0.2 + i * 0.18) * 1000),
+    );
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, [activeIndex]);
+
+  return (
+    <AnalyzeWindowFrame>
+      <div className="flex items-center justify-between">
+        <p style={bricolage} className="text-[13px] font-semibold">Analysis of your website</p>
+        <span className="text-[11px] opacity-60">{revealed} of {total} areas</span>
+      </div>
+      <div className="h-1.5 w-full overflow-hidden rounded-full" style={{ backgroundColor: "rgba(33,12,55,0.08)" }}>
+        <div
+          className="h-full rounded-full transition-[width] duration-300 ease-out"
+          style={{ width: `${(revealed / total) * 100}%`, backgroundColor: ACCENT }}
+        />
+      </div>
+      <div
+        className="flex flex-1 flex-col justify-center rounded-[10px]"
+        style={{ border: "1px solid rgba(33,12,55,0.06)" }}
+      >
+        {REVIEW_AREAS.map((area, i) => {
+          const state = i < activeIndex ? "done" : i === activeIndex ? "active" : "pending";
+          return (
+            <div
+              key={area.title}
+              className="flex items-center gap-2.5 px-2.5 py-1.5"
+              style={i > 0 ? { borderTop: "1px solid rgba(33,12,55,0.06)" } : undefined}
+            >
+              {state === "done" ? (
+                <span className="relative flex h-4 w-4 shrink-0 items-center justify-center">
+                  <span
+                    className="absolute inset-0 rounded-full"
+                    style={{ border: "1.5px solid rgba(33,12,55,0.15)", backgroundColor: "#fff" }}
+                  />
+                  <span
+                    className="demo-check absolute inset-0 flex items-center justify-center rounded-full"
+                    style={{
+                      backgroundColor: "rgba(22,163,74,0.12)",
+                      color: STATUS_COLORS.verified,
+                      animationDelay: `${0.2 + i * 0.18}s`,
+                    }}
+                  >
+                    <CheckIcon />
+                  </span>
+                </span>
+              ) : state === "active" ? (
+                <span
+                  className="demo-active-row flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
+                  style={{ border: `1.5px solid ${ACCENT}`, backgroundColor: "#fff" }}
+                />
+              ) : (
+                <span
+                  className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
+                  style={{ border: "1.5px solid rgba(33,12,55,0.15)", backgroundColor: "#fff" }}
+                />
+              )}
+              <p className="text-[12px] leading-tight" style={{ opacity: state === "pending" ? 0.4 : 0.8 }}>
+                {area.title}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    </AnalyzeWindowFrame>
+  );
+}
+
 export function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" }) {
   if (step === "website") {
     return (
@@ -368,7 +501,7 @@ export function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" 
             <VerenaMarkIcon className="h-4 w-4" />
             <p style={bricolage} className="text-[13px] font-semibold">Verena</p>
           </div>
-          <span className="text-[11px] opacity-50">Getting started</span>
+          <span className="text-[11px] opacity-60">Getting started</span>
         </div>
         <div className="demo-pop flex items-start gap-2.5" style={{ animationDelay: "0s" }}>
           <div
@@ -417,83 +550,25 @@ export function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" 
   }
 
   if (step === "scan") {
-    const pages = [
-      { label: "Homepage and marketing claims", state: "done" as const },
-      { label: "Privacy policy and data rights", state: "done" as const },
-      { label: "Terms of service and liability", state: "done" as const },
-      { label: "Cookie banner and trackers", state: "done" as const },
-      { label: "Commercial email practices", state: "active" as const },
-      { label: "Accessibility and ADA compliance", state: "pending" as const },
-    ];
-    return (
-      <AnalyzeWindowFrame>
-        <div className="flex items-center justify-between">
-          <p style={bricolage} className="text-[13px] font-semibold">Analysis of your website</p>
-          <span className="text-[11px] opacity-50">4 of 6 areas</span>
-        </div>
-        <div className="h-1.5 w-full overflow-hidden rounded-full" style={{ backgroundColor: "rgba(33,12,55,0.08)" }}>
-          <div
-            className="demo-progress-fill h-full rounded-full"
-            style={{ width: "66%", backgroundColor: ACCENT }}
-          />
-        </div>
-        <div
-          className="flex flex-1 flex-col justify-center rounded-[10px]"
-          style={{ border: "1px solid rgba(33,12,55,0.06)" }}
-        >
-          {pages.map((page, i) => (
-            <div
-              key={page.label}
-              className="flex items-center gap-2.5 px-2.5 py-1.5"
-              style={i > 0 ? { borderTop: "1px solid rgba(33,12,55,0.06)" } : undefined}
-            >
-              {page.state === "done" ? (
-                <span className="relative flex h-4 w-4 shrink-0 items-center justify-center">
-                  <span
-                    className="absolute inset-0 rounded-full"
-                    style={{ border: "1.5px solid rgba(33,12,55,0.15)", backgroundColor: "#fff" }}
-                  />
-                  <span
-                    className="demo-check absolute inset-0 flex items-center justify-center rounded-full"
-                    style={{
-                      backgroundColor: "rgba(22,163,74,0.12)",
-                      color: STATUS_COLORS.verified,
-                      animationDelay: `${0.2 + i * 0.18}s`,
-                    }}
-                  >
-                    <CheckIcon />
-                  </span>
-                </span>
-              ) : page.state === "active" ? (
-                <span
-                  className="demo-active-row flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
-                  style={{ border: `1.5px solid ${ACCENT}`, backgroundColor: "#fff" }}
-                />
-              ) : (
-                <span
-                  className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
-                  style={{ border: "1.5px solid rgba(33,12,55,0.15)", backgroundColor: "#fff" }}
-                />
-              )}
-              <p className="text-[12px] leading-tight" style={{ opacity: page.state === "pending" ? 0.4 : 0.8 }}>
-                {page.label}
-              </p>
-            </div>
-          ))}
-        </div>
-      </AnalyzeWindowFrame>
-    );
+    return <AnalyzeScanStep />;
   }
+
+  const topRiskAreas = [...REVIEW_AREAS].sort((a, b) => a.score - b.score).slice(0, 2);
+  const exposedCount = REVIEW_AREAS.filter((area) => area.statusColor === STATUS_COLORS.deficit).length;
 
   return (
     <AnalyzeWindowFrame>
       <div className="flex items-center justify-between">
         <p style={bricolage} className="text-[13px] font-semibold">High Level Compliance Report</p>
-        <span className="text-[11px] opacity-50">Acme</span>
+        <span className="text-[11px] opacity-60">Acme</span>
       </div>
       <div className="flex items-center justify-between">
-        <p className="text-[12px] font-medium opacity-80">6 of 6 areas checked</p>
-        <p className="text-[11px] opacity-50">2 Exposed</p>
+        <p className="text-[12px] font-medium opacity-80">
+          {REVIEW_AREAS.length} of {REVIEW_AREAS.length} areas checked
+        </p>
+        <p className="text-[11px] opacity-60">
+          {exposedCount} exposed
+        </p>
       </div>
       <div className="flex gap-1.5">
         {REVIEW_AREAS.map((area, i) => (
@@ -507,30 +582,24 @@ export function AnalyzeMockup({ step }: { step: "website" | "scan" | "findings" 
           />
         ))}
       </div>
-      <div
-        className="demo-pop flex items-center justify-between rounded-[10px] px-3 py-2"
-        style={{ border: "1px solid rgba(33,12,55,0.08)", animationDelay: "0.15s" }}
-      >
-        <p className="text-[12px] font-medium">Cookie compliance</p>
-        <span
-          className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-          style={{ backgroundColor: "#fde9e7", color: "#b42318" }}
-        >
-          EXPOSED
-        </span>
-      </div>
-      <div
-        className="demo-pop flex items-center justify-between rounded-[10px] px-3 py-2"
-        style={{ border: "1px solid rgba(33,12,55,0.08)", animationDelay: "0.3s" }}
-      >
-        <p className="text-[12px] font-medium">ADA / Web accessibility</p>
-        <span
-          className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-          style={{ backgroundColor: "#e2f3e8", color: "#17673a" }}
-        >
-          APPLICABLE
-        </span>
-      </div>
+      {topRiskAreas.map((area, i) => {
+        const pill = RISK_PILL_STYLES[area.statusColor] ?? RISK_PILL_STYLES[STATUS_COLORS.verified];
+        return (
+          <div
+            key={area.title}
+            className="demo-pop flex items-center justify-between rounded-[10px] px-3 py-2"
+            style={{ border: "1px solid rgba(33,12,55,0.08)", animationDelay: `${0.15 + i * 0.15}s` }}
+          >
+            <p className="text-[12px] font-medium">{area.title}</p>
+            <span
+              className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+              style={{ backgroundColor: pill.bg, color: pill.fg }}
+            >
+              {pill.label}
+            </span>
+          </div>
+        );
+      })}
     </AnalyzeWindowFrame>
   );
 }

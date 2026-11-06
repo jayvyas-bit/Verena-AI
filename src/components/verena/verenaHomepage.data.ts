@@ -287,6 +287,7 @@ export const REVIEW_AREAS = [
       from: "Acme Inc. <no-reply@acmeinc.com>",
       subject: "Your October product update",
       footer: "Unsubscribe (login required)",
+      footerFixed: "Unsubscribe",
     },
   },
   {
