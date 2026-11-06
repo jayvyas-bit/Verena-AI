@@ -325,26 +325,26 @@ const PRICING_PLANS = [
     features: ["All six review areas", "1 website", "Evidence for every finding"],
   },
   {
-    name: "Starter",
+    name: "Solo",
     price: 99,
     period: "/month",
     credits: "5,000 credits / month",
     description: "For a single website under ongoing review.",
-    cta: "Choose Starter",
+    cta: "Choose Solo",
     featured: false,
     addOnPrice: 99,
     features: ["Everything in Free", "1 website", "Weekly re-scans", "Email support"],
   },
   {
-    name: "Professional",
+    name: "Team",
     price: 299,
     period: "/month",
     credits: "25,000 credits / month",
     description: "For teams reviewing multiple websites regularly.",
-    cta: "Choose Professional",
+    cta: "Choose Team",
     featured: true,
     addOnPrice: 149,
-    features: ["Everything in Starter", "Up to 10 websites", "Daily re-scans", "Priority support"],
+    features: ["Everything in Solo", "Up to 10 websites", "Daily re-scans", "Priority support"],
   },
   {
     name: "Enterprise",
@@ -355,7 +355,7 @@ const PRICING_PLANS = [
     cta: "Talk to sales",
     featured: false,
     addOnPrice: 249,
-    features: ["Everything in Professional", "Unlimited websites", "Custom review areas", "Dedicated account manager"],
+    features: ["Everything in Team", "Unlimited websites", "Custom review areas", "Dedicated account manager"],
   },
 ];
 
@@ -2185,9 +2185,7 @@ export function VerenaHomepage() {
     timeouts.current.push(window.setTimeout(() => setAnnouncementVisible(false), 600));
   }
 
-  const [heroRef, heroVisible] = useReveal<HTMLElement>();
   const [trustedRef, trustedVisible] = useReveal<HTMLElement>();
-  const [footerRef, footerVisible] = useReveal<HTMLElement>();
   const [statementRef, statementVisible] = useReveal<HTMLElement>();
   const [startedRef, startedVisible] = useReveal<HTMLElement>();
   const [startedInViewRef, startedInView] = useInViewport<HTMLElement>(0.2);
@@ -2548,12 +2546,9 @@ export function VerenaHomepage() {
       <main id="main-content">
       {/* Hero */}
       <section
-        ref={heroRef}
         className="section-pad-x section-pad-y-lg hero-pad-y-mobile flex flex-col items-center gap-8 text-center sm:gap-16"
       >
-        <div
-          className={`area-reveal flex max-w-[860px] flex-col items-center gap-2 ${heroVisible ? "is-shown" : ""}`}
-        >
+        <div className="flex max-w-[860px] flex-col items-center gap-2">
           <h1 style={bricolage} className="fluid-h1 font-bold leading-[1.1] tracking-[-0.01em]">
             Your website looks ready.
             <br />
@@ -2603,10 +2598,7 @@ export function VerenaHomepage() {
           </p>
         </div>
 
-        <div
-          className={`area-reveal hero-demo-box relative w-full max-w-[1280px] overflow-hidden rounded-[24px] bg-white shadow-sm ${heroVisible ? "is-shown" : ""}`}
-          style={{ transitionDelay: "100ms" }}
-        >
+        <div className="hero-demo-box relative w-full max-w-[1280px] overflow-hidden rounded-[24px] bg-white shadow-sm">
           <img
             src={gradientBackdrop}
             alt=""
@@ -3438,14 +3430,11 @@ export function VerenaHomepage() {
 
       {/* Footer */}
       <footer
-        ref={footerRef}
         className="section-pad-x relative overflow-hidden pt-12 sm:pt-[clamp(5rem,4rem+2.5vw,7rem)]"
         style={{ backgroundColor: INK, color: "rgba(250, 249, 246, 0.7)" }}
       >
         <div className="mx-auto max-w-[1280px]">
-          <div
-            className={`area-reveal grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-6 ${footerVisible ? "is-shown" : ""}`}
-          >
+          <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-6">
             <div className="lg:col-span-2">
               <img
                 src={verenaLogo}
@@ -3504,11 +3493,10 @@ export function VerenaHomepage() {
           </div>
 
           <div
-            className={`area-reveal mt-8 flex flex-col gap-3 border-t pt-5 text-xs sm:mt-10 sm:flex-row sm:items-center sm:justify-between sm:pt-6 ${footerVisible ? "is-shown" : ""}`}
+            className="mt-8 flex flex-col gap-3 border-t pt-5 text-xs sm:mt-10 sm:flex-row sm:items-center sm:justify-between sm:pt-6"
             style={{
               borderColor: "rgba(250, 249, 246, 0.12)",
               color: "rgba(250, 249, 246, 0.6)",
-              transitionDelay: "100ms",
             }}
           >
             <p>© {new Date().getFullYear()} Invictus AI. All rights reserved.</p>

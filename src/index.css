@@ -322,18 +322,15 @@ button:not(:disabled),
 .area-reveal {
   opacity: 0;
   transform: translateY(16px);
-  filter: blur(3px);
   transition:
     opacity 600ms var(--ease-smooth-out),
-    transform 600ms var(--ease-smooth-out),
-    filter 600ms var(--ease-smooth-out);
-  will-change: transform, opacity, filter;
+    transform 600ms var(--ease-smooth-out);
+  will-change: transform, opacity;
 }
 
 .area-reveal.is-shown {
   opacity: 1;
   transform: translateY(0);
-  filter: blur(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -341,7 +338,6 @@ button:not(:disabled),
     transition: none !important;
     opacity: 1;
     transform: none;
-    filter: none;
   }
 }
 
