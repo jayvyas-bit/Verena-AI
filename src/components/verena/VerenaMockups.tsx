@@ -251,7 +251,7 @@ export function FindingIcon({ severity }: { severity: keyof typeof SEVERITY_META
 export function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
   return (
     <div
-      className="flex h-full w-full max-w-[500px] flex-col gap-4 rounded-2xl bg-white p-6 shadow-[0_4px_12px_rgba(33,12,55,0.06),0_16px_32px_-8px_rgba(33,12,55,0.14)]"
+      className="flex h-full w-full max-w-[500px] flex-col gap-3 rounded-2xl bg-white p-4 shadow-[0_4px_12px_rgba(33,12,55,0.06),0_16px_32px_-8px_rgba(33,12,55,0.14)] sm:gap-4 sm:p-6"
       style={{ color: INK }}
     >
       <div className="flex items-start justify-between gap-3">
@@ -276,15 +276,17 @@ export function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }
         {area.findings.map((finding) => (
           <div
             key={finding.title}
-            className="flex items-start gap-3 rounded-[10px] px-3 py-2.5"
+            className="flex items-start gap-2.5 rounded-[10px] px-2.5 py-2 sm:gap-3 sm:px-3 sm:py-2.5"
             style={{ border: "1px solid rgba(33,12,55,0.08)", boxShadow: "0 1px 2px rgba(33,12,55,0.02)" }}
           >
             <FindingIcon severity={finding.severity} />
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium leading-snug">{finding.title}</p>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <p className="min-w-[120px] flex-1 text-[13px] font-medium leading-snug">{finding.title}</p>
+                <SeverityTag severity={finding.severity} />
+              </div>
               <p className="mt-0.5 text-[12px] leading-snug opacity-60">{finding.detail}</p>
             </div>
-            <SeverityTag severity={finding.severity} />
           </div>
         ))}
       </div>

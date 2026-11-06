@@ -77,9 +77,9 @@ export function SixAreasSection() {
                 </button>
                 <div className="lg:hidden">
                   <div className={`area-accordion-body ${isActive ? "is-open" : ""}`}>
-                    <div className="overflow-hidden px-5 pb-6">
+                    <div className="overflow-hidden px-3 pb-4 sm:px-5 sm:pb-6">
                       <div
-                        className="relative flex min-h-[420px] items-stretch justify-center overflow-hidden rounded-[20px] p-4"
+                        className="relative flex min-h-[420px] items-stretch justify-center overflow-hidden rounded-[20px] p-2 sm:p-4"
                         style={{ backgroundColor: CREAM }}
                       >
                         <img
