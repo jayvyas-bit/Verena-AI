@@ -262,6 +262,24 @@ export function PlusMinusIcon({ open }: { open: boolean }) {
   );
 }
 
+export function CursorPointerIcon() {
+  return (
+    <svg
+      width={18}
+      height={18}
+      viewBox="0 0 24 24"
+      fill="white"
+      stroke="#210c37"
+      strokeWidth={1.4}
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="drop-shadow-[0_1px_2px_rgba(33,12,55,0.25)]"
+    >
+      <path d="M5 3l6.5 16.5 2.4-6.9 6.9-2.4z" />
+    </svg>
+  );
+}
+
 export function HeroStatusIcon({ status }: { status: "idle" | "loading" | "success" }) {
   const common = {
     width: 16,

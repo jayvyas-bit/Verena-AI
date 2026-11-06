@@ -1,7 +1,7 @@
 import { useEffect, useRef, type CSSProperties, type FormEvent } from "react";
 import gradientBackdrop from "../../../assets/homepage/image-19.webp";
 import { ACCENT, INK, PLACEHOLDER_EXAMPLES, STATUS_COLORS } from "../verenaHomepage.data";
-import { CheckIcon, HeroStatusIcon, VerenaMarkIcon } from "../verenaHomepage.icons";
+import { CheckIcon, CursorPointerIcon, HeroStatusIcon, VerenaMarkIcon } from "../verenaHomepage.icons";
 
 export function HeroSection({
   domain,
@@ -156,18 +156,38 @@ export function HeroSection({
                 className="w-full min-w-0 flex-1 bg-transparent text-left text-[16px] leading-6 outline-none placeholder:text-[#210c37]/70"
               />
             </div>
-            <button
-              type="submit"
-              disabled={status === "loading"}
-              aria-label={status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Analyze"}
-              style={{ backgroundColor: ACCENT }}
-              className="flex w-full shrink-0 items-center justify-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-medium text-white transition duration-200 ease-out hover:brightness-110 active:scale-[0.96] active:duration-100 disabled:cursor-not-allowed disabled:hover:brightness-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:w-auto"
-            >
-              <span key={status} className="hero-input-pop flex items-center justify-center">
-                <HeroStatusIcon status={status} />
-              </span>
-              {status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Analyze"}
-            </button>
+            <div className="relative w-full shrink-0 sm:w-auto">
+              <button
+                type="submit"
+                disabled={status === "loading"}
+                aria-label={status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Analyze"}
+                style={{ backgroundColor: ACCENT }}
+                className="flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-medium text-white transition duration-200 ease-out hover:brightness-110 active:scale-[0.96] active:duration-100 disabled:cursor-not-allowed disabled:hover:brightness-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2 sm:w-auto"
+              >
+                <span key={status} className="hero-input-pop flex items-center justify-center">
+                  <HeroStatusIcon status={status} />
+                </span>
+                {status === "loading" ? "Analyzing" : status === "success" ? "Scan started" : "Analyze"}
+              </button>
+              <div
+                aria-hidden="true"
+                className="hero-click-cursor pointer-events-none absolute -bottom-2 -right-2 z-10 hidden sm:block"
+              >
+                <span
+                  className="hero-click-cursor-ring absolute left-0 top-0 block h-6 w-6 rounded-full"
+                  style={{ backgroundColor: INK }}
+                />
+                <span className="hero-click-cursor-tap relative block">
+                  <CursorPointerIcon />
+                </span>
+                <span
+                  className="ml-4 mt-1 inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold leading-4 text-white shadow-[0_2px_6px_rgba(33,12,55,0.25)]"
+                  style={{ backgroundColor: INK }}
+                >
+                  You
+                </span>
+              </div>
+            </div>
           </form>
           {domainError && (
             <p

@@ -11,7 +11,7 @@ import {
   STATUS_COLORS,
   type TOOL_TABS,
 } from "./verenaHomepage.data";
-import { AreaIcon, CheckIcon, VerenaMarkIcon } from "./verenaHomepage.icons";
+import { CheckIcon, VerenaMarkIcon } from "./verenaHomepage.icons";
 
 export function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"] }) {
   if (tool === "reports") {
@@ -150,70 +150,30 @@ export function ToolMockupBody({ tool }: { tool: (typeof TOOL_TABS)[number]["id"
 export function SeverityTag({ severity }: { severity: keyof typeof SEVERITY_META }) {
   const meta = SEVERITY_META[severity];
   return (
-    <span
-      className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide"
-      style={{ backgroundColor: `${meta.color}1a`, color: meta.color }}
-    >
+    <span className="shrink-0 text-[10px] font-semibold tracking-wide" style={{ color: meta.color }}>
       {meta.label}
     </span>
   );
 }
 
-export function ScoreRing({ score, color }: { score: number; color: string }) {
-  const radius = 19;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference * (1 - score / 100);
+function ScoreNumeral({ score, color }: { score: number; color: string }) {
   return (
-    <div
-      className="relative flex h-11 w-11 shrink-0 items-center justify-center"
-      role="img"
-      aria-label={`Score ${score} out of 100`}
-    >
-      <svg width={44} height={44} viewBox="0 0 44 44" className="-rotate-90" aria-hidden="true">
-        <circle cx="22" cy="22" r={radius} fill="none" stroke="rgba(33,12,55,0.08)" strokeWidth="3.5" />
-        <circle
-          cx="22"
-          cy="22"
-          r={radius}
-          fill="none"
-          stroke={color}
-          strokeWidth="3.5"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          style={{ transition: "stroke-dashoffset 600ms cubic-bezier(0.16,1,0.3,1)" }}
-        />
-      </svg>
-      <span className="absolute text-[12px] font-semibold" style={{ color }} aria-hidden="true">
+    <div className="flex shrink-0 flex-col items-end gap-1.5" role="img" aria-label={`Score ${score} out of 100`}>
+      <p style={bricolage} className="text-[24px] font-semibold leading-none tabular-nums sm:text-[28px]" aria-hidden="true">
         {score}
-      </span>
+      </p>
+      <div className="h-[2px] w-10 overflow-hidden rounded-full" style={{ backgroundColor: "rgba(33,12,55,0.08)" }} aria-hidden="true">
+        <div className="h-full rounded-full" style={{ width: `${score}%`, backgroundColor: color }} />
+      </div>
     </div>
-  );
-}
-
-export function RemediationIcon() {
-  return (
-    <svg
-      width={12}
-      height={12}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.9v.2h5v-.2c0-.8.4-1.5 1-1.9A6 6 0 0 0 12 3Z" />
-    </svg>
   );
 }
 
 export function FindingIcon({ severity }: { severity: keyof typeof SEVERITY_META }) {
   const color = SEVERITY_META[severity].color;
   const common = {
-    width: 12,
-    height: 12,
+    width: 14,
+    height: 14,
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
@@ -223,10 +183,7 @@ export function FindingIcon({ severity }: { severity: keyof typeof SEVERITY_META
     "aria-hidden": true as const,
   };
   return (
-    <span
-      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
-      style={{ backgroundColor: `${color}1a`, color }}
-    >
+    <span className="mt-[3px] flex h-3.5 w-3.5 shrink-0 items-center justify-center" style={{ color }}>
       {severity === "verified" ? (
         <svg {...common}>
           <path d="M5 12.5l4.5 4.5L19 7" />
@@ -248,6 +205,81 @@ export function FindingIcon({ severity }: { severity: keyof typeof SEVERITY_META
   );
 }
 
+function AreaVisual({ visual }: { visual: NonNullable<(typeof REVIEW_AREAS)[number]["visual"]> }) {
+  const frameStyle = { border: "1px solid rgba(33,12,55,0.08)" };
+
+  if (visual.kind === "contrast") {
+    return (
+      <div className="flex items-center gap-4 rounded-[12px] px-3 py-2.5" style={frameStyle}>
+        {[visual.current, visual.suggested].map((swatch) => (
+          <div key={swatch.label} className="flex flex-1 items-center gap-2.5">
+            <span className="h-7 w-7 shrink-0 rounded-[6px]" style={{ backgroundColor: swatch.hex }} aria-hidden="true" />
+            <div className="min-w-0">
+              <p className="text-[11px] opacity-60">{swatch.label}</p>
+              <p className="text-[12px] font-medium tabular-nums">{swatch.ratio}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (visual.kind === "diff") {
+    return (
+      <div className="flex flex-col gap-1.5 rounded-[12px] px-3 py-2.5 text-[12px] leading-snug" style={frameStyle}>
+        <p className="line-through opacity-40">{visual.before}</p>
+        <p style={{ color: STATUS_COLORS.verified }}>{visual.after}</p>
+      </div>
+    );
+  }
+
+  if (visual.kind === "trackers") {
+    return (
+      <div className="flex flex-col gap-2 rounded-[12px] px-3 py-2.5" style={frameStyle}>
+        {visual.items.map((item) => (
+          <div key={item.name} className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <p className="truncate text-[12px] font-medium">{item.name}</p>
+              <p className="text-[11px] opacity-60">{item.category}</p>
+            </div>
+            <span
+              className="shrink-0 text-[11px] font-semibold tracking-wide"
+              style={{ color: item.consented ? STATUS_COLORS.verified : STATUS_COLORS.deficit }}
+            >
+              {item.consented ? "Allowed" : "Blocked"}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (visual.kind === "email") {
+    return (
+      <div className="flex flex-col gap-1 rounded-[12px] px-3 py-2.5 text-[12px]" style={frameStyle}>
+        <p className="truncate">
+          <span className="opacity-60">From: </span>
+          {visual.from}
+        </p>
+        <p className="truncate font-medium">{visual.subject}</p>
+        <p className="opacity-60">{visual.footer}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-1 rounded-[12px] px-3 py-2.5" style={frameStyle}>
+      <p className="text-[13px] italic leading-snug">
+        {visual.claim}
+        <sup className="ml-0.5 not-italic" style={{ color: ACCENT }}>
+          1
+        </sup>
+      </p>
+      <p className="text-[11px] opacity-60">1. {visual.source}</p>
+    </div>
+  );
+}
+
 export function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }) {
   return (
     <div
@@ -255,33 +287,27 @@ export function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }
       style={{ color: INK }}
     >
       <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <div
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
-            style={{ backgroundColor: `${area.statusColor}14`, color: area.statusColor }}
-          >
-            <AreaIcon name={area.icon} size={18} />
-          </div>
-          <div>
-            <p style={bricolage} className="text-[15px] font-semibold leading-tight">
-              {area.title} Scan
-            </p>
-            <p className="text-[12px] opacity-60">{area.auditLabel}</p>
-          </div>
+        <div className="min-w-0">
+          <p style={bricolage} className="text-[16px] font-semibold leading-tight sm:text-[17px]">
+            {area.title}
+          </p>
+          <p className="mt-0.5 text-[11px] opacity-60">{area.auditLabel}</p>
         </div>
-        <ScoreRing score={area.score} color={area.statusColor} />
+        <ScoreNumeral score={area.score} color={area.statusColor} />
       </div>
 
-      <div className="flex flex-1 flex-col gap-2">
-        {area.findings.map((finding) => (
+      {area.visual ? <AreaVisual visual={area.visual} /> : null}
+
+      <div className="flex flex-1 flex-col">
+        {area.findings.map((finding, index) => (
           <div
             key={finding.title}
-            className="flex items-start gap-2.5 rounded-[10px] px-2.5 py-2 sm:gap-3 sm:px-3 sm:py-2.5"
-            style={{ border: "1px solid rgba(33,12,55,0.08)", boxShadow: "0 1px 2px rgba(33,12,55,0.02)" }}
+            className="flex items-start gap-2.5 py-2.5 sm:gap-3"
+            style={index === 0 ? undefined : { borderTop: "1px solid rgba(33,12,55,0.08)" }}
           >
             <FindingIcon severity={finding.severity} />
             <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                 <p className="min-w-[120px] flex-1 text-[13px] font-medium leading-snug">{finding.title}</p>
                 <SeverityTag severity={finding.severity} />
               </div>
@@ -292,35 +318,24 @@ export function AreaDetailCard({ area }: { area: (typeof REVIEW_AREAS)[number] }
       </div>
 
       {area.remediation ? (
-        <div
-          className="flex items-center justify-between gap-3 rounded-[10px] px-3 py-2.5"
-          style={{ backgroundColor: "rgba(38,83,243,0.06)" }}
-        >
-          <div className="flex min-w-0 items-start gap-2.5">
-            <span
-              className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
-              style={{ backgroundColor: "rgba(38,83,243,0.14)", color: ACCENT }}
-            >
-              <RemediationIcon />
+        <div className="flex items-center justify-between gap-3 pt-3" style={{ borderTop: "1px solid rgba(33,12,55,0.08)" }}>
+          <p className="min-w-0 flex-1 text-[12px] leading-snug opacity-70">
+            <span className="font-semibold opacity-100" style={{ color: ACCENT }}>
+              Suggested fix —{" "}
             </span>
-            <p className="text-[12px] leading-snug" style={{ color: ACCENT }}>
-              <span className="font-semibold">Suggested remediation: </span>
-              {area.remediation.label}
-            </p>
-          </div>
-          <span
+            {area.remediation.label}
+          </p>
+          <button
+            type="button"
             className="shrink-0 rounded-[8px] px-2.5 py-1.5 text-[12px] font-medium"
             style={{ backgroundColor: ACCENT, color: "#fff" }}
           >
             {area.remediation.cta} →
-          </span>
+          </button>
         </div>
       ) : (
-        <div className="flex items-center gap-2.5 px-1">
-          <span
-            className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
-            style={{ backgroundColor: "rgba(22,163,74,0.14)", color: STATUS_COLORS.verified }}
-          >
+        <div className="flex items-center gap-2 pt-3" style={{ borderTop: "1px solid rgba(33,12,55,0.08)" }}>
+          <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center" style={{ color: STATUS_COLORS.verified }}>
             <CheckIcon />
           </span>
           <p className="text-[12px] font-medium" style={{ color: STATUS_COLORS.verified }}>

@@ -27,9 +27,10 @@ export function SixAreasSection() {
         </p>
       </div>
       <div className="grid w-full max-w-[1536px] gap-10 lg:grid-cols-2 lg:gap-6">
-        <div className="flex flex-col gap-3" role="group" aria-label="Review areas" aria-controls="area-detail-panel">
+        <div className="flex flex-col gap-3" role="group" aria-label="Review areas">
           {REVIEW_AREAS.map((area, index) => {
             const isActive = activeArea === index;
+            const mobilePanelId = `area-accordion-panel-${index}`;
             return (
               <div
                 key={area.title}
@@ -45,18 +46,18 @@ export function SixAreasSection() {
                 <button
                   type="button"
                   onClick={() => setActiveArea(index)}
-                  aria-pressed={isActive}
                   aria-expanded={isActive}
-                  className="flex w-full items-start gap-4 px-5 py-6 text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
+                  aria-controls={`${mobilePanelId} area-detail-panel`}
+                  className="flex w-full flex-col items-start gap-4 px-5 py-6 text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#210c37] focus-visible:ring-offset-2"
                 >
-                  <div
-                    className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
-                    style={{ backgroundColor: isActive ? `${area.statusColor}08` : `${area.statusColor}14`, color: area.statusColor }}
-                  >
-                    <AreaIcon name={area.icon} size={18} />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-3">
+                  <div className="flex w-full items-center gap-4">
+                    <div
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+                      style={{ backgroundColor: isActive ? `${area.statusColor}08` : `${area.statusColor}14`, color: area.statusColor }}
+                    >
+                      <AreaIcon name={area.icon} size={18} />
+                    </div>
+                    <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
                       <span
                         style={{ ...bricolage, opacity: isActive ? 1 : 0.7 }}
                         className="text-[18px] font-semibold tracking-[-0.01em] transition-opacity sm:text-[26px]"
@@ -70,12 +71,12 @@ export function SixAreasSection() {
                         {area.status}
                       </span>
                     </div>
-                    {isActive ? (
-                      <p className="mt-2 max-w-[520px] text-[14px] leading-5 opacity-70 sm:text-[16px] sm:leading-6">{area.body}</p>
-                    ) : null}
                   </div>
+                  {isActive ? (
+                    <p className="max-w-[520px] pl-14 text-[14px] leading-5 opacity-70 sm:text-[16px] sm:leading-6">{area.body}</p>
+                  ) : null}
                 </button>
-                <div className="lg:hidden">
+                <div className="lg:hidden" id={mobilePanelId}>
                   <div className={`area-accordion-body ${isActive ? "is-open" : ""}`}>
                     <div className="overflow-hidden">
                       <div className="px-3 pb-4 sm:px-5 sm:pb-6">

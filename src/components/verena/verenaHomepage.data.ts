@@ -120,12 +120,20 @@ export const TOOL_CAPTIONS: Record<(typeof TOOL_TABS)[number]["id"], string> = {
   monitor: "Keep track of fixes over time with scheduled rechecks and alerts when something changes",
 };
 
+// Keeps the badge color honest relative to the number next to it, instead of
+// letting each area hand-pick a color that can disagree with its own score.
+function statusColorForScore(score: number): string {
+  if (score >= 85) return STATUS_COLORS.verified;
+  if (score >= 70) return STATUS_COLORS.warning;
+  return STATUS_COLORS.deficit;
+}
+
 export const REVIEW_AREAS = [
   {
     title: "Accessibility",
     body: "Spot potential barriers that make your website harder for people to use.",
     status: "3 issues found",
-    statusColor: STATUS_COLORS.deficit,
+    statusColor: statusColorForScore(88),
     icon: "accessibility" as const,
     auditLabel: "WCAG 2.2 AA Audit",
     score: 88,
@@ -147,12 +155,17 @@ export const REVIEW_AREAS = [
       },
     ],
     remediation: { label: "color #0056b3 — 4.8:1 ratio, compliant", cta: "Apply" },
+    visual: {
+      kind: "contrast" as const,
+      current: { hex: "#4a9eff", ratio: "3.1:1", label: "Current" },
+      suggested: { hex: "#0056b3", ratio: "4.8:1", label: "Suggested" },
+    },
   },
   {
     title: "Privacy Policy",
     body: "Check whether your policy clearly explains how personal information is collected and used.",
     status: "Needs review",
-    statusColor: STATUS_COLORS.warning,
+    statusColor: statusColorForScore(74),
     icon: "privacy" as const,
     auditLabel: "GDPR / CCPA Review",
     score: 74,
@@ -174,12 +187,17 @@ export const REVIEW_AREAS = [
       },
     ],
     remediation: { label: "Add a \"Data Sharing\" section naming each processor", cta: "Draft clause" },
+    visual: {
+      kind: "diff" as const,
+      before: "Third-party data sharing is not addressed.",
+      after: "We share data with named processors: Google Analytics, Meta Ads, Stripe.",
+    },
   },
   {
     title: "Cookies & Trackers",
     body: "See which tracking tools may be running and where consent needs attention.",
     status: "2 trackers flagged",
-    statusColor: STATUS_COLORS.deficit,
+    statusColor: statusColorForScore(61),
     icon: "cookies" as const,
     auditLabel: "Cookie Consent Scan",
     score: 61,
@@ -201,12 +219,20 @@ export const REVIEW_AREAS = [
       },
     ],
     remediation: { label: "Gate analytics scripts behind a consent-granted event", cta: "Apply" },
+    visual: {
+      kind: "trackers" as const,
+      items: [
+        { name: "Google Analytics", category: "Analytics", consented: false },
+        { name: "Meta Pixel", category: "Marketing", consented: false },
+        { name: "Session Cookie", category: "Essential", consented: true },
+      ],
+    },
   },
   {
     title: "Terms of Service",
     body: "Find potential gaps or unclear wording in your website's terms.",
     status: "No issues found",
-    statusColor: STATUS_COLORS.verified,
+    statusColor: statusColorForScore(96),
     icon: "document" as const,
     auditLabel: "Terms Coverage Check",
     score: 96,
@@ -228,12 +254,13 @@ export const REVIEW_AREAS = [
       },
     ],
     remediation: null,
+    visual: null,
   },
   {
     title: "Commercial Email",
     body: "Review supported email-related requirements, including relevant disclosures and consent practices.",
     status: "1 issue found",
-    statusColor: STATUS_COLORS.warning,
+    statusColor: statusColorForScore(82),
     icon: "email" as const,
     auditLabel: "CAN-SPAM Review",
     score: 82,
@@ -255,12 +282,18 @@ export const REVIEW_AREAS = [
       },
     ],
     remediation: { label: "Add a no-login unsubscribe link to every campaign", cta: "Apply" },
+    visual: {
+      kind: "email" as const,
+      from: "Acme Inc. <no-reply@acmeinc.com>",
+      subject: "Your October product update",
+      footer: "Unsubscribe (login required)",
+    },
   },
   {
     title: "Marketing Claims",
     body: "Spot promotional claims that may need stronger evidence or clearer wording.",
     status: "No issues found",
-    statusColor: STATUS_COLORS.verified,
+    statusColor: statusColorForScore(94),
     icon: "megaphone" as const,
     auditLabel: "FTC Claims Review",
     score: 94,
@@ -282,6 +315,11 @@ export const REVIEW_AREAS = [
       },
     ],
     remediation: null,
+    visual: {
+      kind: "citation" as const,
+      claim: "“#1 rated project management tool”",
+      source: "G2 Reviews, Q3 2025",
+    },
   },
 ];
 

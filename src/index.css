@@ -464,6 +464,85 @@ button:not(:disabled),
   }
 }
 
+.hero-click-cursor {
+  animation: hero-click-cursor-move 3.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes hero-click-cursor-move {
+  0%,
+  8% {
+    transform: translate(18px, -14px);
+    opacity: 0;
+  }
+  22% {
+    opacity: 1;
+  }
+  40%,
+  62% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(18px, -14px);
+    opacity: 0;
+  }
+}
+
+.hero-click-cursor-tap {
+  animation: hero-click-cursor-tap 3.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes hero-click-cursor-tap {
+  0%,
+  48%,
+  100% {
+    transform: scale(1);
+  }
+  53% {
+    transform: scale(0.85);
+  }
+  58% {
+    transform: scale(1);
+  }
+}
+
+.hero-click-cursor-ring {
+  animation: hero-click-cursor-ring 3.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes hero-click-cursor-ring {
+  0%,
+  50% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(0.4);
+    opacity: 0.5;
+  }
+  75% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-click-cursor,
+  .hero-click-cursor-tap,
+  .hero-click-cursor-ring {
+    animation: none;
+  }
+  .hero-click-cursor {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .flow-motion {
     display: none;
