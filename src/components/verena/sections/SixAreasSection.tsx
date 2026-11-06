@@ -77,19 +77,21 @@ export function SixAreasSection() {
                 </button>
                 <div className="lg:hidden">
                   <div className={`area-accordion-body ${isActive ? "is-open" : ""}`}>
-                    <div className="overflow-hidden px-3 pb-4 sm:px-5 sm:pb-6">
-                      <div
-                        className="relative flex min-h-[420px] items-stretch justify-center overflow-hidden rounded-[20px] p-2 sm:p-4"
-                        style={{ backgroundColor: CREAM }}
-                      >
-                        <img
-                          src={gradientBackdrop}
-                          alt=""
-                          loading="lazy"
-                          className="absolute inset-0 h-full w-full object-cover"
-                        />
-                        <div className="relative w-full max-w-[500px]">
-                          <AreaDetailCard area={area} />
+                    <div className="overflow-hidden">
+                      <div className="px-3 pb-4 sm:px-5 sm:pb-6">
+                        <div
+                          className="relative flex min-h-[420px] items-stretch justify-center overflow-hidden rounded-[20px] p-2 sm:p-4"
+                          style={{ backgroundColor: CREAM }}
+                        >
+                          <img
+                            src={gradientBackdrop}
+                            alt=""
+                            loading="lazy"
+                            className="absolute inset-0 h-full w-full object-cover"
+                          />
+                          <div className="relative w-full max-w-[500px]">
+                            <AreaDetailCard area={area} />
+                          </div>
                         </div>
                       </div>
                     </div>
